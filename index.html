@@ -64,6 +64,45 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-从Facebook看iOS移动端的开发" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/01/01/从Facebook看iOS移动端的开发/" class="article-date">
+  <time datetime="2014-01-01T13:47:31.000Z" itemprop="datePublished">2014-01-01</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/01/01/从Facebook看iOS移动端的开发/">从Facebook看iOS移动端的开发</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>从 Facebook 谈起<br>Facebook 最近绝对是互联网界的新闻明星。它首先是进行了大手笔的收购：2014 年 2 月，Facebook 以 160 亿美元现金加股票，以及 30 亿美元受限制股票福利的方式 收购移动 IM 应用 WhatsApp，总收购成本 190 亿美元。然后是继续发布了新产品：2014 年 2 月，Facebook 发布了一个新的移动端新闻阅读应用 Paper。最后，Facebook 最近还将自己使用的大量工具开源，包括开源了 Paper 的加载效果 Shimmer，LLDB 的增强工具 chisel，以及 Key-Value Observing 工具 KVOController，如果说这些开源工具让程序员如获至宝的话，那么 Facebook 将 Paper 的交互设计工具 Origami 免费开放，则是对广大设计师的福音，极大地方便了移动交互设计工作的开展。<br>2014 年对于 Facebook 来说也是一个值得纪念的日子。因为从 2004 年 2 月 4 日 Facebook 产品上线到现在，Facebook 刚刚走过 10 个年头。10 年前，Facebook 的创始人扎克伯格才 19 岁，是哈佛大学的一名学生。转眼间 10 年后，Facebook 已经成长为全球最大的社交网络，月活跃用户达到 12 亿，市值约 1200 亿美元。<br>业界内大多讨论的话题都围绕在 Facebook 收购 WhatsApp 这件事情上，而作为一个移动开发者，我更加看重 Facebook 发布 Paper 这件事情。因为 Paper 并不是一个简单的应用，它有着非常优秀的交互效果，并且在产品设计和技术上都使用了许多前沿的技术，那就让我们看看，Paper 的开发到底有何不同之处？<br>交互设计<br>我们首先从产品设计上看 Paper 的不同之处。Paper 虽然只是一个新闻客户端，但从大家对 Paper 的评价上，我们发现优秀的交互再一次成为大家关注的焦点。回想那些成功的应用，大多都有着令人心动的交互效果，例如：Tweetie 的下拉刷新，现在基本上成为 iPhone 上内容刷新的标准。Path 跳出来的红心让人心动，很多朋友甚至会没事点那个红心，欣赏那流畅的按钮散开效果。还有 Mailbox，用流畅的手势操作，将邮件管理与任务管理完美结合起来。<br>国外成功的优秀应用也在影响着国内。交互设计不同于平面设计，不能简单地用 Photoshop 展现，而交互设计对于移动应用的成功又异常关键，所以需要花费不少时间来设计，因此产品经理很难兼顾地做交互设计。所以，在国内的一线互联网公司里，交互设计师这个职位慢慢成了移动应用的标配。但是在大部分的非一线互联网公司里面，移动开发的设计仍然停留在由产品经理简单潦草的完成阶段。所以，Facebook 这次 Paper 的成功发布，再一次给移动开发的从业者指出了交互设计的重要性。<br>回顾中国互联网产业的发展我们可以发现，产品经理（Product Manager）这个职位也是最近五、六年才成为互联网公司的标配的，想必在不远的将来，除着交互设计越来越重要，移动交互设计师也会成为每一个互联网公司重要的必备职位。<br>另一方面，由于工具的欠缺，大量的交互设计师的工作效率非常低下，他们为了做出一个新颖的效果常常需要花费大量精力。这次 Facebook 免费开放出基于苹果 Quartz Composer 的增强工具集 Origami，使得交互设计工作得到更好的辅助。而且在 Facebook 的带动下，jQC 1.0 也出现了。jQC 是一个与 Facebook 之前开源的 Origami 兼容的工具，提供了 15 个新的 Patch 来提高 Quartz Composer 的功能。<br>不过另一方面，该工具仍然需要设计师具备一定的基础编码能力，所以对于广大设计师来说，交互设计工具 Origami 对设计师带来的既是机会，同时也是挑战。<br>移动开发技术<br>随着 iOS 依赖管理工具 Cocoapods 和大量第三方开源库成熟起来，业界积累了大量的优秀开源项目。这次 Facebook 开发 Paper 使用了 将近 100 个第三方开源库，极大地减化了自己的应用开发任务。相信随着移动开发的发展，移动开发的生态圈会越来越成熟，基础的开源组件也将将越来越丰富，广大开发者都将从中受益。<br>另一方面，Facebook 的工程师在 Quora 上反馈 说 Paper 在 Xcode 下打开需要 40 多秒钟，编译一次需要 30 分钟。这反映出大量的开源库的使用也给 iOS 集成编译环境 Xcode 提出了新的挑战，相信苹果会花大力气解决 Xcode 的性能问题。<br>总结<br>Facebook 发布的 Paper 让我看到了移动开发领域的快速发展，大量新的工具和开源技术给了设计师和程序员机会和挑战，相信在移动互联网快速发展的浪潮中，会涌现出越来越多优秀的移动应用。谁会是未来移动互联网的霸主？让我们拭目以待。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipfi8nxf00088as6xuseop33" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-用CocoaPods管理iOS程序" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2013/12/30/用CocoaPods管理iOS程序/" class="article-date">
@@ -107,7 +146,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipfi3hev000d7hs6nsvhuegi" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipfi8nxq000b8as67h0fkpjc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -146,7 +185,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipfi3heq000a7hs6cm6qrpvw" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipfi8nxv000d8as6duz9yquf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -191,7 +230,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipfi3he300057hs6rg5a3024" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipfi8ny3000e8as6qoer9t3p" class="article-share-link">Share</a>
       
       
     </footer>
@@ -230,7 +269,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipfi3hes000b7hs6q1a1lw7t" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipfi8nxn000a8as6b4s7mluf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -371,7 +410,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipfi3heg00077hs6aiwhe3we" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipfi8nx600058as6ase0gcr6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -452,7 +491,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipfi3hei00087hs6vtf83l8e" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipfi8nxl00098as673xjgpyi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -585,7 +624,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipfi3hdr00017hs63d3nnkdl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipfi8nwy00018as63gejmhbz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -651,7 +690,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipfi3hdl00007hs6lrbefn4c" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipfi8nxb00078as6h9f61teh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -731,63 +770,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipfi3hex000e7hs67756co58" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Objective-C内存管理教程和原理小结4" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2013/10/22/Objective-C内存管理教程和原理小结4/" class="article-date">
-  <time datetime="2013-10-22T12:48:29.000Z" itemprop="datePublished">2013-10-22</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/10/22/Objective-C内存管理教程和原理小结4/">Objective-C内存管理教程和原理小结4</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>原文出处： Vince Yuan的博客<br>系统自动创建新的autorelease pool</p>
-<p>在生成新的Run Loop的时候，系统会自动创建新的autorelease pool（非常感谢网友hhyytt和neogui的提醒）。注意，此处不同于xcode在新建项目时自动生成的代码中加入的autorelease pool，xcode生成的代码可以被删除，但系统自动创建的新的autorelease pool是无法删除的（对于无Garbage Collection的环境来说）。Objective-C没有给出实现代码，官方文档也没有说明，但我们可以通过小程序来证明。</p>
-<p>在这个小程序中，我们先生成了一个autorelease pool，然后生成一个autorelease的ClassA的实例，再在一个新的run loop中生成一个autorelease的ClassB的对象（注意，我们并没有手动在新run loop中生成autorelease pool）。精简的示例代码如下，详细代码请见附件中的memman-run-loop-with-pool.m。</p>
-<p>int main(int argc, char<em>*argv)<br>{<br>NSLog(@”create an autorelasePool\n”);<br>NSAutoreleasePool </em>pool = [[NSAutoreleasePool alloc] init];   </p>
-<p>NSLog(@”create an instance of ClassA and autorelease\n”);<br>ClassA <em>obj1 = [[[ClassA alloc] init] autorelease];<br>NSDate </em>now = [[NSDate alloc] init];<br>NSTimer <em>timer = [[NSTimer alloc] initWithFireDate:now<br>interval:0.0<br>target:obj1<br>selector:@selector(createClassB)<br>userInfo:nil<br>repeats:NO];<br>NSRunLoop </em>runLoop = [NSRunLoop currentRunLoop];<br>[runLoop addTimer:timer forMode:NSDefaultRunLoopMode];<br>[timer release];<br>[now release];<br>[runLoop run]; //在新loop中调用一函数，生成ClassB的autorelease实例</p>
-<p>NSLog(@”releasing autorelasePool\n”);<br>[pool release];<br>NSLog(@”autorelasePool is released\n”);<br>return 0;<br>}<br>输出如下：</p>
-<p>create an autorelasePool<br>create an instance of ClassA and autorelease<br>create an instance of ClassB and autorelease<br>ClassB destroyed<br>releasing autorelasePool<br>ClassA destroyed<br>autorelasePool is released<br>注意在我们销毁autorelease pool之前，ClassB的autorelease实例就已经被销毁了。</p>
-<p>有人可能会说，这并不能说明新的run loop自动生成了一个新的autorelease pool，说不定还只是用了老的autorelease pool，只不过后来drain了一次而已。我们可以在main函数中不生成autorelease pool。精简的示例代码如下，详细代码请见附件中的memman-run-loop-without-pool.m。</p>
-<p>int main(int argc, char**argv)<br>{<br>NSLog(@”No autorelasePool created\n”);</p>
-<p>NSLog(@”create an instance of ClassA\n”);<br>ClassA <em>obj1 = [[ClassA alloc] init];<br>NSDate </em>now = [[NSDate alloc] init];<br>NSTimer <em>timer = [[NSTimer alloc] initWithFireDate:now<br>interval:0.0<br>target:obj1<br>selector:@selector(createClassB)<br>userInfo:nil<br>repeats:NO];<br>NSRunLoop </em>runLoop = [NSRunLoop currentRunLoop];<br>[runLoop addTimer:timer forMode:NSDefaultRunLoopMode];<br>[timer release];<br>[now release];<br>[runLoop run]; //在新loop中调用一函数，生成ClassB的autorelease实例<br>NSLog(@”Manually release the instance of ClassA\n”);<br>[obj1 release];</p>
-<p>return 0;<br>}<br>输出如下：</p>
-<p>No autorelasePool created<br>create an instance of ClassA<br>create an instance of ClassB and autorelease<br>ClassB destroyed<br>Manually release the instance of ClassA<br>ClassA destroyed<br>我们可以看出来，我们并没有创建任何autorelease pool，可是ClassB的实例依然被自动销毁了，这说明新的run loop自动创建了一个autorelease pool，这个pool在新的run loop结束的时候会销毁自己（并自动release所包含的对象）。</p>
-<p>补充说明</p>
-<p>在研究retain count的时候，我不建议用NSString。因为在下面的语句中，</p>
-<p>NSString *str1 = @”constant string”;</p>
-<p>str1的retain count是个很大的数字。Objective-C对常量字符串做了特殊处理。</p>
-<p>当然，如果你这样创建NSString，得到的retain count依然为1</p>
-<p>NSString *str2 = [NSString stringWithFormat:@”123”];</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipfi3he000047hs6y40pbm3d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipfi8nyr000f8as6edpcc39f" class="article-share-link">Share</a>
       
       
     </footer>
@@ -818,7 +801,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 
@@ -829,6 +812,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2014/01/01/从Facebook看iOS移动端的开发/">从Facebook看iOS移动端的开发</a>
+          </li>
         
           <li>
             <a href="/2013/12/30/用CocoaPods管理iOS程序/">用CocoaPods管理iOS程序</a>
@@ -844,10 +831,6 @@
         
           <li>
             <a href="/2013/12/06/培训出来的iOS学员怎么了？/">培训出来的iOS学员怎么了？</a>
-          </li>
-        
-          <li>
-            <a href="/2013/11/27/iOS-Runtime全方位装逼小结/">iOS_Runtime全方位装逼小结</a>
           </li>
         
       </ul>
