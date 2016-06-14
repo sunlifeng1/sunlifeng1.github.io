@@ -64,6 +64,84 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Objective-C内存管理教程和原理小结2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/10/07/Objective-C内存管理教程和原理小结2/" class="article-date">
+  <time datetime="2013-10-07T12:40:05.000Z" itemprop="datePublished">2013-10-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/10/07/Objective-C内存管理教程和原理小结2/">Objective-C内存管理教程和原理小结2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>原文出处： Vince Yuan 的博客<br>口诀与范式</p>
+<ol>
+<li>口诀</li>
+</ol>
+<p>1.1 谁创建，谁释放（类似于“谁污染，谁治理”）。如果你通过alloc、new或copy来创建一个对象，那么你必须调用release或autorelease。换句话说，不是你创建的，就不用你去释放。</p>
+<p>例如，你在一个函数中alloc生成了一个对象，且这个对象只在这个函数中被使用，那么你必须在这个函数中调用release或autorelease。如果你在一个class的某个方法中alloc一个成员对象，且没有调用autorelease，那么你需要在这个类的dealloc方法中调用release；如果调用了autorelease，那么在dealloc方法中什么都不需要做。</p>
+<p>1.2 除了alloc、new或copy之外的方法创建的对象都被声明了autorelease。</p>
+<p>1.3 谁retain，谁release。只要你调用了retain，无论这个对象是如何生成的，你都要调用release。有时候你的代码中明明没有retain，可是系统会在默认实现中加入retain。不知道为什么苹果公司的文档没有强调这个非常重要的一点，请参考范式2.7和第三章。</p>
+<p>2 范式<br>范式就是模板，就是依葫芦画瓢。由于不同人有不同的理解和习惯，我总结的范式不一定适合所有人，但我能保证照着这样做不会出问题。</p>
+<p>2.1 创建一个对象。</p>
+<p>ClassA *obj1 = [[ClassA alloc] init];<br>2.2 创建一个autorelease的对象。</p>
+<p>ClassA *obj1 = [[[ClassA alloc] init] autorelease];<br>2.3 Release一个对象后，立即把指针清空。（顺便说一句，release一个空指针是合法的，但不会发生任何事情）</p>
+<p>[obj1 release];</p>
+<p>obj1 = nil;<br>2.4 指针赋值给另一个指针。</p>
+<p>ClassA *obj2 = obj1;</p>
+<p>[obj2 retain];</p>
+<p>//do something</p>
+<p>[obj2 release];</p>
+<p>obj2 = nil;<br>2.5 在一个函数中创建并返回对象，需要把这个对象设置为autorelease</p>
+<p>ClassA *Func1()</p>
+<p>{</p>
+<p>ClassA *obj = [[[ClassA alloc]init]autorelease];</p>
+<p>return obj;</p>
+<p>}<br>2.6 在子类的dealloc方法中调用基类的dealloc方法</p>
+<p>-(void) dealloc</p>
+<p>{</p>
+<p>…</p>
+<p>[super dealloc];</p>
+<p>}<br>2.7 在一个class中创建和使用property。</p>
+<p>2.7.1 声明一个成员变量。</p>
+<p>ClassB *objB;<br>2.7.2  声明property，加上retain参数。</p>
+<p>@property (retain) ClassB* objB;<br>2.7.3 定义property。（property的默认实现请看第三章）</p>
+<p>@synthesize objB;<br>2.7.4 除了dealloc方法以外，始终用.操作符的方式来调用property。</p>
+<p>self.objB 或者objA.objB<br>2.7.5 在dealloc方法中release这个成员变量。</p>
+<p>[objB release];<br>示例代码如下（详细代码请参考附件中的memman-property.m，你需要特别留意对象是在何时被销毁的。）：</p>
+<p>@interface ClassA : NSObject<br>{<br>ClassB* objB;<br>}</p>
+<p>@property (retain) ClassB* objB;<br>@end</p>
+<p>@implementation ClassA<br>@synthesize objB;<br>-(void) dealloc<br>{<br>[objB release];<br>[super dealloc];<br>}<br>@end<br>2.7.6 给这个property赋值时，有手动release和autorelease两种方式。</p>
+<p>void funcNoAutorelease()<br>{<br>ClassB <em>objB1 = [[ClassB alloc]init];<br>ClassA </em>objA = [[ClassA alloc]init];<br>objA.objB = objB1;<br>[objB1 release];<br>[objA release];<br>}</p>
+<p>void funcAutorelease()<br>{<br>ClassB <em>objB1 = [[[ClassB alloc]init] autorelease];<br>ClassA </em>objA = [[[ClassA alloc]init] autorelease];<br>objA.objB = objB1;<br>}</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipfhypjf00026ks61mkjtz48" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Objective-C内存管理教程和原理小结1" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2013/10/01/Objective-C内存管理教程和原理小结1/" class="article-date">
@@ -149,7 +227,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipfhsfis00005ms6csu03r91" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipfhypjm00056ks6699zvsol" class="article-share-link">Share</a>
       
       
     </footer>
@@ -218,7 +296,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipfhsfjj00055ms6mmihle44" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipfhypkp000b6ks6r342twft" class="article-share-link">Share</a>
       
       
     </footer>
@@ -265,7 +343,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipfhsfkv000b5ms6yqy10la4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipfhypkm000a6ks647hghz6w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -309,6 +387,10 @@
       <ul>
         
           <li>
+            <a href="/2013/12/24/iOS开发如何提高/">iOS开发如何提高</a>
+          </li>
+        
+          <li>
             <a href="/2013/12/14/SDK注意问题小结/">SDK注意问题小结</a>
           </li>
         
@@ -322,10 +404,6 @@
         
           <li>
             <a href="/2013/11/20/iOS多线程编程基础小结/">iOS多线程编程基础小结</a>
-          </li>
-        
-          <li>
-            <a href="/2013/11/14/IOS开发之多线程技术小结2/">IOS开发之多线程技术小结2</a>
           </li>
         
       </ul>
