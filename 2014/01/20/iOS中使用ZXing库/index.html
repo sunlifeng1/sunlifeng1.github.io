@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS中使用ZXing库 | 孙利峰</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="前言ZXing(Github镜像地址)是一个开源的条码生成和扫描库（开源协议为Apache2.0)。它不但支持众多的条码格式，而且有各种语言的实现版本，它支持的语言包括：Java, C++, C#, Objective-C, ActionScript和Ruby。我上周在iOS项目开发中使用了ZXing的扫描二维码功能。在此总结一下如何将ZXing集成到已有的iOS工程中，分享给大家。集成步骤首先">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS中使用ZXing库">
+<meta property="og:url" content="http://yoursite.com/2014/01/20/iOS中使用ZXing库/index.html">
+<meta property="og:site_name" content="孙利峰">
+<meta property="og:description" content="前言ZXing(Github镜像地址)是一个开源的条码生成和扫描库（开源协议为Apache2.0)。它不但支持众多的条码格式，而且有各种语言的实现版本，它支持的语言包括：Java, C++, C#, Objective-C, ActionScript和Ruby。我上周在iOS项目开发中使用了ZXing的扫描二维码功能。在此总结一下如何将ZXing集成到已有的iOS工程中，分享给大家。集成步骤首先">
+<meta property="og:updated_time" content="2016-06-14T14:05:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS中使用ZXing库">
+<meta name="twitter:description" content="前言ZXing(Github镜像地址)是一个开源的条码生成和扫描库（开源协议为Apache2.0)。它不但支持众多的条码格式，而且有各种语言的实现版本，它支持的语言包括：Java, C++, C#, Objective-C, ActionScript和Ruby。我上周在iOS项目开发中使用了ZXing的扫描二维码功能。在此总结一下如何将ZXing集成到已有的iOS工程中，分享给大家。集成步骤首先">
+  
+    <link rel="alternate" href="/atom.xml" title="孙利峰" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">孙利峰</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-iOS中使用ZXing库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/01/20/iOS中使用ZXing库/" class="article-date">
+  <time datetime="2014-01-20T14:02:30.000Z" itemprop="datePublished">2014-01-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS中使用ZXing库
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>前言<br>ZXing(Github镜像地址)是一个开源的条码生成和扫描库（开源协议为Apache2.0)。它不但支持众多的条码格式，而且有各种语言的实现版本，它支持的语言包括：Java, C++, C#, Objective-C, ActionScript和Ruby。<br>我上周在iOS项目开发中使用了ZXing的扫描二维码功能。在此总结一下如何将ZXing集成到已有的iOS工程中，分享给大家。<br>集成步骤<br>首先去Google Code或Github将ZXing的代码下载下来，整个工程比较大，我们只需要其中涉及iOS的部分，所以最好做一些裁剪。简单来说，我们只需要保留cpp和iphone这2个文件夹，其余的全部删掉。如下图所示：</p>
+<p>接着我们继续裁剪，对于cpp这个目录，只保留cpp/core/src/zxing下面的内容，其余内容也可以删掉了。但是整个目录结构必须保持原样。裁剪完后，整个目录结构如下所示：</p>
+<p>接下来，我们把裁剪后的zxing目录整个移动到我们的iOS项目的目录下，并且把上图中可以看到的ZXingWidget.xcodeproj文件拖动到我们的iOS工程中。<br>下一步，我们需要设置ZXing项目和我们原本的iOS项目之间的依赖关系。在我们的iOS项目的设置中，点击build phases tab，然后增加 Target Dependencies 和 Link binary，并且增加这些framework依赖：<br>a. AVFoundation<br>b. AudioToolbox<br>c. CoreVideo<br>d. CoreMedia<br>e. libiconv<br>f. AddressBook<br>g. AddressBookUI</p>
+<p>最后一步，在设置中增加如下2个header search path:<br>./zxing/iphone/ZXingWidget/Classes<br>./zxing/cpp/core/src<br>需要注意的是，第一个path要设置成循环查找子目录，而第二个不循环查找，如下图所示：</p>
+<p>恭喜你，完成这步之后，你就已经完成ZXing库的集成了。下面谈谈如何使用ZXing库来做二维码识别。<br>二维码识别<br>ZXing的iOS版本提供2种方法来做二维码识别功能，第一种方法比较简单，第二种方法比较复杂。我在做Demo时使用了第一种方法，做真正项目开发的时候使用了第二种方法，所以都给大家介绍一下。<br>使用方法一<br>ZXing直接提供了一个扫描二维码的View Controller，即ZXingWidgetController。在需要使用的界面代码中，加入文件依赖：</p>
+<p>#import <zxingwidgetcontroller.h></zxingwidgetcontroller.h></p>
+<p>#import <qrcodereader.h><br><code>然后在需要扫描的时候，调用如下代码即可：</code> objc</qrcodereader.h></p>
+<ul>
+<li>(IBAction)scanPressed:(id)sender {<br>ZXingWidgetController <em>widController = [[ZXingWidgetController alloc] initWithDelegate:self showCancel:YES OneDMode:NO];<br>NSMutableSet </em>readers = [[NSMutableSet alloc ] init];<br>QRCodeReader* qrcodeReader = [[QRCodeReader alloc] init];<br>[readers addObject:qrcodeReader];<br>[qrcodeReader release];<br>widController.readers = readers;<br>[readers release];<br>[self presentModalViewController:widController animated:YES];<br>[widController release];<br>}<br>在ZXing扫描有结果时，会调用如下回调函数：</li>
+</ul>
+<p>@protocol ZXingDelegate</p>
+<ul>
+<li>(void)zxingController:(ZXingWidgetController<em>)controller didScanResult:(NSString </em>)result;</li>
+<li>(void)zxingControllerDidCancel:(ZXingWidgetController*)controller;<br>@end<br>使用方法二<br>方法二与方法一的区别就相当于AVFoundation和UIImagePickerController的区别一样。简单来说，就是使用方法二比方法一更加麻烦，但是获得的可定制性更高。<br>使用方法二时，你需要自己用AVFoundation获得Camera返回的实时图象，然后转成UIImage，最后传给ZXing的Decoder类完成二维码的识别。由于使用AVFoundation涉及的代码略多，我写的示意代码如下：</li>
+</ul>
+<p>#import “Decoder.h”</p>
+<p>#import “TwoDDecoderResult.h”</p>
+<p>#import “QRCodeReader.h”</p>
+<ul>
+<li>(void)viewDidLoad {<br>// setup QR reader<br>self.qrReader = [[NSMutableSet alloc ] init];<br>QRCodeReader* qrcodeReader = [[QRCodeReader alloc] init];<br>[self.qrReader addObject:qrcodeReader];<br>self.scanningQR = NO;<br>self.step = STEP_QR;<br>}</li>
+</ul>
+<p>// AVFoundation的回调函数</p>
+<ul>
+<li>(void)captureOutput:(AVCaptureOutput <em>)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection </em>)connection {<br>// 第一步，将sampleBuffer转成UIImage<br>UIImage <em>image= [self getCaptureImage:sampleBuffer];<br>// 第二步，用Decoder识别图象<br>Decoder </em>d = [[Decoder alloc] init];<br>d.readers = self.qrReader;<br>d.delegate = self;<br>self.scanningQR = [d decodeImage:image] == YES ? NO : YES;<br>}<br>ZXing的Decoder类提供了以下回调函数获得识别结果：<br>@protocol DecoderDelegate<nsobject><br>@optional</nsobject></li>
+<li>(void)decoder:(Decoder <em>)decoder willDecodeImage:(UIImage </em>)image usingSubset:(UIImage *)subset;</li>
+<li>(void)decoder:(Decoder <em>)decoder didDecodeImage:(UIImage </em>)image usingSubset:(UIImage <em>)subset withResult:(TwoDDecoderResult </em>)result {<br>NSLog(@”result = %@”, [result text]);<br>}</li>
+<li>(void)decoder:(Decoder <em>)decoder failedToDecodeImage:(UIImage </em>)image usingSubset:(UIImage <em>)subset reason:(NSString </em>)reason;</li>
+<li>(void)decoder:(Decoder *)decoder foundPossibleResultPoint:(CGPoint)point;</li>
+</ul>
+<p>@end<br>Trouble Shoot &amp; Tips<br>我在使用中遇到了一些问题，主要是编译的问题。<br>一个是找不到 头文件。解决方法：把用到ZXing的源文件扩展名由.m改成.mm。<br>报错：Undefined symbols for architecture armv7s，解决方法：把ZXingWidget的一个build target参数：”Build Active Architecture Only” 修改成 “NO”.<br>报错：No such file or directory，出现该错误可能是你的Header Search Path写错了，或者就是你的zxing库的目录结构不是我上面强调的，好好检查一下吧。<br>如果你需要生成二维码做测试，推荐一个不错的在线生成二维码的网站：<a href="http://cli.im/" target="_blank" rel="external">http://cli.im/</a><br>ZXing和OpenCV的兼容问题<br>ZXing 2.1 和OpenCV 2.4.3的iOS库有一些兼容问题，他们对C++标准库的版本和编译器版本都有一些需求，造成满足一方了，另一方就编译不通过了。Stackoverflow上有人终于找到了一个让它们和平共处的方法，但是只适用于iOS5.0以上版本。正好我们的App只支持iOS5.0+，所以就搞定了。所以如果你也正好遇到这个问题，可以参考这个贴子。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipfitmfk0008b9s63axtq3bh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2014/01/14/iOS应用内支付小结/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">iOS应用内支付小结</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/01/20/iOS中使用ZXing库/">iOS中使用ZXing库</a>
+          </li>
+        
+          <li>
+            <a href="/2014/01/14/iOS应用内支付小结/">iOS应用内支付小结</a>
+          </li>
+        
+          <li>
+            <a href="/2014/01/01/从Facebook看iOS移动端的开发/">从Facebook看iOS移动端的开发</a>
+          </li>
+        
+          <li>
+            <a href="/2013/12/30/用CocoaPods管理iOS程序/">用CocoaPods管理iOS程序</a>
+          </li>
+        
+          <li>
+            <a href="/2013/12/24/iOS开发如何提高/">iOS开发如何提高</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
