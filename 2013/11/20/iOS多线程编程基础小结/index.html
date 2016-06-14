@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS多线程编程基础小结 | 孙利峰</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一、基本概念计算机操作系统都有的基本概念，以下概念简单方式来描述。
+进程： 一个具有一定独立功能的程序关于某个数据集合的一次运行活动。可以理解成一个运行中的应用程序。
+线程： 程序执行流的最小单元，线程是进程中的一个实体。
+同步： 只能在当前线程按先后顺序依次执行，不开启新线程。
+异步： 可以在当前线程开启多个新线程执行，可不按顺序执行。
+队列： 装载线程任务的队形结构。
+并发： 线程执行可以同">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS多线程编程基础小结">
+<meta property="og:url" content="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/index.html">
+<meta property="og:site_name" content="孙利峰">
+<meta property="og:description" content="一、基本概念计算机操作系统都有的基本概念，以下概念简单方式来描述。
+进程： 一个具有一定独立功能的程序关于某个数据集合的一次运行活动。可以理解成一个运行中的应用程序。
+线程： 程序执行流的最小单元，线程是进程中的一个实体。
+同步： 只能在当前线程按先后顺序依次执行，不开启新线程。
+异步： 可以在当前线程开启多个新线程执行，可不按顺序执行。
+队列： 装载线程任务的队形结构。
+并发： 线程执行可以同">
+<meta property="og:updated_time" content="2016-06-14T13:08:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS多线程编程基础小结">
+<meta name="twitter:description" content="一、基本概念计算机操作系统都有的基本概念，以下概念简单方式来描述。
+进程： 一个具有一定独立功能的程序关于某个数据集合的一次运行活动。可以理解成一个运行中的应用程序。
+线程： 程序执行流的最小单元，线程是进程中的一个实体。
+同步： 只能在当前线程按先后顺序依次执行，不开启新线程。
+异步： 可以在当前线程开启多个新线程执行，可不按顺序执行。
+队列： 装载线程任务的队形结构。
+并发： 线程执行可以同">
+  
+    <link rel="alternate" href="/atom.xml" title="孙利峰" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">孙利峰</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-iOS多线程编程基础小结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/11/20/iOS多线程编程基础小结/" class="article-date">
+  <time datetime="2013-11-20T13:06:30.000Z" itemprop="datePublished">2013-11-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS多线程编程基础小结
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>一、基本概念<br>计算机操作系统都有的基本概念，以下概念简单方式来描述。</p>
+<p>进程： 一个具有一定独立功能的程序关于某个数据集合的一次运行活动。可以理解成一个运行中的应用程序。</p>
+<p>线程： 程序执行流的最小单元，线程是进程中的一个实体。</p>
+<p>同步： 只能在当前线程按先后顺序依次执行，不开启新线程。</p>
+<p>异步： 可以在当前线程开启多个新线程执行，可不按顺序执行。</p>
+<p>队列： 装载线程任务的队形结构。</p>
+<p>并发： 线程执行可以同时一起进行执行。</p>
+<p>串行： 线程执行只能依次逐一先后有序的执行。</p>
+<p>注意:</p>
+<p>一个进程可有多个线程。</p>
+<p>一个进程可有多个队列。</p>
+<p>队列可分并发队列和串行队列。</p>
+<p>二、iOS多线程对比</p>
+<ol>
+<li>NSThread</li>
+</ol>
+<p>每个NSThread对象对应一个线程，真正最原始的线程。</p>
+<p>1）优点：NSThread 轻量级最低，相对简单。</p>
+<p>2）缺点：手动管理所有的线程活动，如生命周期、线程同步、睡眠等。</p>
+<ol>
+<li>NSOperation</li>
+</ol>
+<p>自带线程管理的抽象类。</p>
+<p>1）优点：自带线程周期管理，操作上可更注重自己逻辑。</p>
+<p>2）缺点：面向对象的抽象类，只能实现它或者使用它定义好的两个子类：NSInvocationOperation 和 NSBlockOperation。</p>
+<ol>
+<li>GCD</li>
+</ol>
+<p>Grand Central Dispatch (GCD)是Apple开发的一个多核编程的解决方法。</p>
+<p>1）优点：最高效，避开并发陷阱。</p>
+<p>2）缺点：基于C实现。</p>
+<ol>
+<li>选择小结</li>
+</ol>
+<p>1）简单而安全的选择NSOperation实现多线程即可。</p>
+<p>2）处理大量并发数据，又追求性能效率的选择GCD。</p>
+<p>3）NSThread本人选择基本上是在做些小测试上使用，当然也可以基于此造个轮子。</p>
+<p>三、场景选择<br>图片异步加载。这种常见的场景是最常见也是必不可少的。异步加载图片有分成两种来说明一下。</p>
+<p>第一种，在UI主线程开启新线程按顺序加载图片，加载完成刷新UI。</p>
+<p>第二种，依然是在主线程开启新线程，顺序不定地加载图片，加载完成个字刷新UI。</p>
+<p>创作工具上的异步。 这个跟上边任务调度道理，只是为了丰富描述，有助于“举一反三”效果。如下描述的是app创作小说。</p>
+<p>场景一，app本地创作10个章节内容未成同步服务器，同时发表这10个章节产生的一系列动作，其中上传内容，获取分配章节Id，如何后台没有做处理最好方式做异步按顺序执行。</p>
+<p>场景二，app本地创作列表中有3本小说为发表，同时发表创作列表中的3本小说，自然考虑并行队列执行发表。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipfgsf010005z9s6jf3q5sb9" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2013/11/14/IOS开发之多线程技术小结2/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">IOS开发之多线程技术小结2</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2013/11/20/iOS多线程编程基础小结/">iOS多线程编程基础小结</a>
+          </li>
+        
+          <li>
+            <a href="/2013/11/14/IOS开发之多线程技术小结2/">IOS开发之多线程技术小结2</a>
+          </li>
+        
+          <li>
+            <a href="/2013/11/07/IOS开发之多线程技术小结/">IOS开发之多线程技术小结</a>
+          </li>
+        
+          <li>
+            <a href="/2013/10/28/集合的深复制与浅复制小结/">集合的深复制与浅复制小结</a>
+          </li>
+        
+          <li>
+            <a href="/2013/10/22/Objective-C内存管理教程和原理小结4/">Objective-C内存管理教程和原理小结4</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>

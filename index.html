@@ -64,6 +64,87 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-iOS多线程编程基础小结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/11/20/iOS多线程编程基础小结/" class="article-date">
+  <time datetime="2013-11-20T13:06:30.000Z" itemprop="datePublished">2013-11-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/11/20/iOS多线程编程基础小结/">iOS多线程编程基础小结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>一、基本概念<br>计算机操作系统都有的基本概念，以下概念简单方式来描述。</p>
+<p>进程： 一个具有一定独立功能的程序关于某个数据集合的一次运行活动。可以理解成一个运行中的应用程序。</p>
+<p>线程： 程序执行流的最小单元，线程是进程中的一个实体。</p>
+<p>同步： 只能在当前线程按先后顺序依次执行，不开启新线程。</p>
+<p>异步： 可以在当前线程开启多个新线程执行，可不按顺序执行。</p>
+<p>队列： 装载线程任务的队形结构。</p>
+<p>并发： 线程执行可以同时一起进行执行。</p>
+<p>串行： 线程执行只能依次逐一先后有序的执行。</p>
+<p>注意:</p>
+<p>一个进程可有多个线程。</p>
+<p>一个进程可有多个队列。</p>
+<p>队列可分并发队列和串行队列。</p>
+<p>二、iOS多线程对比</p>
+<ol>
+<li>NSThread</li>
+</ol>
+<p>每个NSThread对象对应一个线程，真正最原始的线程。</p>
+<p>1）优点：NSThread 轻量级最低，相对简单。</p>
+<p>2）缺点：手动管理所有的线程活动，如生命周期、线程同步、睡眠等。</p>
+<ol>
+<li>NSOperation</li>
+</ol>
+<p>自带线程管理的抽象类。</p>
+<p>1）优点：自带线程周期管理，操作上可更注重自己逻辑。</p>
+<p>2）缺点：面向对象的抽象类，只能实现它或者使用它定义好的两个子类：NSInvocationOperation 和 NSBlockOperation。</p>
+<ol>
+<li>GCD</li>
+</ol>
+<p>Grand Central Dispatch (GCD)是Apple开发的一个多核编程的解决方法。</p>
+<p>1）优点：最高效，避开并发陷阱。</p>
+<p>2）缺点：基于C实现。</p>
+<ol>
+<li>选择小结</li>
+</ol>
+<p>1）简单而安全的选择NSOperation实现多线程即可。</p>
+<p>2）处理大量并发数据，又追求性能效率的选择GCD。</p>
+<p>3）NSThread本人选择基本上是在做些小测试上使用，当然也可以基于此造个轮子。</p>
+<p>三、场景选择<br>图片异步加载。这种常见的场景是最常见也是必不可少的。异步加载图片有分成两种来说明一下。</p>
+<p>第一种，在UI主线程开启新线程按顺序加载图片，加载完成刷新UI。</p>
+<p>第二种，依然是在主线程开启新线程，顺序不定地加载图片，加载完成个字刷新UI。</p>
+<p>创作工具上的异步。 这个跟上边任务调度道理，只是为了丰富描述，有助于“举一反三”效果。如下描述的是app创作小说。</p>
+<p>场景一，app本地创作10个章节内容未成同步服务器，同时发表这10个章节产生的一系列动作，其中上传内容，获取分配章节Id，如何后台没有做处理最好方式做异步按顺序执行。</p>
+<p>场景二，app本地创作列表中有3本小说为发表，同时发表创作列表中的3本小说，自然考虑并行队列执行发表。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipfgsf010005z9s6jf3q5sb9" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-IOS开发之多线程技术小结2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2013/11/14/IOS开发之多线程技术小结2/" class="article-date">
@@ -187,7 +268,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipfglgss0001ycs6yvpid2hd" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipfgsezn0001z9s6kd40y66d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -253,7 +334,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipfglgsm0000ycs676mk6gm2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipfgsf100009z9s6l3h8vgk1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -333,7 +414,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipfglgtu0008ycs6l4g4detc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipfgsf0u0007z9s609ozw9ni" class="article-share-link">Share</a>
       
       
     </footer>
@@ -389,7 +470,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipfglgto0006ycs6w3iagnud" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipfgsf020006z9s6y0kpbpn9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -435,7 +516,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipfglgtg0003ycs6fyx9699u" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipfgsezq0002z9s6alrd3lb5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -513,7 +594,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipfglgtk0005ycs6ptnsl64x" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipfgsezv0003z9s6seuzumd2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -608,7 +689,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipfglgsv0002ycs6jthk0bgo" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipfgsezh0000z9s6ucopgdta" class="article-share-link">Share</a>
       
       
     </footer>
@@ -677,7 +758,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipfglgtt0007ycs629e389hj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipfgsezy0004z9s6a4xjy5u9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -724,7 +805,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipfglgti0004ycs6yujuekk7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipfgsf0w0008z9s6v3yo5wvc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -764,6 +845,10 @@
       <ul>
         
           <li>
+            <a href="/2013/11/20/iOS多线程编程基础小结/">iOS多线程编程基础小结</a>
+          </li>
+        
+          <li>
             <a href="/2013/11/14/IOS开发之多线程技术小结2/">IOS开发之多线程技术小结2</a>
           </li>
         
@@ -777,10 +862,6 @@
         
           <li>
             <a href="/2013/10/22/Objective-C内存管理教程和原理小结4/">Objective-C内存管理教程和原理小结4</a>
-          </li>
-        
-          <li>
-            <a href="/2013/10/14/Objective-C内存管理教程和原理小结3/">Objective-C内存管理教程和原理小结3</a>
           </li>
         
       </ul>
