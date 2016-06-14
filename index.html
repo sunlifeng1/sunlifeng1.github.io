@@ -64,6 +64,147 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-iOS-Runtime全方位装逼小结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/11/27/iOS-Runtime全方位装逼小结/" class="article-date">
+  <time datetime="2013-11-27T13:10:55.000Z" itemprop="datePublished">2013-11-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/11/27/iOS-Runtime全方位装逼小结/">iOS_Runtime全方位装逼小结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>楔子<br>Runtime是什么？见名知意，其概念无非就是“因为 Objective-C 是一门动态语言，所以它需要一个运行时系统……这就是 Runtime 系统”云云。对博主这种菜鸟而言，Runtime 在实际开发中，其实就是一组C语言的函数。胡适说：“多研究些问题，少谈些主义”，云山雾罩的概念听多了总是容易头晕，接下来我们直接从代码入手学习 Runtime。</p>
+<p>1、由objc_msgSend说开去：<br>Objective-C 中的方法调用，不是简单的方法调用，而是发送消息，也就是说，其实 [receiver message] 会被编译器转化为: objc_msgSend(receiver, selector)，何以证明？新建一个类 MyClass，其.m文件如下：</p>
+<p>#import “MyClass.h”<br>@implementation MyClass</p>
+<p>-(instancetype)init{<br>if (self = [super init]) {<br>[self showUserName];<br>}<br>return self;<br>}</p>
+<p>-(void)showUserName{<br>NSLog(@”Dave Ping”);<br>}<br>使用 clang 重写命令:</p>
+<p>$ clang -rewrite-objc MyClass.m<br>然后在同一目录下会多出一个 MyClass.cpp 文件，双击打开，可以看到 init 方法已经被编译器转化为下面这样：</p>
+<p>static instancetype _I_MyClass_init(MyClass <em> self, SEL _cmd) {<br>if (self = ((MyClass </em>(<em>)(__rw_objc_super </em>, SEL))(void <em>)objc_msgSendSuper)((__rw_objc_super){(id)self, (id)class_getSuperclass(objc_getClass(“MyClass”))}, sel_registerName(“init”))) {<br>((void (</em>)(id, SEL))(void *)objc_msgSend)((id)self, sel_registerName(“showUserName”));<br>}<br>return self;<br>}<br>我们要找的就是它：</p>
+<p>((void (<em>)(id, SEL))(void </em>)objc_msgSend)((id)self, sel_registerName(“showUserName”))<br>objc_msgSend 函数被定义在 objc/message.h 目录下，其函数原型是酱紫滴：</p>
+<p>OBJC_EXPORT void objc_msgSend(void /<em> id self, SEL op, … </em>/ )<br>该函数有两个参数，一个 id 类型，一个 SEL 类型。</p>
+<p>2、SEL<br>SEL 被定义在 objc/objc.h 目录下：</p>
+<p>typedef struct objc_selector *SEL;<br>其实它就是个映射到方法的C字符串，你可以用 Objective-C 编译器命令 @selector() 或者 Runtime 系统的 sel_registerName 函数来获得一个 SEL 类型的方法选择器。</p>
+<p>3、id<br>与 SEL 一样，id 也被定义在 objc/objc.h 目录下：</p>
+<p>typedef struct objc_object *id;<br>id 是一个结构体指针类型，它可以指向 Objective-C 中的任何对象。objc_object 结构体定义如下：</p>
+<p>struct objc_object { Class isa OBJC_ISA_AVAILABILITY;};<br>我们通常所说的对象，就长这个样子，这个结构体只有一个成员变量 isa，对象可以通过 isa 指针找到其所属的类。isa 是一个 Class 类型的成员变量，那么 Class 又是什么呢？</p>
+<p>4、Class<br>Class 也是一个结构体指针类型：</p>
+<p>typedef struct objc_class *Class;<br>objc_class 结构体是酱紫滴：</p>
+<p>struct objc_class {<br>Class isa  OBJC_ISA_AVAILABILITY;</p>
+<p>#if !<strong>OBJC2</strong><br>Class super_class                                        OBJC2_UNAVAILABLE;<br>const char <em>name                                         OBJC2_UNAVAILABLE;<br>long version                                             OBJC2_UNAVAILABLE;<br>long info                                                OBJC2_UNAVAILABLE;<br>long instance_size                                       OBJC2_UNAVAILABLE;<br>struct objc_ivar_list </em>ivars                             OBJC2_UNAVAILABLE;<br>struct objc_method_list <em>*methodLists                    OBJC2_UNAVAILABLE;<br>struct objc_cache </em>cache                                 OBJC2_UNAVAILABLE;<br>struct objc_protocol_list *protocols                     OBJC2_UNAVAILABLE;</p>
+<p>#endif</p>
+<p>} OBJC2_UNAVAILABLE;<br>我们通常说的类就长这样子：<br>·Class 也有一个 isa 指针，指向其所属的元类（meta）.<br>·super_class：指向其超类.<br>·name：是类名.<br>·version：是类的版本信息.<br>·info：是类的详情.<br>·instance_size：是该类的实例对象的大小.<br>·ivars：指向该类的成员变量列表.<br>·methodLists：指向该类的实例方法列表，它将方法选择器和方法实现地址联系起来。methodLists 是指向 ·objc_method_list 指针的指针，也就是说可以动态修改 *methodLists 的值来添加成员方法，这也是 Category 实现的原理，同样解释了 Category 不能添加属性的原因.<br>·cache：Runtime 系统会把被调用的方法存到 cache 中（理论上讲一个方法如果被调用，那么它有可能今后还会被调用），下次查找的时候效率更高.<br>·protocols：指向该类的协议列表.</p>
+<p>说到这里有点乱了，我们来捋一下，当我们调用一个方法时，其运行过程大致如下：</p>
+<p>首先，Runtime 系统会把方法调用转化为消息发送，即 objc_msgSend，并且把方法的调用者，和方法选择器，当做参数传递过去.</p>
+<p>此时，方法的调用者会通过 isa 指针来找到其所属的类，然后在 cache 或者 methodLists 中查找该方法，找得到就跳到对应的方法去执行.</p>
+<p>如果在类中没有找到该方法，则通过 super_class 往上一级超类查找（如果一直找到 NSObject 都没有找到该方法的话，这种情况，我们放到后面消息转发的时候再说）.</p>
+<p>前面我们说 methodLists 指向该类的实例方法列表，实例方法即-方法，那么类方法（+方法）存储在哪儿呢？类方法被存储在元类中，Class 通过 isa 指针即可找到其所属的元类.</p>
+<p>上图实线是 super_class 指针，虚线是 isa 指针。根元类的超类是NSObject，而 isa 指向了自己。NSObject 的超类为 nil，也就是它没有超类。</p>
+<p>5、使用objc_msgSend<br>前面我们使用 clang 重写命令，看到 Runtime 是如何将方法调用转化为消息发送的。我们也可以依样画葫芦，来学习使用一下 objc_msgSend。新建一个类 TestClass，添加如下方法：</p>
+<p>-(void)showAge{<br>NSLog(@”24”);<br>}</p>
+<p>-(void)showName:(NSString *)aName{<br>NSLog(@”name is %@”,aName);<br>}</p>
+<p>-(void)showSizeWithWidth:(float)aWidth andHeight:(float)aHeight{<br>NSLog(@”size is %.2f * %.2f”,aWidth, aHeight);<br>}</p>
+<p>-(float)getHeight{<br>return 187.5f;<br>}</p>
+<p>-(NSString *)getInfo{<br>return @”Hi, my name is Dave Ping, I’m twenty-four years old in the year, I like apple, nice to meet you.”;<br>}<br>我们可以像下面这样，使用 objc_msgSend 依次调用这些方法：</p>
+<p>TestClass *objct = [[TestClass alloc] init];</p>
+<p>((void (*) (id, SEL)) objc_msgSend) (objct, sel_registerName(“showAge”));</p>
+<p>((void (<em>) (id, SEL, NSString </em>)) objc_msgSend) (objct, sel_registerName(“showName:”), @”Dave Ping”);</p>
+<p>((void (*) (id, SEL, float, float)) objc_msgSend) (objct, sel_registerName(“showSizeWithWidth:andHeight:”), 110.5f, 200.0f);</p>
+<p>float f = ((float (*) (id, SEL)) objc_msgSend_fpret) (objct, sel_registerName(“getHeight”));<br>NSLog(@”height is %.2f”,f);</p>
+<p>NSString <em>info = ((NSString</em> (*) (id, SEL)) objc_msgSend) (objct, sel_registerName(“getInfo”));<br>NSLog(@”%@”,info);<br>也许你已经注意到，objc_msgSend 在使用时都被强制转换了一下，这是因为 objc_msgSend 函数可以hold住各种不同的返回值以及多个参数，但默认情况下是没有参数和返回值的。如果我们把调用 showAge 方法改成这样：</p>
+<p>objc_msgSend(objct, sel_registerName(“showAge”));<br>Xcode 就会报错：</p>
+<p>Too many arguments to function call, expected 0, have 2.<br>完整的 objc_msgSend 使用代码在这里。</p>
+<p>6、objc_msgSendSuper<br>编译器会根据情况在 objc_msgSend，objc_msgSend_stret，objc_msgSendSuper，objc_msgSendSuper_stret 或 objc_msgSend_fpret 五个方法中选择一个来调用。如果消息是传递给超类，那么会调用 objc_msgSendSuper 方法，如果消息返回值是数据结构，就会调用 objc_msgSendSuper_stret 方法，如果返回值是浮点数，则调用 objc_msgSend_fpret 方法。</p>
+<p>这里我们重点说一下 objc_msgSendSuper，objc_msgSendSuper 函数原型如下：</p>
+<p>OBJC_EXPORT void objc_msgSendSuper(void /<em> struct objc_super </em>super, SEL op, … */ )<br>当我们调用 [super selector] 时，Runtime 会调用 objc_msgSendSuper 方法，objc_msgSendSuper 方法有两个参数，super 和 op，Runtime 会把 selector 方法选择器赋值给 op。而 super 是一个 objc_super 结构体指针，objc_super 结构体定义如下：</p>
+<p>struct objc_super {<br>/// Specifies an instance of a class.<br>__unsafe_unretained id receiver;</p>
+<p>/// Specifies the particular superclass of the instance to message. </p>
+<p>#if !defined(<strong>cplusplus)  &amp;  !</strong>OBJC2<strong><br>/<em> For compatibility with old objc-runtime.h header </em>/
+</strong>unsafe_unretained Class class;</p>
+<p>#else<br>__unsafe_unretained Class super_class;</p>
+<p>#endif<br>/<em> super_class is the first class to search </em>/<br>};<br>Runtime 会创建一个 objc_spuer 结构体变量，将其地址作为参数（super）传递给 objc_msgSendSuper，并且将 self 赋值给 receiver：super—&gt;receiver=self.<br>举个栗子，问下面的代码输出什么：</p>
+<p>@implementation Son : Father</p>
+<ul>
+<li>(id)init<br>{<br>self = [super init];<br>if (self)<br>{<br>NSLog(@”%@”, NSStringFromClass([self class]));<br>NSLog(@”%@”, NSStringFromClass([super class]));<br>}<br>return self;<br>}<br>@end<br>答案是全部输出 Son.<br>使用 clang 重写命令，发现上述代码被转化为:</li>
+</ul>
+<p>NSLog((NSString <em>)&amp;<strong>NSConstantStringImpl</strong>var_folders_gm_0jk35cwn1d3326x0061qym280000gn_T_main_a5cecc_mi_0, NSStringFromClass(((Class (</em>)(id, SEL))(void <em>)objc_msgSend)((id)self, sel_registerName(“class”))));<br>NSLog((NSString </em>)&amp;<strong>NSConstantStringImpl</strong>var_folders_gm_0jk35cwn1d3326x0061qym280000gn_T_main_a5cecc_mi_1, NSStringFromClass(((Class (<em>)(__rw_objc_super </em>, SEL))(void *)objc_msgSendSuper)((__rw_objc_super){ (id)self, (id)class_getSuperclass(objc_getClass(“Son”)) }, sel_registerName(“class”))));<br>当调用 [super class] 时，会转换成 objc_msgSendSuper 函数：</p>
+<p>第一步先构造 objc_super 结构体，结构体第一个成员就是 self。第二个成员是 (id)class_getSuperclass(objc_getClass(“Son”)).</p>
+<p>第二步是去 Father 这个类里去找 – (Class)class，没有，然后去 NSObject 类去找，找到了。最后内部是使用 objc_msgSend(objc_super-&gt;receiver, @selector(class)) 去调用，此时已经和 [self class] 调用相同了，所以两个输出结果都是 Son。</p>
+<p>7、对象关联<br>对象关联允许开发者对已经存在的类在 Category 中添加自定义的属性：</p>
+<p>OBJC_EXPORT void objc_setAssociatedObject(id object, const void *key, id value, objc_AssociationPolicy policy) <strong>OSX_AVAILABLE_STARTING(</strong>MAC_10_6, __IPHONE_3_1);<br>·object 是源对象.<br>·value 是被关联的对象.<br>·key 是关联的键，objc_getAssociatedObject 方法通过不同的 key 即可取出对应的被关联对象.<br>·policy 是一个枚举值，表示关联对象的行为，从命名就能看出各个枚举值的含义：</p>
+<p>typedef OBJC_ENUM(uintptr_t, objc_AssociationPolicy) {<br>OBJC_ASSOCIATION_ASSIGN = 0,           /**<br>要取出被关联的对象使用 objc_getAssociatedObject 方法即可，要删除一个被关联的对象，使用 objc_setAssociatedObject 方法将对应的 key 设置成 nil 即可：</p>
+<p>objc_setAssociatedObject(self, associatedKey, nil, OBJC_ASSOCIATION_COPY_NONATOMIC);<br>objc_removeAssociatedObjects 方法将会移除源对象中所有的关联对象.<br>举个栗子，假如我们要给 UIButton 添加一个监听单击事件的 block 属性，新建 UIButton 的 Category，其.m文件如下：</p>
+<p>#import “UIButton+ClickBlock.h”</p>
+<p>#import </p>
+<p>static const void *associatedKey = “associatedKey”;</p>
+<p>@implementation UIButton (ClickBlock)</p>
+<p>//Category中的属性，只会生成setter和getter方法，不会生成成员变量</p>
+<p>-(void)setClick:(clickBlock)click{<br>objc_setAssociatedObject(self, associatedKey, click, OBJC_ASSOCIATION_COPY_NONATOMIC);<br>[self removeTarget:self action:@selector(buttonClick) forControlEvents:UIControlEventTouchUpInside];<br>if (click) {<br>[self addTarget:self action:@selector(buttonClick) forControlEvents:UIControlEventTouchUpInside];<br>}<br>}</p>
+<p>-(clickBlock)click{<br>return objc_getAssociatedObject(self, associatedKey);<br>}</p>
+<p>-(void)buttonClick{<br>if (self.click) {<br>self.click();<br>}<br>}</p>
+<p>@end<br>然后在代码中，就可以使用 UIButton 的属性来监听单击事件了：</p>
+<p>UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];<br>button.frame = self.view.bounds;<br>[self.view addSubview:button];<br>button.click = ^{<br>NSLog(@”buttonClicked”);<br>};<br>完整的对象关联代码点这里</p>
+<p>8、自动归档<br>博主在学习 Runtime 之前，归档的时候是酱紫写的：</p>
+<ul>
+<li><p>(void)encodeWithCoder:(NSCoder *)aCoder{<br>[aCoder encodeObject:self.name forKey:@”name”];<br>[aCoder encodeObject:self.ID forKey:@”ID”];<br>}</p>
+</li>
+<li><p>(id)initWithCoder:(NSCoder *)aDecoder{<br>if (self = [super init]) {<br>self.ID = [aDecoder decodeObjectForKey:@”ID”];<br>self.name = [aDecoder decodeObjectForKey:@”name”];<br>}<br>return self;<br>}<br>那么问题来了，如果当前 Model 有100个属性的话，就需要写100行这种代码：</p>
+</li>
+</ul>
+<p>[aCoder encodeObject:self.name forKey:@”name”];<br>想想都头疼，通过 Runtime 我们就可以轻松解决这个问题：<br>1.使用 class_copyIvarList 方法获取当前 Model 的所有成员变量.<br>2.使用 ivar_getName 方法获取成员变量的名称.<br>3.通过 KVC 来读取 Model 的属性值（encodeWithCoder:），以及给 Model 的属性赋值（initWithCoder:）.</p>
+<p>举个栗子，新建一个 Model 类，其.m文件如下：</p>
+<p>#import “TestModel.h”</p>
+<p>#import </p>
+<p>#import </p>
+<p>@implementation TestModel</p>
+<ul>
+<li>(void)encodeWithCoder:(NSCoder <em>)aCoder{<br>unsigned int outCount = 0;<br>Ivar </em>vars = class_copyIvarList([self class], &amp;outCount);<br>for (int i = 0; i<br>完整的自动归档代码在这里</li>
+</ul>
+<p>9、字典与模型互转<br>最开始博主是这样用字典给 Model 赋值的：</p>
+<p>-(instancetype)initWithDictionary:(NSDictionary *)dict{<br>if (self = [super init]) {<br>self.age = dict[@”age”];<br>self.name = dict[@”name”];<br>}<br>return self;<br>}<br>可想而知，遇到的问题跟归档时候一样（后来使用MJExtension），这里我们稍微来学习一下其中原理，字典转模型的时候：<br>1.根据字典的 key 生成 setter 方法.<br>2.使用 objc_msgSend 调用 setter 方法为 Model 的属性赋值（或者 KVC）.</p>
+<p>模型转字典的时候：<br>1.调用 class_copyPropertyList 方法获取当前 Model 的所有属性.<br>2.调用 property_getName 获取属性名称.<br>3.根据属性名称生成 getter 方法.<br>4.使用 objc_msgSend 调用 getter 方法获取属性值（或者 KVC）.</p>
+<p>代码如下：</p>
+<p>#import “NSObject+KeyValues.h”</p>
+<p>#import </p>
+<p>#import </p>
+<p>@implementation NSObject (KeyValues)</p>
+<p>//字典转模型<br>+(id)objectWithKeyValues:(NSDictionary <em>)aDictionary{<br>id objc = [[self alloc] init];<br>for (NSString </em>key in aDictionary.allKeys) {<br>id value = aDictionary[key];</p>
+<p>/<em>判断当前属性是不是Model</em>/<br>objc_property_t property = class_getProperty(self, key.UTF8String);<br>unsigned int outCount = 0;<br>objc_property_attribute_t <em>attributeList = property_copyAttributeList(property, &amp;outCount);<br>objc_property_attribute_t attribute = attributeList[0];<br>NSString </em>typeString = [NSString stringWithUTF8String:attribute.value];<br>if ([typeString isEqualToString:@”@”TestModel””]) {<br>value = [self objectWithKeyValues:value];<br>}<br>/<strong><strong><strong><strong><strong>**</strong></strong></strong></strong></strong>/</p>
+<p>//生成setter方法，并用objc_msgSend调用<br>NSString <em>methodName = [NSString stringWithFormat:@”set%@%@:”,[key substringToIndex:1].uppercaseString,[key substringFromIndex:1]];<br>SEL setter = sel_registerName(methodName.UTF8String);<br>if ([objc respondsToSelector:setter]) {<br>((void (</em>) (id,SEL,id)) objc_msgSend) (objc,setter,value);<br>}<br>}<br>return objc;<br>}</p>
+<p>//模型转字典<br>-(NSDictionary <em>)keyValuesWithObject{<br>unsigned int outCount = 0;<br>objc_property_t </em>propertyList = class_copyPropertyList([self class], &amp;outCount);<br>NSMutableDictionary *dict = [NSMutableDictionary dictionary];<br>for (int i = 0; i<br>完整代码在这里</p>
+<p>10、动态方法解析<br>前面我们留下了一点东西没说，那就是如果某个对象调用了不存在的方法时会怎么样，一般情况下程序会crash，错误信息类似下面这样：</p>
+<p>unrecognized selector sent to instance 0x7fd0a141afd0<br>但是在程序crash之前，Runtime 会给我们动态方法解析的机会，消息发送的步骤大致如下：</p>
+<p>1.检测这个 selector 是不是要忽略的。比如 Mac OS X 开发，有了垃圾回收就不理会 retain，release 这些函数了.</p>
+<p>2.检测这个 target 是不是 nil 对象。ObjC 的特性是允许对一个 nil 对象执行任何一个方法不会 Crash，因为会被忽略掉.</p>
+<p>3.如果上面两个都过了，那就开始查找这个类的 IMP，先从 cache 里面找，完了找得到就跳到对应的函数去执行.<br>如果 cache 找不到就找一下方法分发表.</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipfh2kkn00073ds6y23zi8yy" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-iOS多线程编程基础小结" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2013/11/20/iOS多线程编程基础小结/" class="article-date">
@@ -135,7 +276,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipfgsf010005z9s6jf3q5sb9" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipfh2kl600093ds610z7900i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -268,7 +409,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipfgsezn0001z9s6kd40y66d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipfh2kju00003ds6u4phglyy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -334,7 +475,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipfgsf100009z9s6l3h8vgk1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipfh2kk100013ds66q6e73ez" class="article-share-link">Share</a>
       
       
     </footer>
@@ -414,7 +555,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipfgsf0u0007z9s609ozw9ni" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipfh2kkz00083ds6vylb7mfw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -470,7 +611,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipfgsf020006z9s6y0kpbpn9" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipfh2kka00043ds65vqyw0dv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -516,7 +657,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipfgsezq0002z9s6alrd3lb5" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipfh2kk800033ds6by9st48x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -594,7 +735,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipfgsezv0003z9s6seuzumd2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipfh2kk500023ds669nxehnv" class="article-share-link">Share</a>
       
       
     </footer>
@@ -689,7 +830,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipfgsezh0000z9s6ucopgdta" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipfh2kkc00053ds6vlh4n1bl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -758,54 +899,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipfgsezy0004z9s6a4xjy5u9" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-程序员必须知道的10个算法" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2013/09/14/程序员必须知道的10个算法/" class="article-date">
-  <time datetime="2013-09-14T11:59:24.000Z" itemprop="datePublished">2013-09-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/09/14/程序员必须知道的10个算法/">程序员必须知道的10个算法</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span><br>这个问答贴来自 Quora,收集的一些回答：</span></p>
-<p>算法</p>
-<p>图搜索 （广度优先、深度优先）深度优先特别重要<br>排序<br>动态规划<br>匹配算法和网络流算法<br>正则表达式和字符串匹配<br>数据结构</p>
-<p>图 （树尤其重要）<br>Map<br>堆<br>栈/队列<br>Tries | 字典树<br>额外推荐</p>
-<p>贪婪算法<br>概率方法<br>近似算法</p>
-<p>上面是 Arjun Nayini 的推荐，下面是 Ken George 的推荐</p>
-<p>注：下面这个没有特定优先级</p>
-<p>算法:</p>
-<p>三路划分-快速排序<br>合并排序（更具扩展性，复杂度类似快速排序）<br>DF/BF 搜索 （要知道使用场景）<br>Prim  / Kruskal （最小生成树）<br>Dijkstra （最短路径算法）<br>选择算法<br>数据结构</p>
-<p>HashMap （真的要知道所有哈希结构）<br>图和树（红黑树很好学） (red-black trees are good to learn)<br>堆（优先级队列）<br>栈/队列（必须知道的基础内容）<br>Tries | 字典树</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipfgsf0w0008z9s6v3yo5wvc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipfh2kki00063ds6s2kr5h7y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -816,6 +910,10 @@
 
   
 
+
+  <nav id="page-nav">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+  </nav>
 </section>
         
           <aside id="sidebar">
@@ -845,6 +943,10 @@
       <ul>
         
           <li>
+            <a href="/2013/11/27/iOS-Runtime全方位装逼小结/">iOS_Runtime全方位装逼小结</a>
+          </li>
+        
+          <li>
             <a href="/2013/11/20/iOS多线程编程基础小结/">iOS多线程编程基础小结</a>
           </li>
         
@@ -858,10 +960,6 @@
         
           <li>
             <a href="/2013/10/28/集合的深复制与浅复制小结/">集合的深复制与浅复制小结</a>
-          </li>
-        
-          <li>
-            <a href="/2013/10/22/Objective-C内存管理教程和原理小结4/">Objective-C内存管理教程和原理小结4</a>
           </li>
         
       </ul>
