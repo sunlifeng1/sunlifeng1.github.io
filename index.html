@@ -64,6 +64,65 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Bilibili开源的直播框架" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/01/22/Bilibili开源的直播框架/" class="article-date">
+  <time datetime="2016-01-22T14:20:09.000Z" itemprop="datePublished">2016-01-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/01/22/Bilibili开源的直播框架/">Bilibili开源的直播框架</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>文档地址：<a href="http://www.jianshu.com/p/1f06b27b3ac0" target="_blank" rel="external">http://www.jianshu.com/p/1f06b27b3ac0</a></p>
+<p>ijkplayer 是一款做视频直播的框架, 基于ffmpeg, 支持 Android 和 iOS, 网上也有很多集成说明, 但是个人觉得还是不够详细, 在这里详细的讲一下在 iOS 中如何集成ijkplayer, 即便以前从没有接触过, 按着下面做也可以集成成功!</p>
+<p>一. 下载ijkplayer<br>ijkplayer下载地址:<a href="https://github.com/Bilibili/ijkplayer" target="_blank" rel="external">https://github.com/Bilibili/ijkplayer</a><br>下载完成后解压</p>
+<p>二. 编译 ijkplayer<br>说是编译 ijkplayer, 其实是编译 ffmpeg, 在这里我们已经下载好了ijkplayer, 所以 github 上README.md中的Build iOS那一步中有一些步骤是不需要的.<br>下面开始一步一步编译:<br>1.打开终端, cd 到jkplayer-master文件夹中, 也就是下载完解压后的文件夹</p>
+<p>2.执行命令行./init-ios.sh, 这一步是去下载 ffmpeg 的, 时间会久一点, 耐心等一下</p>
+<p>3.在第2步中下载完成后, 执行cd ios, 也就是进入到 ios目录中</p>
+<p>4.进入 ios 文件夹后, 在终端依次执行./compile-ffmpeg.sh clean和./compile-ffmpeg.sh all命令, 编译 ffmpeg, 也就是README.md中这两步</p>
+<p>编译 ffmpeg<br>编译时间较久, 耐心等待一下.</p>
+<p>三. 打包IJKMediaFramework.framework框架<br>集成 ijkplayer 有两种方法:<br>一种方法是按照IJKMediaDemo工程中那样, 直接导入工程IJKMediaPlayer.xcodeproj, 在这里不做介绍</p>
+<p>导入IJKMediaPlayer.xcodeproj<br>第二种集成方法是把 ijkplayer 打包成framework导入工程中使用. 下面开始介绍如何打包IJKMediaFramework.framework, 按下面步骤开始一步一步做:</p>
+<p>首先打开工程IJKMediaPlayer.xcodeproj<br>要打包的 framework 工程.png<br>2.工程打开后设置工程的 scheme</p>
+<p>3.设置好 scheme 后, 分别选择真机和模拟器进行编译, 编译完成后, 进入 Finder</p>
+<p>进入 Finder 后, 可以看到有真机和模拟器两个版本的编译结果</p>
+<p>运行后生成的文件.png<br>下面开始合并真机和模拟器版本的 framework, 注意不要合并错了, 合并的是这个文件</p>
+<p>合并真机和模拟器文件中的这个文件.png<br>打开终端, 进行合并, 命令行具体格式为:</p>
+<p>lipo -create “真机版本路径” “模拟器版本路径” -output “合并后的文件路径”<br>合并</p>
+<p>合并生成后的文件.png<br>下面很重要, 需要用合并后的IJKMediaFramework把原来的IJKMediaFramework替换掉, 如下图, 希望你能看懂:</p>
+<p>用合并生成的文件替换原来的文件.png<br>上图中的1、2两步完成后, 绿色框住的那个IJKMediaFramework.framework文件就是我们需要的框架了, 可以复制出来, 稍后我们需要导入工程使用.</p>
+<p>四. iOS工程中集成ijkplayer<br>新建工程, 导入合并后的IJKMediaFramework.framework以及相关依赖框架以及相关依赖框架</p>
+<p>导入 framework及依赖框架.png<br>导入框架后, 在ViewController.m进行测试, 首先导入IJKMediaFramework.h头文件, 编译看有没有错, 如果没有错说明集成成功.<br>接着开始在ViewController.m文件中使用IJKMediaFramework框架进行测试使用, 写一个简单的直播视频进行测试, 在这里看一下运行后的结果, 后面会放上 Demo 供下载.</p>
+<p>文／jianshu_wl（简书作者）<br>原文链接：<a href="http://www.jianshu.com/p/1f06b27b3ac0" target="_blank" rel="external">http://www.jianshu.com/p/1f06b27b3ac0</a><br>著作权归作者所有，转载请联系作者获得授权，并标注“简书作者”。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/01/22/Bilibili开源的直播框架/" data-id="cipfjlbkb0000e2s6sebhg9sg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-iOS三种视屏录制方式" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2016/01/14/iOS三种视屏录制方式/" class="article-date">
@@ -221,7 +280,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/14/iOS三种视屏录制方式/" data-id="cipfj9ktt0005crs6hydqpeec" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/01/14/iOS三种视屏录制方式/" data-id="cipfjlbl20008e2s6qoi5i93x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -289,7 +348,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipfj9ku50008crs65cx3u4i4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipfjlbla000ae2s6mczy5omf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -328,7 +387,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipfj9kue000acrs6fdyfq34d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipfjlblg000ce2s66mcnqrht" class="article-share-link">Share</a>
       
       
     </footer>
@@ -367,7 +426,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipfj9kuh000ccrs6f1rz6b82" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipfjlblp000he2s6dlwtkh9x" class="article-share-link">Share</a>
       
       
     </footer>
@@ -420,7 +479,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipfj9kul000ecrs61ho7r506" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipfjlblj000ee2s6ktna6dd0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -459,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipfj9kug000bcrs63l9kcv3d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipfjlblh000de2s6z4e5al56" class="article-share-link">Share</a>
       
       
     </footer>
@@ -504,7 +563,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipfj9kux000icrs6jz7yrbnj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipfjlbl80009e2s6r9dw1lm0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -543,7 +602,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipfj9kuj000dcrs673x1bnv8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipfjlbln000ge2s6uogwfu5y" class="article-share-link">Share</a>
       
       
     </footer>
@@ -684,88 +743,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipfj9ku10007crs6t9puajgw" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-iOS多线程编程基础小结" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2013/11/20/iOS多线程编程基础小结/" class="article-date">
-  <time datetime="2013-11-20T13:06:30.000Z" itemprop="datePublished">2013-11-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/11/20/iOS多线程编程基础小结/">iOS多线程编程基础小结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>一、基本概念<br>计算机操作系统都有的基本概念，以下概念简单方式来描述。</p>
-<p>进程： 一个具有一定独立功能的程序关于某个数据集合的一次运行活动。可以理解成一个运行中的应用程序。</p>
-<p>线程： 程序执行流的最小单元，线程是进程中的一个实体。</p>
-<p>同步： 只能在当前线程按先后顺序依次执行，不开启新线程。</p>
-<p>异步： 可以在当前线程开启多个新线程执行，可不按顺序执行。</p>
-<p>队列： 装载线程任务的队形结构。</p>
-<p>并发： 线程执行可以同时一起进行执行。</p>
-<p>串行： 线程执行只能依次逐一先后有序的执行。</p>
-<p>注意:</p>
-<p>一个进程可有多个线程。</p>
-<p>一个进程可有多个队列。</p>
-<p>队列可分并发队列和串行队列。</p>
-<p>二、iOS多线程对比</p>
-<ol>
-<li>NSThread</li>
-</ol>
-<p>每个NSThread对象对应一个线程，真正最原始的线程。</p>
-<p>1）优点：NSThread 轻量级最低，相对简单。</p>
-<p>2）缺点：手动管理所有的线程活动，如生命周期、线程同步、睡眠等。</p>
-<ol>
-<li>NSOperation</li>
-</ol>
-<p>自带线程管理的抽象类。</p>
-<p>1）优点：自带线程周期管理，操作上可更注重自己逻辑。</p>
-<p>2）缺点：面向对象的抽象类，只能实现它或者使用它定义好的两个子类：NSInvocationOperation 和 NSBlockOperation。</p>
-<ol>
-<li>GCD</li>
-</ol>
-<p>Grand Central Dispatch (GCD)是Apple开发的一个多核编程的解决方法。</p>
-<p>1）优点：最高效，避开并发陷阱。</p>
-<p>2）缺点：基于C实现。</p>
-<ol>
-<li>选择小结</li>
-</ol>
-<p>1）简单而安全的选择NSOperation实现多线程即可。</p>
-<p>2）处理大量并发数据，又追求性能效率的选择GCD。</p>
-<p>3）NSThread本人选择基本上是在做些小测试上使用，当然也可以基于此造个轮子。</p>
-<p>三、场景选择<br>图片异步加载。这种常见的场景是最常见也是必不可少的。异步加载图片有分成两种来说明一下。</p>
-<p>第一种，在UI主线程开启新线程按顺序加载图片，加载完成刷新UI。</p>
-<p>第二种，依然是在主线程开启新线程，顺序不定地加载图片，加载完成个字刷新UI。</p>
-<p>创作工具上的异步。 这个跟上边任务调度道理，只是为了丰富描述，有助于“举一反三”效果。如下描述的是app创作小说。</p>
-<p>场景一，app本地创作10个章节内容未成同步服务器，同时发表这10个章节产生的一系列动作，其中上传内容，获取分配章节Id，如何后台没有做处理最好方式做异步按顺序执行。</p>
-<p>场景二，app本地创作列表中有3本小说为发表，同时发表创作列表中的3本小说，自然考虑并行队列执行发表。</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipfj9kua0009crs6obomn1vw" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipfjlbl10007e2s6wvwbgaky" class="article-share-link">Share</a>
       
       
     </footer>
@@ -809,6 +787,10 @@
       <ul>
         
           <li>
+            <a href="/2016/01/22/Bilibili开源的直播框架/">Bilibili开源的直播框架</a>
+          </li>
+        
+          <li>
             <a href="/2016/01/14/iOS三种视屏录制方式/">iOS三种视屏录制方式</a>
           </li>
         
@@ -822,10 +804,6 @@
         
           <li>
             <a href="/2014/01/01/从Facebook看iOS移动端的开发/">从Facebook看iOS移动端的开发</a>
-          </li>
-        
-          <li>
-            <a href="/2013/12/30/用CocoaPods管理iOS程序/">用CocoaPods管理iOS程序</a>
           </li>
         
       </ul>

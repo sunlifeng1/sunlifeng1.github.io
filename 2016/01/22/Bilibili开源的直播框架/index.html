@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Bilibili开源的直播框架 | 孙利峰</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="文档地址：http://www.jianshu.com/p/1f06b27b3ac0
+ijkplayer 是一款做视频直播的框架, 基于ffmpeg, 支持 Android 和 iOS, 网上也有很多集成说明, 但是个人觉得还是不够详细, 在这里详细的讲一下在 iOS 中如何集成ijkplayer, 即便以前从没有接触过, 按着下面做也可以集成成功!
+一. 下载ijkplayerijkplaye">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bilibili开源的直播框架">
+<meta property="og:url" content="http://yoursite.com/2016/01/22/Bilibili开源的直播框架/index.html">
+<meta property="og:site_name" content="孙利峰">
+<meta property="og:description" content="文档地址：http://www.jianshu.com/p/1f06b27b3ac0
+ijkplayer 是一款做视频直播的框架, 基于ffmpeg, 支持 Android 和 iOS, 网上也有很多集成说明, 但是个人觉得还是不够详细, 在这里详细的讲一下在 iOS 中如何集成ijkplayer, 即便以前从没有接触过, 按着下面做也可以集成成功!
+一. 下载ijkplayerijkplaye">
+<meta property="og:updated_time" content="2016-06-14T14:26:35.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bilibili开源的直播框架">
+<meta name="twitter:description" content="文档地址：http://www.jianshu.com/p/1f06b27b3ac0
+ijkplayer 是一款做视频直播的框架, 基于ffmpeg, 支持 Android 和 iOS, 网上也有很多集成说明, 但是个人觉得还是不够详细, 在这里详细的讲一下在 iOS 中如何集成ijkplayer, 即便以前从没有接触过, 按着下面做也可以集成成功!
+一. 下载ijkplayerijkplaye">
+  
+    <link rel="alternate" href="/atom.xml" title="孙利峰" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">孙利峰</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Bilibili开源的直播框架" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/01/22/Bilibili开源的直播框架/" class="article-date">
+  <time datetime="2016-01-22T14:20:09.000Z" itemprop="datePublished">2016-01-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Bilibili开源的直播框架
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>文档地址：<a href="http://www.jianshu.com/p/1f06b27b3ac0" target="_blank" rel="external">http://www.jianshu.com/p/1f06b27b3ac0</a></p>
+<p>ijkplayer 是一款做视频直播的框架, 基于ffmpeg, 支持 Android 和 iOS, 网上也有很多集成说明, 但是个人觉得还是不够详细, 在这里详细的讲一下在 iOS 中如何集成ijkplayer, 即便以前从没有接触过, 按着下面做也可以集成成功!</p>
+<p>一. 下载ijkplayer<br>ijkplayer下载地址:<a href="https://github.com/Bilibili/ijkplayer" target="_blank" rel="external">https://github.com/Bilibili/ijkplayer</a><br>下载完成后解压</p>
+<p>二. 编译 ijkplayer<br>说是编译 ijkplayer, 其实是编译 ffmpeg, 在这里我们已经下载好了ijkplayer, 所以 github 上README.md中的Build iOS那一步中有一些步骤是不需要的.<br>下面开始一步一步编译:<br>1.打开终端, cd 到jkplayer-master文件夹中, 也就是下载完解压后的文件夹</p>
+<p>2.执行命令行./init-ios.sh, 这一步是去下载 ffmpeg 的, 时间会久一点, 耐心等一下</p>
+<p>3.在第2步中下载完成后, 执行cd ios, 也就是进入到 ios目录中</p>
+<p>4.进入 ios 文件夹后, 在终端依次执行./compile-ffmpeg.sh clean和./compile-ffmpeg.sh all命令, 编译 ffmpeg, 也就是README.md中这两步</p>
+<p>编译 ffmpeg<br>编译时间较久, 耐心等待一下.</p>
+<p>三. 打包IJKMediaFramework.framework框架<br>集成 ijkplayer 有两种方法:<br>一种方法是按照IJKMediaDemo工程中那样, 直接导入工程IJKMediaPlayer.xcodeproj, 在这里不做介绍</p>
+<p>导入IJKMediaPlayer.xcodeproj<br>第二种集成方法是把 ijkplayer 打包成framework导入工程中使用. 下面开始介绍如何打包IJKMediaFramework.framework, 按下面步骤开始一步一步做:</p>
+<p>首先打开工程IJKMediaPlayer.xcodeproj<br>要打包的 framework 工程.png<br>2.工程打开后设置工程的 scheme</p>
+<p>3.设置好 scheme 后, 分别选择真机和模拟器进行编译, 编译完成后, 进入 Finder</p>
+<p>进入 Finder 后, 可以看到有真机和模拟器两个版本的编译结果</p>
+<p>运行后生成的文件.png<br>下面开始合并真机和模拟器版本的 framework, 注意不要合并错了, 合并的是这个文件</p>
+<p>合并真机和模拟器文件中的这个文件.png<br>打开终端, 进行合并, 命令行具体格式为:</p>
+<p>lipo -create “真机版本路径” “模拟器版本路径” -output “合并后的文件路径”<br>合并</p>
+<p>合并生成后的文件.png<br>下面很重要, 需要用合并后的IJKMediaFramework把原来的IJKMediaFramework替换掉, 如下图, 希望你能看懂:</p>
+<p>用合并生成的文件替换原来的文件.png<br>上图中的1、2两步完成后, 绿色框住的那个IJKMediaFramework.framework文件就是我们需要的框架了, 可以复制出来, 稍后我们需要导入工程使用.</p>
+<p>四. iOS工程中集成ijkplayer<br>新建工程, 导入合并后的IJKMediaFramework.framework以及相关依赖框架以及相关依赖框架</p>
+<p>导入 framework及依赖框架.png<br>导入框架后, 在ViewController.m进行测试, 首先导入IJKMediaFramework.h头文件, 编译看有没有错, 如果没有错说明集成成功.<br>接着开始在ViewController.m文件中使用IJKMediaFramework框架进行测试使用, 写一个简单的直播视频进行测试, 在这里看一下运行后的结果, 后面会放上 Demo 供下载.</p>
+<p>文／jianshu_wl（简书作者）<br>原文链接：<a href="http://www.jianshu.com/p/1f06b27b3ac0" target="_blank" rel="external">http://www.jianshu.com/p/1f06b27b3ac0</a><br>著作权归作者所有，转载请联系作者获得授权，并标注“简书作者”。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/01/22/Bilibili开源的直播框架/" data-id="cipfjlbkb0000e2s6sebhg9sg" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2016/01/14/iOS三种视屏录制方式/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">iOS三种视屏录制方式</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/01/22/Bilibili开源的直播框架/">Bilibili开源的直播框架</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/14/iOS三种视屏录制方式/">iOS三种视屏录制方式</a>
+          </li>
+        
+          <li>
+            <a href="/2014/01/20/iOS中使用ZXing库/">iOS中使用ZXing库</a>
+          </li>
+        
+          <li>
+            <a href="/2014/01/14/iOS应用内支付小结/">iOS应用内支付小结</a>
+          </li>
+        
+          <li>
+            <a href="/2014/01/01/从Facebook看iOS移动端的开发/">从Facebook看iOS移动端的开发</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
