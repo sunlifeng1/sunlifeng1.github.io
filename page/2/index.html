@@ -51,9 +51,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -63,6 +63,51 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="写ios-SDK注意问题小结" class="article article-type-写ios" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/12/14/SDK注意问题小结/" class="article-date">
+  <time datetime="2013-12-14T13:35:15.000Z" itemprop="datePublished">2013-12-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/12/14/SDK注意问题小结/">SDK注意问题小结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>我发现即使是像腾讯、小米这样的大厂提供的 SDK，在质量和规范上也有很多问题，而且包括我以及我身边的很多朋友都被恶心到了，所以我就把这些注意事项总结出来，希望大家不要犯同样的错误。<br>注意事项一：所有类名都应该加前缀<br>说明：没有前缀的类名有冲突的风险。<br>Bad Case：微信分享的 SDK，文件名：WXApiObject.h，代码如下，其中BaseReq类和BaseResp类都没有加前缀。<br>@interface BaseReq : NSObject</p>
+<p>/<strong> 请求类型 */<br>@property (nonatomic, assign) int type;<br>/</strong> 由用户微信号和 AppID 组成的唯一标识，发送请求时第三方程序必须填写，用于校验微信用户是否换号登录 <em>/<br>@property (nonatomic, retain) NSString</em> openID;</p>
+<p>@end</p>
+<p>#pragma mark - BaseResp<br>/<em>! @brief 该类为微信终端 SDK 所有响应类的基类
+</em><br><em>/<br>@interface BaseResp : NSObject<br>/** 错误码 </em>/<br>@property (nonatomic, assign) int errCode;<br>/<strong> 错误提示字符串 <em>/<br>@property (nonatomic, retain) NSString </em>errStr;<br>/</strong> 响应类型 */<br>@property (nonatomic, assign) int type;</p>
+<p>@end<br>注意事项二：所有 category 方法加前缀<br>说明：category 方法如果不加前缀，有冲突的风险。<br>Bad Case：腾讯分享的 SDK，它为 NSArray 增加了一个 JSONArray 的 category，造成我们本身的同名 category 被覆盖。另外他们为 NSArray 增加的其它 category 和著名的 Cordova 开源库冲突，造成 Cordova 无法使用。<br>注意事项三：不要将第三方库打包进 SDK<br>说明：尽量不要将第三方库打包进 SDK，如果要打包，最好也要将该第三方库重命名，以避免冲突。<br>Bad Case：小米的推送 SDK，直接在 SDK 静态库里面编进去一个第三方依赖库，而且这个库还是 ASIHttpRequest。ASIHttp 当前已经处于无人维护状态，很多 Bug 都是大家自己在修复（例如网易就自己维护了一个 ASIHttpRequest 的分支）。在 SDK 中依赖这种库还是比较麻烦的。<br>注意事项四：做基本的检查和测试<br>说明：SDK 对外公布前应该进行基本的编译检查，不应该有编译器警告存在。<br>Bad Case：腾讯分享的 SDK。它的 CGIParamsWrap.o 和 TencentOAuth.o 文件里面的方法名冲突了，如下所示：<br>ld: warning: instance method ‘deleteAPIRequestBySeq:’ in category from /Users/tangqiao/work/iphone/solar-ios/lib_common/TencentOpenApi/TencentOpenAPI.framework/TencentOpenAPI(CGIParamsWrap.o) overrides method from class in /Users/tangqiao/work/iphone/solar-ios/lib_common/TencentOpenApi/TencentOpenAPI.framework/TencentOpenAPI(TencentOAuth.o)<br>注意事项五：文档完整并且正确<br>说明：这就不用解释了吧？<br>Bad Case: 微信官方的微信支付的示例代码，里面有各种错误，代码都无法编译成功。如下所示的是其中一个错误：</p>
+<p>于是还有人专门帮微信另外制作了一个非官方的说明文档，地址在这里：<a href="https://github.com/gbammc/WechatPayDemo" target="_blank" rel="external">https://github.com/gbammc/WechatPayDemo</a><br>注意事项六：支持最新的 CPU 版本<br>说明：去年苹果的一次 Bug，造成上传应用必须支持 arm64 的 CPU 版本，结果众多应用因为依赖的 SDK 不支持 arm64 而无法更新。当然，这次 Bug 出来之后，各 SDK 厂商都紧急做了更新。但是我觉得这种事情如果要做得专业，就应该一开始就紧跟技术更新，及时更新，而不是被迫更新。<br>总结<br>以上 6 点是我认为写一个 SDK 的最最基本的要求，希望被点名批评的同学能尽快改正哟～<br>如果大家在使用其它 SDK 时也发现了类似的问题，欢迎在文章下面留言。希望通过这种方式给开发相关 SDK 的同学一些压力，让他们好好改一下。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipidkuw200072a3zyevtdcdl" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-培训出来的iOS学员怎么了？" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -93,7 +138,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipidhag4000h1g3zvcqw9y6i" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipidkuwm000g2a3zlmh7eu72" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -234,7 +279,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipidhafh00081g3zx4zfnsvc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipidkuw900092a3zvbegdqqt" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -315,7 +360,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipidhafr000b1g3zqslpkc9c" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipidkuwh000d2a3zoqm3e1qs" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -448,7 +493,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipidhaf200021g3zdt2ea3ba" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipidkuvp00032a3zct3mn4f4" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -514,7 +559,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipidhaez00011g3zlipgvh04" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipidkuvj00012a3zvne9aioe" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -594,7 +639,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipidhagp000l1g3z8qfe6kg1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipidkuxb000m2a3z5ndpep0v" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -650,7 +695,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipidhafb00061g3zsp8lezyd" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipidkuvx00062a3zi8jgnn7b" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -696,7 +741,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipidhaf800051g3zfi9ukmfl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipidkuvu00052a3z63lzape9" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -774,102 +819,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipidhaf700041g3z33q76ffg" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-Objective-C内存管理教程和原理小结1" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2013/10/01/Objective-C内存管理教程和原理小结1/" class="article-date">
-  <time datetime="2013-10-01T12:31:21.000Z" itemprop="datePublished">2013-10-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/10/01/Objective-C内存管理教程和原理小结1/">Objective-C内存管理教程和原理小结1</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>原文出处： Vince Yuan 的博客<br>前言</p>
-<p>初学Objectice-C的朋友都有一个困惑，总觉得对objective-C的内存管理机制琢磨不透，程序经常内存泄漏或莫名其妙的崩溃。我在这里总结了自己对objective-C内存管理机制的研究成果和经验，写了这么一个由浅入深的教程。希望对大家有所帮助，也欢迎大家一起探讨。</p>
-<p>此文涉及的内存管理是针对于继承于NSObject的Class。</p>
-<p>基本原理</p>
-<p>Objective-C的内存管理机制与.Net/Java那种全自动的垃圾回收机制是不同的，它本质上还是C语言中的手动管理方式，只不过稍微加了一些自动方法。</p>
-<ol>
-<li>Objective-C的对象生成于堆之上，生成之后，需要一个指针来指向它。</li>
-</ol>
-<p>ClassA *obj1 = [[ClassA alloc] init];</p>
-<ol>
-<li>Objective-C的对象在使用完成之后不会自动销毁，需要执行dealloc来释放空间（销毁），否则内存泄露。</li>
-</ol>
-<p>[obj1 dealloc];<br>这带来了一个问题。下面代码中obj2是否需要调用dealloc？</p>
-<p>ClassA *obj1 = [[ClassA alloc] init];</p>
-<p>ClassA *obj2 = obj1;</p>
-<p>[obj1 hello]; //输出hello</p>
-<p>[obj1 dealloc];</p>
-<p>[obj2 hello]; //能够执行这一行和下一行吗？</p>
-<p>[obj2 dealloc];<br>不能，因为obj1和obj2只是指针，它们指向同一个对象，[obj1 dealloc]已经销毁这个对象了，不能再调用[obj2 hello]和[obj2 dealloc]。obj2实际上是个无效指针。</p>
-<p>如何避免无效指针？请看下一条。</p>
-<ol>
-<li><p>Objective-C采用了引用计数(ref count或者retain count)。对象的内部保存一个数字，表示被引用的次数。例如，某个对象被两个指针所指向（引用）那么它的retain count为2。需要销毁对象的时候，不直接调用dealloc，而是调用release。release会让retain count减1，只有retain count等于0，系统才会调用dealloc真正销毁这个对象。<br>ClassA <em>obj1 = [[ClassA alloc] init]; //对象生成时，retain count = 1<br>[obj1 release]; //release使retain count减1，retain count = 0，dealloc自动被调用,对象被销毁<br>我们回头看看刚刚那个无效指针的问题，把dealloc改成release解决了吗？<br>ClassA </em>obj1 = [[ClassA alloc] init]; //retain count = 1<br>ClassA *obj2 = obj1; //retain count = 1<br>[obj1 hello]; //输出hello<br>[obj1 release]; //retain count = 0，对象被销毁<br>[obj2 hello];<br>[obj2 release];<br>[obj1 release]之后，obj2依然是个无效指针。问题依然没有解决。解决方法见下一条。</p>
-</li>
-<li><p>Objective-C指针赋值时，retain count不会自动增加，需要手动retain。</p>
-</li>
-</ol>
-<p>ClassA <em>obj1 = [[ClassA alloc] init]; //retain count = 1<br>ClassA </em>obj2 = obj1; //retain count = 1<br>[obj2 retain]; //retain count = 2<br>[obj1 hello]; //输出hello<br>[obj1 release]; //retain count = 2 – 1 = 1<br>[obj2 hello]; //输出hello<br>[obj2 release]; //retain count = 0，对象被销毁<br>问题解决！注意，如果没有调用[obj2 release]，这个对象的retain count始终为1，不会被销毁，内存泄露。(1-4可以参考附件中的示例程序memman-no-pool.m)</p>
-<p>这样的确不会内存泄露，但似乎有点麻烦，有没有简单点的方法？见下一条。</p>
-<ol>
-<li>Objective-C中引入了autorelease pool（自动释放对象池），在遵守一些规则的情况下，可以自动释放对象。（autorelease pool依然不是.Net/Java那种全自动的垃圾回收机制）</li>
-</ol>
-<p>5.1 新生成的对象，只要调用autorelease就行了，无需再调用release！</p>
-<p>ClassA <em>obj1 = [[[ClassA alloc] init] autorelease]; //retain count = 1 但无需调用release<br>5.2 对于存在指针赋值的情况，代码与前面类似。<br>ClassA </em>obj1 = [[[ClassA alloc] init] autorelease]; //retain count = 1</p>
-<p>ClassA *obj2 = obj1; //retain count = 1</p>
-<p>[obj2 retain]; //retain count = 2</p>
-<p>[obj1 hello]; //输出hello</p>
-<p>//对于obj1，无需调用（实际上不能调用）release</p>
-<p>[obj2 hello]; //输出hello</p>
-<p>[obj2 release]; //retain count = 2-1 = 1<br>细心的读者肯定能发现这个对象没有被销毁，何时销毁呢？谁去销毁它？（可以参考附件中的示例程序memman-with-pool.m）请看下一条。</p>
-<ol>
-<li>autorelease pool原理剖析。（其实很简单的，一定要坚持看下去，否则还是不能理解Objective-C的内存管理机制。）</li>
-</ol>
-<p>6.1 autorelease pool不是天生的，需要手动创立。只不过在新建一个iphone项目时，xcode会自动帮你写好。autorelease pool的真名是NSAutoreleasePool。</p>
-<p>NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];<br>6.2 NSAutoreleasePool内部包含一个数组（NSMutableArray），用来保存声明为autorelease的所有对象。如果一个对象声明为autorelease，系统所做的工作就是把这个对象加入到这个数组中去。</p>
-<p>ClassA *obj1 = [[[ClassA alloc] init] autorelease]; //retain count = 1，把此对象加入autorelease pool中<br>6.3 NSAutoreleasePool自身在销毁的时候，会遍历一遍这个数组，release数组中的每个成员。如果此时数组中成员的retain count为1，那么release之后，retain count为0，对象正式被销毁。如果此时数组中成员的retain count大于1，那么release之后，retain count大于0，此对象依然没有被销毁，内存泄露。</p>
-<p>6.4 默认只有一个autorelease pool，通常类似于下面这个例子。</p>
-<p>int main (int argc, const char *argv[])</p>
-<p>{</p>
-<p>NSAutoreleasePool *pool;</p>
-<p>pool = [[NSAutoreleasePool alloc] init];</p>
-<p>// do something</p>
-<p>[pool release];</p>
-<p>return (0);</p>
-<p>} // main<br>所有标记为autorelease的对象都只有在这个pool销毁时才被销毁。如果你有大量的对象标记为autorelease，这显然不能很好的利用内存，在iphone这种内存受限的程序中是很容易造成内存不足的。例如：<br>int main (int argc, const char <em>argv[])<br>{<br>NSAutoreleasePool </em>pool = [[NSAutoreleasePool alloc] init];<br>int i, j;<br>for (i = 0; i &lt; 100; i++ )<br>{<br>for (j = 0; j &lt; 100000; j++ )<br>[NSString stringWithFormat:@”1234567890”];//产生的对象是autorelease的。<br>}<br>[pool release];<br>return (0);<br>} // main<br>（可以参考附件中的示例程序memman-many-objs-one-pool.m，运行时通过监控工具可以发现使用的内存在急剧增加，直到pool销毁时才被释放）你需要考虑下一条。</p>
-<ol>
-<li>Objective-C程序中可以嵌套创建多个autorelease pool。在需要大量创建局部变量的时候，可以创建内嵌的autorelease pool来及时释放内存。</li>
-</ol>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipidhaf500031g3zjaqs6cae" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipidkuvr00042a3zjybvhluh" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -900,7 +850,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 
@@ -908,7 +858,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
@@ -929,7 +879,7 @@
           </li>
         
           <li>
-            <a href="/2014/01/20/iOS中使用ZXing库/">iOS中使用ZXing库</a>
+            <a href="/2015/01/07/iOS-JSON解析四种方法/">iOS_JSON解析四种方法</a>
           </li>
         
       </ul>
@@ -945,7 +895,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
