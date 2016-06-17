@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   
-  <title>iOS_Runtime全方位装逼小结 | 孙利峰de技术博客</title>
+  <title>iOS_Runtime全方位装逼小结 | 孙利峰的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="楔子Runtime是什么？见名知意，其概念无非就是“因为 Objective-C 是一门动态语言，所以它需要一个运行时系统……这就是 Runtime 系统”云云。对博主这种菜鸟而言，Runtime 在实际开发中，其实就是一组C语言的函数。胡适说：“多研究些问题，少谈些主义”，云山雾罩的概念听多了总是容易头晕，接下来我们直接从代码入手学习 Runtime。
 1、由objc_msgSend说开去：O">
 <meta property="og:type" content="article">
 <meta property="og:title" content="iOS_Runtime全方位装逼小结">
 <meta property="og:url" content="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/index.html">
-<meta property="og:site_name" content="孙利峰de技术博客">
+<meta property="og:site_name" content="孙利峰的技术博客">
 <meta property="og:description" content="楔子Runtime是什么？见名知意，其概念无非就是“因为 Objective-C 是一门动态语言，所以它需要一个运行时系统……这就是 Runtime 系统”云云。对博主这种菜鸟而言，Runtime 在实际开发中，其实就是一组C语言的函数。胡适说：“多研究些问题，少谈些主义”，云山雾罩的概念听多了总是容易头晕，接下来我们直接从代码入手学习 Runtime。
 1、由objc_msgSend说开去：O">
 <meta property="og:updated_time" content="2016-06-14T13:15:56.000Z">
@@ -19,7 +19,7 @@
 <meta name="twitter:description" content="楔子Runtime是什么？见名知意，其概念无非就是“因为 Objective-C 是一门动态语言，所以它需要一个运行时系统……这就是 Runtime 系统”云云。对博主这种菜鸟而言，Runtime 在实际开发中，其实就是一组C语言的函数。胡适说：“多研究些问题，少谈些主义”，云山雾罩的概念听多了总是容易头晕，接下来我们直接从代码入手学习 Runtime。
 1、由objc_msgSend说开去：O">
   
-    <link rel="alternate" href="/atom.xml" title="孙利峰de技术博客" type="application/atom+xml">
+    <link rel="alternate" href="/atom.xml" title="孙利峰的技术博客" type="application/atom+xml">
   
   
     <link rel="icon" href="/favicon.png">
@@ -40,8 +40,12 @@
   <div id="header-outer" class="outer">
     <div id="header-title" class="inner">
       <h1 id="logo-wrap">
-        <a href="/" id="logo">孙利峰de技术博客</a>
+        <a href="/" id="logo">孙利峰的技术博客</a>
       </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">天幕红尘</a>
+        </h2>
       
     </div>
     <div id="header-inner" class="inner">
@@ -55,9 +59,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -197,7 +201,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipjqpmvt000c4as6gnu6y5wg" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipjqxxi0000bf4s6xq32ev0v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -207,7 +211,7 @@
 <nav id="article-nav">
   
     <a href="/2013/12/06/培训出来的iOS学员怎么了？/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Récent</strong>
+      <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
           培训出来的iOS学员怎么了？
@@ -217,7 +221,7 @@
   
   
     <a href="/2013/11/20/iOS多线程编程基础小结/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Ancien</strong>
+      <strong class="article-nav-caption">Older</strong>
       <div class="article-nav-title">iOS多线程编程基础小结</div>
     </a>
   
@@ -250,7 +254,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Articles récents</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
@@ -287,7 +291,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 John Doe<br>
-      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
