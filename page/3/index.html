@@ -53,7 +53,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Søk"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -63,6 +63,87 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-iOS多线程编程基础小结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/11/20/iOS多线程编程基础小结/" class="article-date">
+  <time datetime="2013-11-20T13:06:30.000Z" itemprop="datePublished">2013-11-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/11/20/iOS多线程编程基础小结/">iOS多线程编程基础小结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>一、基本概念<br>计算机操作系统都有的基本概念，以下概念简单方式来描述。</p>
+<p>进程： 一个具有一定独立功能的程序关于某个数据集合的一次运行活动。可以理解成一个运行中的应用程序。</p>
+<p>线程： 程序执行流的最小单元，线程是进程中的一个实体。</p>
+<p>同步： 只能在当前线程按先后顺序依次执行，不开启新线程。</p>
+<p>异步： 可以在当前线程开启多个新线程执行，可不按顺序执行。</p>
+<p>队列： 装载线程任务的队形结构。</p>
+<p>并发： 线程执行可以同时一起进行执行。</p>
+<p>串行： 线程执行只能依次逐一先后有序的执行。</p>
+<p>注意:</p>
+<p>一个进程可有多个线程。</p>
+<p>一个进程可有多个队列。</p>
+<p>队列可分并发队列和串行队列。</p>
+<p>二、iOS多线程对比</p>
+<ol>
+<li>NSThread</li>
+</ol>
+<p>每个NSThread对象对应一个线程，真正最原始的线程。</p>
+<p>1）优点：NSThread 轻量级最低，相对简单。</p>
+<p>2）缺点：手动管理所有的线程活动，如生命周期、线程同步、睡眠等。</p>
+<ol>
+<li>NSOperation</li>
+</ol>
+<p>自带线程管理的抽象类。</p>
+<p>1）优点：自带线程周期管理，操作上可更注重自己逻辑。</p>
+<p>2）缺点：面向对象的抽象类，只能实现它或者使用它定义好的两个子类：NSInvocationOperation 和 NSBlockOperation。</p>
+<ol>
+<li>GCD</li>
+</ol>
+<p>Grand Central Dispatch (GCD)是Apple开发的一个多核编程的解决方法。</p>
+<p>1）优点：最高效，避开并发陷阱。</p>
+<p>2）缺点：基于C实现。</p>
+<ol>
+<li>选择小结</li>
+</ol>
+<p>1）简单而安全的选择NSOperation实现多线程即可。</p>
+<p>2）处理大量并发数据，又追求性能效率的选择GCD。</p>
+<p>3）NSThread本人选择基本上是在做些小测试上使用，当然也可以基于此造个轮子。</p>
+<p>三、场景选择<br>图片异步加载。这种常见的场景是最常见也是必不可少的。异步加载图片有分成两种来说明一下。</p>
+<p>第一种，在UI主线程开启新线程按顺序加载图片，加载完成刷新UI。</p>
+<p>第二种，依然是在主线程开启新线程，顺序不定地加载图片，加载完成个字刷新UI。</p>
+<p>创作工具上的异步。 这个跟上边任务调度道理，只是为了丰富描述，有助于“举一反三”效果。如下描述的是app创作小说。</p>
+<p>场景一，app本地创作10个章节内容未成同步服务器，同时发表这10个章节产生的一系列动作，其中上传内容，获取分配章节Id，如何后台没有做处理最好方式做异步按顺序执行。</p>
+<p>场景二，app本地创作列表中有3本小说为发表，同时发表创作列表中的3本小说，自然考虑并行队列执行发表。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipjhjh66000jfqs6qhhw7i2l" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-IOS开发之多线程技术小结2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -187,7 +268,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipjhb5he0002ems6wmd3zk2y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipjhjh4t0006fqs667219bon" class="article-share-link">Share</a>
       
       
     </footer>
@@ -253,7 +334,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipjhb5h30000ems6vmccpl26" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipjhjh4d0001fqs64ix0nnms" class="article-share-link">Share</a>
       
       
     </footer>
@@ -333,7 +414,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipjhb5l7000sems6273c9bzn" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipjhjh73000sfqs6jj6nss1e" class="article-share-link">Share</a>
       
       
     </footer>
@@ -389,7 +470,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipjhb5hn0006ems6qq8lo3in" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipjhjh4o0004fqs6npla9ik1" class="article-share-link">Share</a>
       
       
     </footer>
@@ -435,7 +516,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipjhb5hj0004ems6g2n40fjc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipjhjh460000fqs6stkuwy3h" class="article-share-link">Share</a>
       
       
     </footer>
@@ -513,7 +594,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipjhb5hh0003ems6s43mfjm3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipjhjh4m0003fqs6wk45krqp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -608,7 +689,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipjhb5hl0005ems6376wa172" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipjhjh4r0005fqs6qn0qtkp8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -677,7 +758,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipjhb5j2000nems6ksrtw5vk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipjhjh5z000hfqs6xusnq5ff" class="article-share-link">Share</a>
       
       
     </footer>
@@ -724,7 +805,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipjhb5kx000qems6ktdbf2ho" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipjhjh6i000qfqs6y2r9kz2i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -753,9 +834,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Arkiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 
@@ -763,7 +844,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Siste innlegg</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
@@ -784,7 +865,7 @@
           </li>
         
           <li>
-            <a href="/2015/11/23/iOS-通讯录写法/">iOS_通讯录写法</a>
+            <a href="/2015/12/07/iOS-好用的颜色库/">iOS_好用的颜色库</a>
           </li>
         
       </ul>

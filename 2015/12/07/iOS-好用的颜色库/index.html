@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS_好用的颜色库 | 孙利峰</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="Wonderful 这个库主要是与UIColor息息相连的，其中一共包含四个子文件，UIColor+Wonderful，UIColor+Separate，SXColorGradientView，SXMarquee。分别对应颜色扩展，色彩分离，颜色渐变，和跑马灯 4种主要功能。
+项目地址：https://github.com/dsxNiubility/Wonderful
+一、UIColor+Won">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS_好用的颜色库">
+<meta property="og:url" content="http://yoursite.com/2015/12/07/iOS-好用的颜色库/index.html">
+<meta property="og:site_name" content="孙利峰">
+<meta property="og:description" content="Wonderful 这个库主要是与UIColor息息相连的，其中一共包含四个子文件，UIColor+Wonderful，UIColor+Separate，SXColorGradientView，SXMarquee。分别对应颜色扩展，色彩分离，颜色渐变，和跑马灯 4种主要功能。
+项目地址：https://github.com/dsxNiubility/Wonderful
+一、UIColor+Won">
+<meta property="og:updated_time" content="2016-06-17T08:40:09.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS_好用的颜色库">
+<meta name="twitter:description" content="Wonderful 这个库主要是与UIColor息息相连的，其中一共包含四个子文件，UIColor+Wonderful，UIColor+Separate，SXColorGradientView，SXMarquee。分别对应颜色扩展，色彩分离，颜色渐变，和跑马灯 4种主要功能。
+项目地址：https://github.com/dsxNiubility/Wonderful
+一、UIColor+Won">
+  
+    <link rel="alternate" href="/atom.xml" title="孙利峰" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">孙利峰</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-iOS-好用的颜色库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/12/07/iOS-好用的颜色库/" class="article-date">
+  <time datetime="2015-12-07T08:38:33.000Z" itemprop="datePublished">2015-12-07</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS_好用的颜色库
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>Wonderful 这个库主要是与UIColor息息相连的，其中一共包含四个子文件，UIColor+Wonderful，UIColor+Separate，SXColorGradientView，SXMarquee。分别对应颜色扩展，色彩分离，颜色渐变，和跑马灯 4种主要功能。</p>
+<p>项目地址：<a href="https://github.com/dsxNiubility/Wonderful" target="_blank" rel="external">https://github.com/dsxNiubility/Wonderful</a></p>
+<p>一、UIColor+Wonderful<br>1.这个分类提供了100多种的颜色扩展，譬如卡其色，银色，草坪绿，金色，巧克力色，等等。 虽然这个功能可能不太适合UI规范都直接制定好了的企业级的App，但是对于一些小型的App和Demo类程序还是有一些用武之地的。再也不用redColor buleColor了，再也不用想要一点特殊颜色就要colorWithRGB了。 只要引入了这个库，大部分的常用颜色都可以直接使用。</p>
+<p>self.view.backgroundColor = [UIColor khakiColor];<br>self.view.backgroundColor = [UIColor chocolateColor];　<br>2.平均每个色系有10种颜色，不仅可以使用名称直接敲出，还能使用颜色阶梯的宏敲出，在你想不起词的时候更加方便。 宏从1～10是颜色渐深，可以根据自己的感觉使用浅一级的宏或深一级的宏。</p>
+<p>self.view.backgroundColor = Wonderful_YelloeColor4;<br>self.view.backgroundColor = Wonderful_BrownColor4;<br>3.提供了颜色微调方案，可以让一个已知颜色的rgb的某值上升或下降若干，可用于不管背景是什么色，边框都比背景深20之类的操作。 也可以将认可颜色的详细值打印出来。</p>
+<p>UIColor <em>navColor = [[UIColor redColor]up:SXColorTypeBlue num:30]; // 在红色上把蓝色色值提高30<br>UIColor </em>barColor = [[UIColor blueColor]up:1 num:140]; // 可以直接用枚举对应的tag<br>UIColor <em>bgColor = [[UIColor blackColor]down:SXColorTypeAlpha num:10]; // 取一个比黑色稍微淡的颜色<br>UIColor </em>lineColor = [bgColor up:3 num:20]; // 不管背景是什么颜色 线都比背景浅20.</p>
+<p>这个可以先看一下效果展示：（gif图可能比较模糊，但实际上过渡是做的十分高清的）</p>
+<p>二、UIColor+Separate<br>1.提供颜色分离方案，可以将任何颜色的RGB 和alpha的值取出。</p>
+<p>UIColor <em>testC = [UIColor salmonColor];<br>float r= [testC red];<br>float g= [testC green];<br>float b= [testC blue];<br>float alpha= [testC alpha];<br>NSLog(@”<strong>*</strong></em>  %f,%f,%f,%f”,r,g,b,alpha);<br>2.可以通过一个颜色算出此颜色的反色，使得背景无论被用户设置成什么色，文字颜色都是背景的反色。</p>
+<p>self.showLbl1.backgroundColor = [UIColor peachRed];<br>self.showLbl1.textColor = [[UIColor peachRed]reverseColor];<br>3.也可以直接打印这个颜色的各项详细数值</p>
+<p>[[UIColor salmonColor]printDetail];<br>// 打印结果<br>This Color’s Red:250, Green:128, Blue:114, Alpha:1<br>decimal red:0.9804 green:0.5020 blue:0.4471<br>Hexadecimal 0xfa8072<br>三、SXColorGradientView<br>1.颜色渐变的view，可以设置任何颜色到透明的过渡。 如果有意，完全可以将导航栏设置成从上往下的渐变色。当下这种渐变色基本都是以一张背景图片，并且还不宜改变，使用原生方法实现渐变色的成本肯定比图片要小。</p>
+<p>SXColorGradientView *grv1 = [SXColorGradientView createWithColor:[UIColor paleGreen] frame:CGRectMake(10, 10, 80, 30) visible:YES direction:SXColorGradientToRight];<br>2.也可以设置两个颜色相互过渡。</p>
+<p>SXColorGradientView *grv3 = [SXColorGradientView createWithFromColor:[UIColor peruColor] toColor:[UIColor ghostWhite] frame:CGRectMake(10, 50, 80, 30) direction:SXColorGradientToRight];<br>3.可以设置向上下左右四个过渡的方向。</p>
+<p>typedef NS_ENUM(NSInteger, SXColorGradientDirection) {<br>SXColorGradientToTop = 1,<br>SXColorGradientToLeft = 2,<br>SXColorGradientToBottom = 3,<br>SXColorGradientToRight = 4,<br>};<br>＊4.后续会增加传入一个数组，然后搭建一个多个颜色过渡的view。</p>
+<p>四、SXMarquee<br>1.现在iOS的项目中，带有跑马灯的项目少之又少，安卓有自带的跑马灯控件，但iOS出于各种原因，至少我还没见过带跑马灯的项目，其实这个功能应该是很常用很方便很有意义的。 当下做跑马灯的第三方库没有几个，并且大多存在下列问题：代码老旧，实现复杂，只能实现白色的背景，不能绑定点击事件，点击暂停拖动等。</p>
+<p>SXMarquee *mar3 = [[SXMarquee alloc]initWithFrame:CGRectMake(20, 390, 335, 25) speed:2 Msg:@”If you’ve submitted an update to fix a critical bug in your app on the App Store and you are requesting an expedited review.” bgColor:[UIColor goldColor] txtColor:[UIColor goldenrod]];<br>[mar3 changeMarqueeLabelFont:[UIFont boldSystemFontOfSize:12]];<br>[mar3 start];<br>2.跑马灯的背景可以设置任何颜色，这个是基于颜色过渡view做的。</p>
+<p>3.跑马灯可以实现点击拖动，或者绑定更多点击事件。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/12/07/iOS-好用的颜色库/" data-id="cipjhjh5r000dfqs64bjbxzrc" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2016/01/14/iOS三种视屏录制方式/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          iOS三种视屏录制方式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/11/23/iOS-通讯录写法/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">iOS_通讯录写法</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/02/15/搞定iOS与js交互/">搞定iOS与js交互</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/28/移动直播开发技术介绍/">移动直播开发技术介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/22/Bilibili开源的直播框架/">Bilibili开源的直播框架</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/14/iOS三种视屏录制方式/">iOS三种视屏录制方式</a>
+          </li>
+        
+          <li>
+            <a href="/2015/12/07/iOS-好用的颜色库/">iOS_好用的颜色库</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
