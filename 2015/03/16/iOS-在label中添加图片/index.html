@@ -3,21 +3,24 @@
 <head>
   <meta charset="utf-8">
   
-  <title>iOS_关于蒲公英 | 孙利峰</title>
+  <title>iOS_在label中添加图片 | 孙利峰</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="蒲公英托管平台网站http://www.pgyer.com/
-首先说一下蒲公英是干什么的，蒲公英就是你程序希望给别的用户测试，但是他手机又没有在的开发者账号列表下，那么就需要企业账号打包才可以给用户进行安装，但是安装你又需要架设一个网页，等等其他麻烦事情，所以使用蒲公英可以简单做到这些事情，你无须有企业账号，只需要能打包成ipa文件即可，然后上传到蒲公英平台上，之后蒲公英就给你一个连接你发送给客">
+  <meta name="description" content="这个需求其实是有的，比如QQ聊天界面里面发送的信息，可以用label来显示文字（也可以用button显示），但是有时候用户可能会发送图片。如果能让Label遇到文字就显示文字，遇到图片就显示图片就好了。可能有的人会说用Quartz2D,直接在Label的drawinrect 里面用上下文画上去。但这感觉太刻意去弄了，而且比较麻烦。
+如果你不是在董铂然博客园看到本文，请点击查看原文
+推荐一种用La">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS_关于蒲公英">
-<meta property="og:url" content="http://yoursite.com/2015/03/07/iOS-关于蒲公英/index.html">
+<meta property="og:title" content="iOS_在label中添加图片">
+<meta property="og:url" content="http://yoursite.com/2015/03/16/iOS-在label中添加图片/index.html">
 <meta property="og:site_name" content="孙利峰">
-<meta property="og:description" content="蒲公英托管平台网站http://www.pgyer.com/
-首先说一下蒲公英是干什么的，蒲公英就是你程序希望给别的用户测试，但是他手机又没有在的开发者账号列表下，那么就需要企业账号打包才可以给用户进行安装，但是安装你又需要架设一个网页，等等其他麻烦事情，所以使用蒲公英可以简单做到这些事情，你无须有企业账号，只需要能打包成ipa文件即可，然后上传到蒲公英平台上，之后蒲公英就给你一个连接你发送给客">
-<meta property="og:updated_time" content="2016-06-17T07:51:22.000Z">
+<meta property="og:description" content="这个需求其实是有的，比如QQ聊天界面里面发送的信息，可以用label来显示文字（也可以用button显示），但是有时候用户可能会发送图片。如果能让Label遇到文字就显示文字，遇到图片就显示图片就好了。可能有的人会说用Quartz2D,直接在Label的drawinrect 里面用上下文画上去。但这感觉太刻意去弄了，而且比较麻烦。
+如果你不是在董铂然博客园看到本文，请点击查看原文
+推荐一种用La">
+<meta property="og:updated_time" content="2016-06-17T09:02:57.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS_关于蒲公英">
-<meta name="twitter:description" content="蒲公英托管平台网站http://www.pgyer.com/
-首先说一下蒲公英是干什么的，蒲公英就是你程序希望给别的用户测试，但是他手机又没有在的开发者账号列表下，那么就需要企业账号打包才可以给用户进行安装，但是安装你又需要架设一个网页，等等其他麻烦事情，所以使用蒲公英可以简单做到这些事情，你无须有企业账号，只需要能打包成ipa文件即可，然后上传到蒲公英平台上，之后蒲公英就给你一个连接你发送给客">
+<meta name="twitter:title" content="iOS_在label中添加图片">
+<meta name="twitter:description" content="这个需求其实是有的，比如QQ聊天界面里面发送的信息，可以用label来显示文字（也可以用button显示），但是有时候用户可能会发送图片。如果能让Label遇到文字就显示文字，遇到图片就显示图片就好了。可能有的人会说用Quartz2D,直接在Label的drawinrect 里面用上下文画上去。但这感觉太刻意去弄了，而且比较麻烦。
+如果你不是在董铂然博客园看到本文，请点击查看原文
+推荐一种用La">
   
     <link rel="alternate" href="/atom.xml" title="孙利峰" type="application/atom+xml">
   
@@ -66,10 +69,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-iOS-关于蒲公英" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-iOS-在label中添加图片" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2015/03/07/iOS-关于蒲公英/" class="article-date">
-  <time datetime="2015-03-07T07:50:33.000Z" itemprop="datePublished">2015-03-07</time>
+    <a href="/2015/03/16/iOS-在label中添加图片/" class="article-date">
+  <time datetime="2015-03-16T09:01:48.000Z" itemprop="datePublished">2015-03-16</time>
 </a>
     
   </div>
@@ -80,7 +83,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      iOS_关于蒲公英
+      iOS_在label中添加图片
     </h1>
   
 
@@ -89,17 +92,20 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p><span></span></p>
-<p>蒲公英托管平台网站<a href="http://www.pgyer.com/" target="_blank" rel="external">http://www.pgyer.com/</a></p>
-<p>首先说一下蒲公英是干什么的，蒲公英就是你程序希望给别的用户测试，但是他手机又没有在的开发者账号列表下，那么就需要企业账号打包才可以给用户进行安装，但是安装你又需要架设一个网页，等等其他麻烦事情，所以使用蒲公英可以简单做到这些事情，你无须有企业账号，只需要能打包成ipa文件即可，然后上传到蒲公英平台上，之后蒲公英就给你一个连接你发送给客户，或者做成二维码扫描即可</p>
-<p>原理​</p>
-<p>那么你奇怪为什么我随便打个包给他，别人就能下载了，从原理上分析，蒲公英提供了大量的企业级开发者账号，也就是299美金那种，然后你上传ipa文件，他服务器自动把ipa文件拆包，更换里面的签名文件，替换为企业级开发者账号的签名文件，之后在把这个ipa文件的地址发送给你，你下载就是299美金授权那种，这也就解释了​有的时候你在蒲公英上面一段时间后就不行的原因，因为被人举报了，蒲公英要启动一个新的账号，所以那个授权就过期了</p>
-<p>注：最新版本的蒲公英需要用户自己提供299美金账号打包了，他不在提供修改ipa文件帮你修改了，这点需要注意​</p>
+<p>这个需求其实是有的，比如QQ聊天界面里面发送的信息，可以用label来显示文字（也可以用button显示），但是有时候用户可能会发送图片。如果能让Label遇到文字就显示文字，遇到图片就显示图片就好了。可能有的人会说用Quartz2D,直接在Label的drawinrect 里面用上下文画上去。但这感觉太刻意去弄了，而且比较麻烦。</p>
+<p>如果你不是在董铂然博客园看到本文，请点击查看原文</p>
+<p>推荐一种用Label系统的属性来做。</p>
+<p>UIImage *image = [UIImage imageNamed:@”321.jpg”];</p>
+<p>// 1&gt; 生成文本附件<br>NSTextAttachment *textAttach = [[NSTextAttachment alloc] init];<br>textAttach.image = image;</p>
+<p>// 2&gt; 使用文本附件创建属性文本<br>NSAttributedString *strA = [NSAttributedString attributedStringWithAttachment:textAttach];</p>
+<p>self.lblChat.attributedText = strA;<br>里面的lblChat是一个成员变量 在storyboard里拖得一个label。</p>
+<p>所有人都知道label.Text 但应该不是全都知道label.attributedText </p>
 <p></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjickc2000elds68lwd9roe" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/16/iOS-在label中添加图片/" data-id="cipjickc5000flds6gb42zqe6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -108,19 +114,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2015/03/16/iOS-在label中添加图片/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2015/08/24/关于XMPP/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          iOS_在label中添加图片
+          关于XMPP
         
       </div>
     </a>
   
   
-    <a href="/2015/02/17/iOS-关于判断VPN小结/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2015/03/07/iOS-关于蒲公英/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">iOS_关于判断VPN小结</div>
+      <div class="article-nav-title">iOS_关于蒲公英</div>
     </a>
   
 </nav>

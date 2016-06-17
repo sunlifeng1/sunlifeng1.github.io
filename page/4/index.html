@@ -64,6 +64,52 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Objective-C内存管理教程和原理小结3" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/10/14/Objective-C内存管理教程和原理小结3/" class="article-date">
+  <time datetime="2013-10-14T12:44:32.000Z" itemprop="datePublished">2013-10-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/10/14/Objective-C内存管理教程和原理小结3/">Objective-C内存管理教程和原理小结3</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>原文出处： Vince Yuan 的博客<br>@property (retain)和@synthesize的默认实现</p>
+<p>在这里解释一下@property (retain) ClassB* objB;和@synthesize objB;背后到底发生了什么(retain property的默认实现)。property实际上是getter和setter，针对有retain参数的property，背后的实现如下（请参考附件中的memman-getter-setter.m，你会发现，结果和memman-property.m一样）：</p>
+<p>@interface ClassA : NSObject<br>{<br>ClassB *objB;<br>}</p>
+<p>-(ClassB <em>) getObjB;<br>-(void) setObjB:(ClassB </em>) value;<br>@end</p>
+<p>@implementation ClassA<br>-(ClassB*) getObjB<br>{<br>return objB;<br>}</p>
+<p>-(void) setObjB:(ClassB*) value<br>{<br>if (objB != value)<br>{<br>[objB release];<br>objB = [value retain];<br>}<br>}<br>在setObjB中，如果新设定的值和原值不同的话，必须要把原值对象release一次，这样才能保证retain count是正确的。</p>
+<p>由于我们在class内部retain了一次（虽然是默认实现的），所以我们要在dealloc方法中release这个成员变量。</p>
+<p>-(void) dealloc<br>{<br>[objB release];<br>[super dealloc];<br>}</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipjickas0005lds6lcbu0exh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Objective-C内存管理教程和原理小结2" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2013/10/07/Objective-C内存管理教程和原理小结2/" class="article-date">
@@ -132,7 +178,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipji96b00003khs68xlf1elc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipjickar0004lds63nl6qyak" class="article-share-link">Share</a>
       
       
     </footer>
@@ -227,7 +273,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipji96b30005khs6qn07pif7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipjick9n0003lds6c36ugmeu" class="article-share-link">Share</a>
       
       
     </footer>
@@ -296,7 +342,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipji96cp000ikhs666glt5ic" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipjickco000llds671mwkl1l" class="article-share-link">Share</a>
       
       
     </footer>
@@ -343,7 +389,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipji96do000vkhs6lczmf7xo" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipjickd8000ulds6rpwx27s3" class="article-share-link">Share</a>
       
       
     </footer>
