@@ -110,7 +110,54 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjtriml000itjs686ci01d6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjuf0wj000hyps6hk4kbfbw" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-FMDB" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/10/FMDB/" class="article-date">
+  <time datetime="2015-02-10T14:38:53.000Z" itemprop="datePublished">2015-02-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/10/FMDB/">FMDB</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>SQLite (<a href="http://www.sqlite.org/docs.html" target="_blank" rel="external">http://www.sqlite.org/docs.html</a>) 是一个轻量级的关系数据库。iOS SDK 很早就支持了 SQLite，在使用时，只需要加入 libsqlite3.dylib 依赖以及引入 sqlite3.h 头文件即可。但是，原生的 SQLite API 在使用上相当不友好，在使用时，非常不便。于是，开源社区中就出现了一系列将 SQLite API 进行封装的库，而 FMDB (<a href="https://github.com/ccgus/fmdb" target="_blank" rel="external">https://github.com/ccgus/fmdb</a>) 则是开源社区中的优秀者。<br>FMDB 在使用上相当方便。以下是一个简单的例子：<br>NSString<em> docsdir = [NSSearchPathForDirectoriesInDomains( NSDocumentDirectory, NSUserDomainMask, YES) lastObject];<br>NSString</em> dbpath = [docsdir stringByAppendingPathComponent:@”user.sqlite”];<br>FMDatabase<em> db = [FMDatabase databaseWithPath:dbpath];<br>[db open];<br>FMResultSet </em>rs = [db executeQuery:@”select * from people”];<br>while ([rs next]) {<br>NSLog(@”%@ %@”,<br>[rs stringForColumn:@”firstname”],<br>[rs stringForColumn:@”lastname”]);<br>}<br>[db close];<br>可以看到，使用 FMDB 后的数据库代码清晰明了，比原生的 API 优雅多了。另外，FMDB 同时兼容 ARC 和非 ARC 工程，会自动根据工程配置来调整相关的内存管理代码。</p>
+<p>使用说明<br>该使用说明主要翻译自 fmdb 的 github 项目说明文档: <a href="https://github.com/ccgus/fmdb" target="_blank" rel="external">https://github.com/ccgus/fmdb</a><br>引入相关文件<br>首先将 FMDB 从 github 上 clone 下来，然后将以下文件 copy 到你的工程中：<br>FMDatabase.h<br>FMDatabase.m<br>FMDatabaseAdditions.h<br>FMDatabaseAdditions.m<br>FMDatabasePool.h<br>FMDatabasePool.m<br>FMDatabaseQueue.h<br>FMDatabaseQueue.m<br>FMResultSet.h<br>FMResultSet.m<br>建立数据库<br>建立数据库只需要如下一行即可 , 当该文件不存在时，fmdb 会自己创建一个。如果你传入的参数是空串：@”” ，则 fmdb 会在临时文件目录下创建这个数据库，如果你传入的参数是 NULL，则它会建立一个在内存中的数据库。<br>FMDatabase *db = [FMDatabase databaseWithPath:@”/tmp/tmp.db”];<br>打开数据库<br>使用如下语句，如果打开失败，可能是权限不足或者资源不足。通常打开完操作操作后，需要调用 close 方法来关闭数据库。<br>if (![db open]) {<br>// error<br>return;<br>}<br>// some operation<br>// …</p>
+<p>[db close];<br>执行更新操作<br>除了 Select 操作之外，其它的都是更新操作。更新操作使用如下方法，如果有错误，可以用 error 参数中获得。<br>-[FMDatabase executeUpdate:error:withArgumentsInArray:orVAList:]<br>执行查询操作<br>查询操作示例如下。注意：即使操作结果只有一行，也需要先调用 FMResultSet 的 next 方法。<br>FMResultSet <em>s = [db executeQuery:@”SELECT </em> FROM myTable”];<br>while ([s next]) {<br>//retrieve values for each record<br>}</p>
+<p>FMResultSet <em>s = [db executeQuery:@”SELECT COUNT(</em>) FROM myTable”];<br>if ([s next]) {<br>int totalCount = [s intForColumnIndex:0];<br>}<br>FMDB 提供如下多个方法来获取不同类型的数据：<br>intForColumn:<br>longForColumn:<br>longLongIntForColumn:<br>boolForColumn:<br>doubleForColumn:<br>stringForColumn:<br>dateForColumn:<br>dataForColumn:<br>dataNoCopyForColumn:<br>UTF8StringForColumnIndex:<br>objectForColumn:<br>通常情况下，你并不需要关闭 FMResultSet，因为相关的数据库关闭时，FMResultSet 也会被自动关闭。<br>数据参数<br>通常情况下，你可以按照标准的 SQL 语句，用 ? 表示执行语句的参数，如：<br>INSERT INTO myTable VALUES (?, ?, ?)<br>然后，可以我们可以调用 executeUpdate 方法来将 ? 所指代的具体参数传入，通常是用变长参数来传递进去的，如下：<br>NSString <em>sql = @”insert into User (name, password) values (?, ?)”;<br>[db executeUpdate:sql, user.name, user.password];<br>这里需要注意的是，参数必须是 NSObject 的子类，所以象 int,double,bool 这种基本类型，需要封装成对应的包装类才行，如下所示：<br>// 错误，42 不能作为参数<br>[db executeUpdate:@”INSERT INTO myTable VALUES (?)”, 42];<br>// 正确，将 42 封装成 NSNumber 类<br>[db executeUpdate:@”INSERT INTO myTable VALUES (?)”, [NSNumber numberWithInt:42]];<br>线程安全<br>如果我们的 app 需要多线程操作数据库，那么就需要使用 FMDatabaseQueue 来保证线程安全了。<br>切记不能在多个线程中共同一个 FMDatabase 对象并且在多个线程中同时使用，这个类本身不是线程安全的，这样使用会造成数据混乱等问题。<br>使用 FMDatabaseQueue 很简单，首先用一个数据库文件地址来初使化 FMDatabaseQueue，然后就可以将一个闭包 (block) 传入 inDatabase 方法中。<br>在闭包中操作数据库，而不直接参与 FMDatabase 的管理。<br>// 创建，最好放在一个单例的类中<br>FMDatabaseQueue </em>queue = [FMDatabaseQueue databaseQueueWithPath:aPath];</p>
+<p>// 使用<br>[queue inDatabase:^(FMDatabase *db) {<br>[db executeUpdate:@”INSERT INTO myTable VALUES (?)”, [NSNumber numberWithInt:1]];<br>[db executeUpdate:@”INSERT INTO myTable VALUES (?)”, [NSNumber numberWithInt:2]];<br>[db executeUpdate:@”INSERT INTO myTable VALUES (?)”, [NSNumber numberWithInt:3]];</p>
+<p>FMResultSet <em>rs = [db executeQuery:@”select </em> from foo”];<br>while ([rs next]) {<br>// …<br>}<br>}];</p>
+<p>// 如果要支持事务<br>[queue inTransaction:^(FMDatabase <em>db, BOOL </em>rollback) {<br>[db executeUpdate:@”INSERT INTO myTable VALUES (?)”, [NSNumber numberWithInt:1]];<br>[db executeUpdate:@”INSERT INTO myTable VALUES (?)”, [NSNumber numberWithInt:2]];<br>[db executeUpdate:@”INSERT INTO myTable VALUES (?)”, [NSNumber numberWithInt:3]];</p>
+<p>if (whoopsSomethingWrongHappened) {<br>*rollback = YES;<br>return;<br>}<br>// etc…<br>[db executeUpdate:@”INSERT INTO myTable VALUES (?)”, [NSNumber numberWithInt:4]];<br>}];<br>工具<br>为了查看 Sqlite 中的数据，一个好的图形化界面的数据库管理程序是必不可少的。mysql 有 phpMyAdmin，那么 sqlite 呢？<br>我主要使用的是 Firefox 的一个名为 SQLite Manager 的插件，安装此插件后，可以直接打开后缀名为 sqlite 的数据库文件。SQLite Manager 提供一个图形化的界面来执行数据查询或更改操作。如下图所示：</p>
+<p>总结<br>FMDB 将 SQLite API 进行了很友好的封装，使用上非常方便，对于那些使用纯 Sqlite API 来进行数据库操作的 app，可以考虑将其迁移到基于 FMDB 上，这对于以后数据库相关功能的开发维护，可以提高不少效率。<br>我在学习 fmdb 的时候做了一个小工程用于练习，我把它放到 github 上了。感兴趣的可以自行下载：<a href="https://github.com/tangqiaoboy/FmdbSample" target="_blank" rel="external">https://github.com/tangqiaoboy/FmdbSample</a></p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/10/FMDB/" data-id="cipjuf0v70000yps6340limjx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -155,7 +202,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjtrimc000etjs6b296au2i" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjuf0wb000byps630r4vvg9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -223,7 +270,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjtrim9000ctjs6lc6y1g3v" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjuf0wf000eyps6x6kpyjjf" class="article-share-link">Share</a>
       
       
     </footer>
@@ -332,7 +379,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/02/20/iOS-APP上线性能检测/" data-id="cipjtrimb000dtjs6tgta21ov" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/02/20/iOS-APP上线性能检测/" data-id="cipjuf0wi000gyps6r2ogutfj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -400,7 +447,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjtrin1000ptjs6bdkoxpgj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjuf0y4000vyps6nk9k9jua" class="article-share-link">Share</a>
       
       
     </footer>
@@ -439,7 +486,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjtrina000stjs6iq87uu1i" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjuf0xz000typs6c5o9x1qy" class="article-share-link">Share</a>
       
       
     </footer>
@@ -478,7 +525,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipjtrinj000xtjs6t8ofqdco" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipjuf0ye0010yps69ff8tr72" class="article-share-link">Share</a>
       
       
     </footer>
@@ -531,7 +578,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipjtrino0010tjs62tlxjo44" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipjuf0yk0012yps66946w8pi" class="article-share-link">Share</a>
       
       
     </footer>
@@ -570,52 +617,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipjtrinl000ytjs6fuyscl90" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="写ios-SDK注意问题小结" class="article article-type-写ios" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2013/12/14/SDK注意问题小结/" class="article-date">
-  <time datetime="2013-12-14T13:35:15.000Z" itemprop="datePublished">2013-12-14</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/12/14/SDK注意问题小结/">SDK注意问题小结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>我发现即使是像腾讯、小米这样的大厂提供的 SDK，在质量和规范上也有很多问题，而且包括我以及我身边的很多朋友都被恶心到了，所以我就把这些注意事项总结出来，希望大家不要犯同样的错误。<br>注意事项一：所有类名都应该加前缀<br>说明：没有前缀的类名有冲突的风险。<br>Bad Case：微信分享的 SDK，文件名：WXApiObject.h，代码如下，其中BaseReq类和BaseResp类都没有加前缀。<br>@interface BaseReq : NSObject</p>
-<p>/<strong> 请求类型 */<br>@property (nonatomic, assign) int type;<br>/</strong> 由用户微信号和 AppID 组成的唯一标识，发送请求时第三方程序必须填写，用于校验微信用户是否换号登录 <em>/<br>@property (nonatomic, retain) NSString</em> openID;</p>
-<p>@end</p>
-<p>#pragma mark - BaseResp<br>/<em>! @brief 该类为微信终端 SDK 所有响应类的基类
-</em><br><em>/<br>@interface BaseResp : NSObject<br>/** 错误码 </em>/<br>@property (nonatomic, assign) int errCode;<br>/<strong> 错误提示字符串 <em>/<br>@property (nonatomic, retain) NSString </em>errStr;<br>/</strong> 响应类型 */<br>@property (nonatomic, assign) int type;</p>
-<p>@end<br>注意事项二：所有 category 方法加前缀<br>说明：category 方法如果不加前缀，有冲突的风险。<br>Bad Case：腾讯分享的 SDK，它为 NSArray 增加了一个 JSONArray 的 category，造成我们本身的同名 category 被覆盖。另外他们为 NSArray 增加的其它 category 和著名的 Cordova 开源库冲突，造成 Cordova 无法使用。<br>注意事项三：不要将第三方库打包进 SDK<br>说明：尽量不要将第三方库打包进 SDK，如果要打包，最好也要将该第三方库重命名，以避免冲突。<br>Bad Case：小米的推送 SDK，直接在 SDK 静态库里面编进去一个第三方依赖库，而且这个库还是 ASIHttpRequest。ASIHttp 当前已经处于无人维护状态，很多 Bug 都是大家自己在修复（例如网易就自己维护了一个 ASIHttpRequest 的分支）。在 SDK 中依赖这种库还是比较麻烦的。<br>注意事项四：做基本的检查和测试<br>说明：SDK 对外公布前应该进行基本的编译检查，不应该有编译器警告存在。<br>Bad Case：腾讯分享的 SDK。它的 CGIParamsWrap.o 和 TencentOAuth.o 文件里面的方法名冲突了，如下所示：<br>ld: warning: instance method ‘deleteAPIRequestBySeq:’ in category from /Users/tangqiao/work/iphone/solar-ios/lib_common/TencentOpenApi/TencentOpenAPI.framework/TencentOpenAPI(CGIParamsWrap.o) overrides method from class in /Users/tangqiao/work/iphone/solar-ios/lib_common/TencentOpenApi/TencentOpenAPI.framework/TencentOpenAPI(TencentOAuth.o)<br>注意事项五：文档完整并且正确<br>说明：这就不用解释了吧？<br>Bad Case: 微信官方的微信支付的示例代码，里面有各种错误，代码都无法编译成功。如下所示的是其中一个错误：</p>
-<p>于是还有人专门帮微信另外制作了一个非官方的说明文档，地址在这里：<a href="https://github.com/gbammc/WechatPayDemo" target="_blank" rel="external">https://github.com/gbammc/WechatPayDemo</a><br>注意事项六：支持最新的 CPU 版本<br>说明：去年苹果的一次 Bug，造成上传应用必须支持 arm64 的 CPU 版本，结果众多应用因为依赖的 SDK 不支持 arm64 而无法更新。当然，这次 Bug 出来之后，各 SDK 厂商都紧急做了更新。但是我觉得这种事情如果要做得专业，就应该一开始就紧跟技术更新，及时更新，而不是被迫更新。<br>总结<br>以上 6 点是我认为写一个 SDK 的最最基本的要求，希望被点名批评的同学能尽快改正哟～<br>如果大家在使用其它 SDK 时也发现了类似的问题，欢迎在文章下面留言。希望通过这种方式给开发相关 SDK 的同学一些压力，让他们好好改一下。</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipjtrilm0006tjs68lutlm91" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipjuf0y2000uyps6w7ohlpld" class="article-share-link">Share</a>
       
       
     </footer>
