@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Objective-C内存管理教程和原理小结3 | 孙利峰</title>
+  <title>iOS_关于蒲公英 | 孙利峰</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="原文出处： Vince Yuan 的博客@property (retain)和@synthesize的默认实现
-在这里解释一下@property (retain) ClassB* objB;和@synthesize objB;背后到底发生了什么(retain property的默认实现)。property实际上是getter和setter，针对有retain参数的property，背后的实现如下">
+  <meta name="description" content="蒲公英托管平台网站http://www.pgyer.com/
+首先说一下蒲公英是干什么的，蒲公英就是你程序希望给别的用户测试，但是他手机又没有在的开发者账号列表下，那么就需要企业账号打包才可以给用户进行安装，但是安装你又需要架设一个网页，等等其他麻烦事情，所以使用蒲公英可以简单做到这些事情，你无须有企业账号，只需要能打包成ipa文件即可，然后上传到蒲公英平台上，之后蒲公英就给你一个连接你发送给客">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Objective-C内存管理教程和原理小结3">
-<meta property="og:url" content="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/index.html">
+<meta property="og:title" content="iOS_关于蒲公英">
+<meta property="og:url" content="http://yoursite.com/2015/03/07/iOS-关于蒲公英/index.html">
 <meta property="og:site_name" content="孙利峰">
-<meta property="og:description" content="原文出处： Vince Yuan 的博客@property (retain)和@synthesize的默认实现
-在这里解释一下@property (retain) ClassB* objB;和@synthesize objB;背后到底发生了什么(retain property的默认实现)。property实际上是getter和setter，针对有retain参数的property，背后的实现如下">
-<meta property="og:updated_time" content="2016-06-14T12:46:50.000Z">
+<meta property="og:description" content="蒲公英托管平台网站http://www.pgyer.com/
+首先说一下蒲公英是干什么的，蒲公英就是你程序希望给别的用户测试，但是他手机又没有在的开发者账号列表下，那么就需要企业账号打包才可以给用户进行安装，但是安装你又需要架设一个网页，等等其他麻烦事情，所以使用蒲公英可以简单做到这些事情，你无须有企业账号，只需要能打包成ipa文件即可，然后上传到蒲公英平台上，之后蒲公英就给你一个连接你发送给客">
+<meta property="og:updated_time" content="2016-06-17T07:51:22.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Objective-C内存管理教程和原理小结3">
-<meta name="twitter:description" content="原文出处： Vince Yuan 的博客@property (retain)和@synthesize的默认实现
-在这里解释一下@property (retain) ClassB* objB;和@synthesize objB;背后到底发生了什么(retain property的默认实现)。property实际上是getter和setter，针对有retain参数的property，背后的实现如下">
+<meta name="twitter:title" content="iOS_关于蒲公英">
+<meta name="twitter:description" content="蒲公英托管平台网站http://www.pgyer.com/
+首先说一下蒲公英是干什么的，蒲公英就是你程序希望给别的用户测试，但是他手机又没有在的开发者账号列表下，那么就需要企业账号打包才可以给用户进行安装，但是安装你又需要架设一个网页，等等其他麻烦事情，所以使用蒲公英可以简单做到这些事情，你无须有企业账号，只需要能打包成ipa文件即可，然后上传到蒲公英平台上，之后蒲公英就给你一个连接你发送给客">
   
     <link rel="alternate" href="/atom.xml" title="孙利峰" type="application/atom+xml">
   
@@ -66,10 +66,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-Objective-C内存管理教程和原理小结3" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-iOS-关于蒲公英" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2013/10/14/Objective-C内存管理教程和原理小结3/" class="article-date">
-  <time datetime="2013-10-14T12:44:32.000Z" itemprop="datePublished">2013-10-14</time>
+    <a href="/2015/03/07/iOS-关于蒲公英/" class="article-date">
+  <time datetime="2015-03-07T07:50:33.000Z" itemprop="datePublished">2015-03-07</time>
 </a>
     
   </div>
@@ -80,7 +80,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      Objective-C内存管理教程和原理小结3
+      iOS_关于蒲公英
     </h1>
   
 
@@ -89,20 +89,17 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p><span></span></p>
-<p>原文出处： Vince Yuan 的博客<br>@property (retain)和@synthesize的默认实现</p>
-<p>在这里解释一下@property (retain) ClassB* objB;和@synthesize objB;背后到底发生了什么(retain property的默认实现)。property实际上是getter和setter，针对有retain参数的property，背后的实现如下（请参考附件中的memman-getter-setter.m，你会发现，结果和memman-property.m一样）：</p>
-<p>@interface ClassA : NSObject<br>{<br>ClassB *objB;<br>}</p>
-<p>-(ClassB <em>) getObjB;<br>-(void) setObjB:(ClassB </em>) value;<br>@end</p>
-<p>@implementation ClassA<br>-(ClassB*) getObjB<br>{<br>return objB;<br>}</p>
-<p>-(void) setObjB:(ClassB*) value<br>{<br>if (objB != value)<br>{<br>[objB release];<br>objB = [value retain];<br>}<br>}<br>在setObjB中，如果新设定的值和原值不同的话，必须要把原值对象release一次，这样才能保证retain count是正确的。</p>
-<p>由于我们在class内部retain了一次（虽然是默认实现的），所以我们要在dealloc方法中release这个成员变量。</p>
-<p>-(void) dealloc<br>{<br>[objB release];<br>[super dealloc];<br>}</p>
+<p>蒲公英托管平台网站<a href="http://www.pgyer.com/" target="_blank" rel="external">http://www.pgyer.com/</a></p>
+<p>首先说一下蒲公英是干什么的，蒲公英就是你程序希望给别的用户测试，但是他手机又没有在的开发者账号列表下，那么就需要企业账号打包才可以给用户进行安装，但是安装你又需要架设一个网页，等等其他麻烦事情，所以使用蒲公英可以简单做到这些事情，你无须有企业账号，只需要能打包成ipa文件即可，然后上传到蒲公英平台上，之后蒲公英就给你一个连接你发送给客户，或者做成二维码扫描即可</p>
+<p>原理​</p>
+<p>那么你奇怪为什么我随便打个包给他，别人就能下载了，从原理上分析，蒲公英提供了大量的企业级开发者账号，也就是299美金那种，然后你上传ipa文件，他服务器自动把ipa文件拆包，更换里面的签名文件，替换为企业级开发者账号的签名文件，之后在把这个ipa文件的地址发送给你，你下载就是299美金授权那种，这也就解释了​有的时候你在蒲公英上面一段时间后就不行的原因，因为被人举报了，蒲公英要启动一个新的账号，所以那个授权就过期了</p>
+<p>注：最新版本的蒲公英需要用户自己提供299美金账号打包了，他不在提供修改ipa文件帮你修改了，这点需要注意​</p>
 <p></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipjfsss300025us6o1r3deig" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjfsssw000c5us6g7p0fdxn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -111,19 +108,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2013/10/22/Objective-C内存管理教程和原理小结4/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2016/01/14/iOS三种视屏录制方式/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Newer</strong>
       <div class="article-nav-title">
         
-          Objective-C内存管理教程和原理小结4
+          iOS三种视屏录制方式
         
       </div>
     </a>
   
   
-    <a href="/2013/10/07/Objective-C内存管理教程和原理小结2/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2015/02/17/iOS-关于判断VPN小结/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Objective-C内存管理教程和原理小结2</div>
+      <div class="article-nav-title">iOS_关于判断VPN小结</div>
     </a>
   
 </nav>
