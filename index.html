@@ -57,7 +57,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Søk"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -97,7 +97,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/06/14/WWDC——2016/" data-id="cipjt6tep0006r5s6kx3l5r4k" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/06/14/WWDC——2016/" data-id="cipjtn9ju000esis6kia36b2m" class="article-share-link">Share</a>
       
       
     </footer>
@@ -206,7 +206,46 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/04/17/openGL学习/" data-id="cipjt6tj3000ur5s6p5ek4m04" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/04/17/openGL学习/" data-id="cipjtn9kv000vsis62z2eiuha" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-MVC" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2016/04/03/MVC/" class="article-date">
+  <time datetime="2016-04-03T14:18:06.000Z" itemprop="datePublished">2016-04-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/04/03/MVC/">MVC</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>MVC 的历史<br>MVC，全称是 Model View Controller，是模型 (model)－视图 (view)－控制器 (controller) 的缩写。它表示的是一种常见的客户端软件开发框架。<br>MVC 的概念最早出现在二十世纪八十年代的 施乐帕克 实验室中（对，就是那个发明图形用户界面和鼠标的实验室），当时施乐帕克为 Smalltalk 发明了这种软件设计模式。<br>现在，MVC 已经成为主流的客户端编程框架，在 iOS 开发中，系统为我们实现好了公共的视图类：UIView，和控制器类：UIViewController。大多数时候，我们都需要继承这些类来实现我们的程序逻辑，因此，我们几乎逃避不开 MVC 这种设计模式。<br>但是，几十年过去了，我们对于 MVC 这种设计模式真的用得好吗？其实不是的，MVC 这种分层方式虽然清楚，但是如果使用不当，很可能让大量代码都集中在 Controller 之中，让 MVC 模式变成了 Massive View Controller 模式。<br>Controller 的臃肿问题何解？<br>很多人试图解决 MVC 这种架构下 Controller 比较臃肿的问题。我还记得半年前 InfoQ 搞了一次移动座谈会，当时 BeeFramework 和 Samurai-Native 的作者 老郭 问了我一句话：「什么样的内容才应该放到 Controller 中？」。但是当时因为时间不够，我没能展开我的观点，这次正好在这里好好谈谈我对于这个问题的想法。<br>我们来看看 MVC 这种架构的特点。其实设计模式很多时候是为了 Don’t repeat yourself 原则来做的，该原则要求能够复用的代码要尽量复用，来保证重用。在 MVC 这种设计模式中，我们发现 View 和 Model 都是符合这种原则的。<br>对于 View 来说，你如果抽象得好，那么一个 App 的动画效果可以很方便地移植到别的 App 上，而 Github 上也有很多 UI 控件，这些控件都是在 View 层做了很好的封装设计，使得它能够方便地开源给大家复用。<br>对于 Model 来说，它其实是用来存储业务的数据的，如果做得好，它也可以方便地复用。比如我当时在做有道云笔记 iPad 版的时候，我们就直接和 iOS 版复用了所有的 Model 层的代码。在创业做猿题库客户端时，iOS 和 iPad 版的 Model 层代码再次被复用上了。当然，因为和业务本身的数据意义相关，Model 层的复用大多数是在一个产品内部，不太可能像 View 层那样开源给社区。<br>说完 View 和 Model 了，那我们想想 Controller，Controller 有多少可以复用的？我们写完了一个 Controller 之后，可以很方便地复用它吗？结论是：非常难复用。在某些场景下，我们可能可以用 addSubViewController 之类的方式复用 Controller，但它的复用场景还是非常非常少的。<br>如果我们能够意识到 Controller 里面的代码不便于复用，我们就能知道什么代码应该写在 Controller 里面了，那就是那些不能复用的代码。在我看来，Controller 里面就只应该存放这些不能复用的代码，这些代码包括：<br>在初始化时，构造相应的 View 和 Model。<br>监听 Model 层的事件，将 Model 层的数据传递到 View 层。<br>监听 View 层的事件，并且将 View 层的事件转发到 Model 层。<br>如果 Controller 只有以上的这些代码，那么它的逻辑将非常简单，而且也会非常短。<br>但是，我们却很难做到这一点，因为还是有很多逻辑我们不知道写在哪里，于是就都写到了 Controller 中了，那我们接下来就看看其它逻辑应该写在哪里。<br>如何对 ViewController 瘦身？<br>objc.io 是一个非常有名的 iOS 开发博客，它上面的第一课 《Lighter View Controllers》 上就讲了很多这样的技巧，我们先总结一下它里面的观点：<br>将 UITableView 的 Data Source 分离到另外一个类中。<br>将数据获取和转换的逻辑分别到另外一个类中。<br>将拼装控件的逻辑，分离到另外一个类中。<br>你想明白了吗？其实 MVC 虽然只有三层，但是它并没有限制你只能有三层。所以，我们可以将 Controller 里面过于臃肿的逻辑抽取出来，形成新的可复用模块或架构层次。<br>我个人对于逻辑的抽取，有以下总结。<br>将网络请求抽象到单独的类中<br>新手写代码，直接就在 Controller 里面用 AFNetworking 发一个请求，请求的完数据直接就传递给 View。入门一些的同学，知道把这些请求代码移到另外一个静态类里面。但是我觉得还不够，所以我建议将每一个网络请求直接封装成类。<br>把每一个网络请求封装成对象其实是使用了设计模式中的 Command 模式，它有以下好处：<br>将网络请求与具体的第三方库依赖隔离，方便以后更换底层的网络库。实际上我们公司的 iOS 客户端最初是基于 ASIHttpRequest 的，我们只花了两天，就很轻松地切换到了 AFNetworking。<br>方便在基类中处理公共逻辑，例如猿题库的数据版本号信息就统一在基类中处理。<br>方便在基类中处理缓存逻辑，以及其它一些公共逻辑。<br>方便做对象的持久化。<br>大家如果感兴趣，可以看我们公司开源的 iOS 网络库：YTKNetwork。它在这种思考的指导下，不但将 Controller 中的代码瘦身，而且进一步演化和加强，现在它还支持诸如复杂网络请求管理，断点续传，插件机制，JSON 合法性检查等功能。<br>这部分代码从 Controller 中剥离出来后，不但简化了 Controller 中的逻辑，也达到了网络层的代码复用的效果。<br>将界面的拼装抽象到专门的类中<br>新手写代码，喜欢在 Controller 中把一个个 UILabel ，UIButton，UITextField 往 self.view 上用 addSubView 方法放。我建议大家可以用两种办法把这些代码从 Controller 中剥离。<br>方法一：构造专门的 UIView 的子类，来负责这些控件的拼装。这是最彻底和优雅的方式，不过稍微麻烦一些的是，你需要把这些控件的事件回调先接管，再都一一暴露回 Controller。<br>方法二：用一个静态的 Util 类，帮助你做 UIView 的拼装工作。这种方式稍微做得不太彻底，但是比较简单。<br>对于一些能复用的 UI 控件，我建议用方法一。如果项目工程比较复杂，我也建议用方法一。如果项目太紧，另外相关项目的代码量也不多，可以尝试方法二。<br>构造 ViewModel<br>谁说 MVC 就不能用 ViewModel 的？MVVM 的优点我们一样可以借鉴。具体做法就是将 ViewController 给 View 传递数据这个过程，抽象成构造 ViewModel 的过程。<br>这样抽象之后，View 只接受 ViewModel，而 Controller 只需要传递 ViewModel 这么一行代码。而另外构造 ViewModel 的过程，我们就可以移动到另外的类中了。<br>在具体实践中，我建议大家专门创建构造 ViewModel 工厂类，参见 工厂模式。另外，也可以专门将数据存取都抽将到一个 Service 层，由这层来提供 ViewModel 的获取。<br>专门构造存储类<br>刚刚说到 ViewModel 的构造可以抽奖到一个 Service 层。与此相应的，数据的存储也应该由专门的对象来做。在小猿搜题项目中，我们由一个叫 UserAgent 的类，专门来处理本地数据的存取。<br>数据存取放在专门的类中，就可以针对存取做额外的事情了。比如：<br>对一些热点数据增加缓存<br>处理数据迁移相关的逻辑<br>如果要做得更细，可以把存储引擎再抽象出一层。这样你就可以方便地切换存储的底层，例如从 sqlite 切换到 key-value 的存储引擎等。<br>小结<br>通过代码的抽取，我们可以将原本的 MVC 设计模式中的 ViewController 进一步拆分，构造出 网络请求层、ViewModel 层、Service 层、Storage 层等其它类，来配合 Controller 工作，从而使 Controller 更加简单，我们的 App 更容易维护。<br>另外，不知道大家注意到没，其实 Controller 层是非常难于测试的，如果我们能够将 Controller 瘦身，就可以更方便地写 Unit Test 来测试各种与界面的无关的逻辑。移动端自动化测试框架都不太成熟，但是将 Controller 的代码抽取出来，是有助于我们做测试工作的。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2016/04/03/MVC/" data-id="cipjtn9in0000sis6kbw94wp8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -282,7 +321,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/03/21/UITableView的应用和其中js与oc交互/" data-id="cipjt6thf0009r5s6t9hb2q3b" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/03/21/UITableView的应用和其中js与oc交互/" data-id="cipjtn9jg0008sis6eph93yd5" class="article-share-link">Share</a>
       
       
     </footer>
@@ -321,7 +360,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/02/15/搞定iOS与js交互/" data-id="cipjt6tjb000xr5s6jywggyid" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/02/15/搞定iOS与js交互/" data-id="cipjtn9ly0012sis6ew1jj7hg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -477,7 +516,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/28/移动直播开发技术介绍/" data-id="cipjt6tjz0012r5s6vf2vngvj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/01/28/移动直播开发技术介绍/" data-id="cipjtn9me0014sis6veyz53ql" class="article-share-link">Share</a>
       
       
     </footer>
@@ -536,7 +575,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/22/Bilibili开源的直播框架/" data-id="cipjt6te40000r5s6nephkkxr" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/01/22/Bilibili开源的直播框架/" data-id="cipjtn9ix0002sis6kbzkfgh7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -703,7 +742,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/14/iOS三种视屏录制方式/" data-id="cipjt6tik000or5s63w1m6tne" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/01/14/iOS三种视屏录制方式/" data-id="cipjtn9kh000psis6hsidval4" class="article-share-link">Share</a>
       
       
     </footer>
@@ -758,7 +797,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/12/07/iOS-好用的颜色库/" data-id="cipjt6tid000kr5s6jnq73qbk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/12/07/iOS-好用的颜色库/" data-id="cipjtn9kb000lsis6q8ny0y9a" class="article-share-link">Share</a>
       
       
     </footer>
@@ -853,119 +892,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/11/23/iOS-通讯录写法/" data-id="cipjt6tii000mr5s6gjykx2g2" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-iOS-20款插件的优缺点" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/11/07/iOS-20款插件的优缺点/" class="article-date">
-  <time datetime="2015-11-07T08:29:26.000Z" itemprop="datePublished">2015-11-07</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/11/07/iOS-20款插件的优缺点/">iOS_20款插件的优缺点</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>本文大致整理了自己用过的一些插件的使用感想（就是好不好用）。 在那之前先简单贴两条插件须知，知道的可以忽略。</p>
-<p>1、Alcatraz</p>
-<p>类似于管理第三方库的cocoapods，管理插件也有个Alcatraz。 </p>
-<p>安装的方法也很简单，如果你以前没有安装过那执行下面指令</p>
-<p>curl -fsSL <a href="https://raw.github.com/alcatraz/Alcatraz/master/Scripts/install.sh" target="_blank" rel="external">https://raw.github.com/alcatraz/Alcatraz/master/Scripts/install.sh</a> | sh<br>如果之前安装过但是Xcode最新版本不能用了，那就先卸载旧的再安装下新的。</p>
-<p>卸载的方法是：</p>
-<p>rm -rf ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins/Alcatraz.xcplugin<br>rm -rf ~/Library/Application\ Support/Alcatraz/<br>注：也许并不是所有人都使用了Alcatraz，而是平时都喜欢上github下载一个跑一下 然后load Bundle这种方法的， 如果之前安装了很多插件，现在刚刚使用Alcatraz的也没问题，安装Alcatraz之后之前安装的也会自动集成进来不用担心。</p>
-<p>还有就算你使用了这个工具xcode也是需要重启才能应用插件的并不能把这一步给省了。</p>
-<p>2、更新插件</p>
-<p>不管你是用直接download zip的方法安装插件的还是用Alcatraz安装的插件如果插件本身没有最新xcode的支持，那在你的Xcode更新一个版本后，Xcode插件就会失效了。 这个问题就是没有把最新版本xcode的DVTPlugInCompatibilityUUID配到插件的支持列表中。</p>
-<p>先获取，终端中输入</p>
-<p>defaults read /Applications/Xcode.app/Contents/Info DVTPlugInCompatibilityUUID<br>然后按照如下目录~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins</p>
-<p>找到插件列表，选中对应的插件显示包内容，并打开info.plist文件 在这个数组中添加最新的UUID即可</p>
-<p>也有更犀利的做法就是：</p>
-<p>find ~/Library/Application\ Support/Developer/Shared/Xcode/Plug-ins -name Info.plist -maxdepth 3 | xargs -I{} defaults write {} DVTPlugInCompatibilityUUIDs -array-add UUID<br>最后面的UUID是前面获取到的。</p>
-<p>推荐插件<br>下面进入正题，说说我喜欢用的插件，基本算是一个使用心得吧。 全都附上了连接，没贴动图以免太乱，基本连接的github中都有效果图。</p>
-<p>1.VVDocumenter-Xcode 三道杠添加文档注释<br><a href="https://github.com/onevcat/VVDocumenter-Xcode" target="_blank" rel="external">https://github.com/onevcat/VVDocumenter-Xcode</a></p>
-<p>所有插件里这个是我最早使用的也应该是排第一的。 使用也非常方便但是用久了也许会发现自动生成的注释是每一个参数和返回值都会弹出一个块，而我们日常开发中大部分的参数和返回值都是一眼见分晓的，并不需要逐个标注，这也就使得我每次敲三道杠都还要手动删除一部分，比较麻烦。 如果作者能提供下一种是现有的，另一种敲法是只有Description的那我会非常方便。  或者有个更烧脑的猜想，就是在现有基础上判断参数是否是基本数据类型还是特殊类型，特殊类型的参数才生成注释代码块。返回值如果是instancetype那就不需要生成注释代码块，或者判断参数名如果是一个常用单词（time）还是组合词（categoryID），常用单词就不生成注释了也许会更好。也许是我想多了，反正这个插件是必用的，更何况现在连swift都支持了。</p>
-<ol>
-<li>SCXcodeMiniMap  右边显示小地图</li>
-</ol>
-<p><a href="https://github.com/stefanceriu/SCXcodeMiniMap" target="_blank" rel="external">https://github.com/stefanceriu/SCXcodeMiniMap</a></p>
-<p>这是类似于sublime的功能，这是非常好用的。 并且右边的代码迷你地图提供了很多可配置的地方，而且会高亮显示宏和注释部分，小地图中点击任何地方也会自动滚动至此。这在有的类代码特别长时你写着写着都不知道自己在哪里了 会很有用。（如果你经常用 pragma mark那你当我没说）</p>
-<p>3.FuzzyAutocomplete  代码补全支持模糊查询<br><a href="https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin" target="_blank" rel="external">https://github.com/FuzzyAutocomplete/FuzzyAutocompletePlugin</a></p>
-<p>代码补全时可以不用从头开始敲，只要记得某个特定词汇就能匹配到。 并且对于项目中有好几种前缀的比如我们以前有的事MT前缀有的是MTB前缀，这种就算你前缀敲漏了只要后面对了也能匹配的到。 当然也有弊端就是你敲一个很普通的方法下面都会匹配一大长串，看着有点冗余而且xcode会比较卡，并且敲出来是好好地如果你想用delete一个个字符往回删就可能会出现xcode,crash了（也许是和其他某个插件产生了冲突，我错怪他了）。用不用看个人喜好吧，因为苹果有很多诡异的api，比如Rect 他是CGRectMake ，但是到了Range 他又是NSMakeRange 用了这个插件就不会被他坑了。<br>4.KSImageNamed  用图片时自动显示图片缩略图</p>
-<p><a href="https://github.com/ksuther/KSImageNamed-Xcode" target="_blank" rel="external">https://github.com/ksuther/KSImageNamed-Xcode</a></p>
-<p>也是非常残暴的一个功能，在开发中我们的图片名称都是fb_poinum_high类似的，用这个插件敲出前缀就能够看到对应的一批图片缩略图再上下选择非常方便。 不足之处也有，那就是已经敲完的代码想看到图片缩略图必须先把imageNamed删掉 再重新敲一次才能看到缩略图，如果在@”fb_poinum_high” 图片名中一修改就能看到图片列表就更好了。<br>5.HOStringSense  可以在弹出框写NSString，所见及所得</p>
-<p><a href="https://github.com/holtwick/HOStringSense-for-Xcode" target="_blank" rel="external">https://github.com/holtwick/HOStringSense-for-Xcode</a></p>
-<p>之前有几次需求要写换行的msg，有时候对不准，用这个插件非常方便。在弹出框里写完就是所见即所得。而且光标点到字符串的时候还会显示字符串的长度，这个功能我也很常用。</p>
-<p>6.GitDiff  简单直观的标记本次commit修改的部位</p>
-<p><a href="https://github.com/johnno1962/GitDiff" target="_blank" rel="external">https://github.com/johnno1962/GitDiff</a></p>
-<p>这个插件在企业级App的开发中，使用率非常高，效果非常好。 坐标文件列表中的M,D,A,A+,? 可以很快的显示你有哪些文件修改了。 但是精确到文件里 这个插件就能很好的展示，默认是新增的位置显示绿色，修改的位置显示红色。 当然这些也都是可配置的。 （虽然xcode或终端也有很多方法能对比看diff但是没有这样简单直观）<br>7.xvim  把xcode的编辑页面可支持vim操作</p>
-<p><a href="https://github.com/JugglerShu/XVim" target="_blank" rel="external">https://github.com/JugglerShu/XVim</a></p>
-<p>引入这个插件之后，在xcode的正常代码页面的光标就会变成vim里面的方块了，熟悉vim指令的骨灰级攻城狮应该特别喜欢这款插件，dd直接删除一行，dw删一个单词 用着的确是很爽。 用了一段时间发现其实对xcode的、原始的编码方式改动（这里也可以说是侵入性）并不大，因为按下s就是编辑啊 就和xcode原来一样了任何功能都不少，按下esc又切换到vim非常犀利。总之是特别好用，而且看github点星也有3000+吧，并且不断有人提issue，现在已经非常完善了。</p>
-<p>8.XAlign   提供各种自动对齐方案</p>
-<p><a href="https://github.com/qfish/XAlign" target="_blank" rel="external">https://github.com/qfish/XAlign</a></p>
-<p>这个插件实现了很多种自动对齐的功能，非常残暴。支持“=” “@” 和property 的自动对齐。 安装之后就赶紧把项目所有牵扯到的地方都用快捷键敲一下吧。说意见的话就是暂时还不支持大括号和缩进自动对齐。</p>
-<ol>
-<li>BBUDebuggerTuckAway   敲代码时debug视图自动隐藏</li>
-</ol>
-<p><a href="https://github.com/neonichu/BBUDebuggerTuckAway" target="_blank" rel="external">https://github.com/neonichu/BBUDebuggerTuckAway</a></p>
-<p>提供微操的插件，功能简单，但是非常实用。敲代码敲快了的人，或者是在改Bug时，RUN一下再调试几行这种操作是会循环多次进行的。这个时候就会了解到这么不起眼的功能带来了多大的惊喜。</p>
-<p>10.Backlight-for-XCode  高亮显示正在编辑的行<br><a href="https://github.com/limejelly/Backlight-for-XCode" target="_blank" rel="external">https://github.com/limejelly/Backlight-for-XCode</a></p>
-<p>也是一个微操的插件，功能简单，就是你正在编辑的这行代码高亮显示。并且这个颜色和显示方案都是可配置的。这个插件有两个很大的好处一是在滚轮上下寻找代码时有一个方向指引知道自己正在编辑的方法在什么位置，二是有的一行代码很长折行成了两三行但是实际上还是一行代码，那这一坨都会高亮显示。不足之处就是作者可能没有设定好默认值，你刚安装后发现没有效果，要去菜单把功能打开才有效果并且坐着设置的默认高亮色是白色 =。=</p>
-<ol>
-<li>cocoapods-xcode-plugin  pod相关的操作可以在xcode菜单进行</li>
-</ol>
-<p><a href="https://github.com/kattrali/cocoapods-xcode-plugin" target="_blank" rel="external">https://github.com/kattrali/cocoapods-xcode-plugin</a></p>
-<p>一般App在pod稳定了之后应该会很少修改，但是这个库提供的功能也是极好的，可以实现pod install，新建/修改 podfile，新建/修改 podspec文件。用习惯了终端iterm的人可能不太适应，习惯用source tree的人可能会觉得这个插件很爽~</p>
-<p>12.ColorSense  输入颜色时有一个色板给你选</p>
-<p><a href="https://github.com/omz/ColorSense-for-Xcode" target="_blank" rel="external">https://github.com/omz/ColorSense-for-Xcode</a></p>
-<p>在使用colorWithRGB的时候，可以点出一个颜色选择框直接选择颜色，但是这个功能在使用了Wonderful或是企业级App里用处不大，因为是个项目都有视觉规范，应该都写成一个特定的宏了，就算没有视觉规范，那好歹也有个RGB(r,g,b,a) 这种宏吧。 [UIColor colorWithRed:233/255.0 Green:213/255.0 Blue:12/255.0 alpha] 这种代码还是很不美观的。如果是测试demo之类的用这个插件可以。</p>
-<p>13.SCXcodeSwitchExpander   switch枚举的时候会自动生成代码</p>
-<p><a href="https://github.com/stefanceriu/SCXcodeSwitchExpander" target="_blank" rel="external">https://github.com/stefanceriu/SCXcodeSwitchExpander</a></p>
-<p>如果你的项目中有使用枚举会非常方便，自动生成了所有可能，并且每种里面都包含代码块，可以直接tab切换。  虽然使用率不会特别高但是用到的时候还是非常方便的。以前偷懒时我都写case：1 case：2  现在可以走向规范了。</p>
-<p>14.DerivedData Exterminator   一键删除Derived Data</p>
-<p><a href="https://github.com/kattrali/deriveddata-exterminator" target="_blank" rel="external">https://github.com/kattrali/deriveddata-exterminator</a></p>
-<p>使用此插件之后，view菜单里多了一些操作，可以一键删除Derived Data。有时候在调试，启动图，launch screen，navgationBar appearance，之类的功能可能需要经常删derived data来调试。以前的方案应该是需要打开xcode偏好 locations 里面去删除，现在方便了不少。 不足之处就是删除这个项目的Derived Data 和删除All Derived Data 直接放在一起，手一滑就点错了。有的人电脑性能慢，项目大你一下把别的项目的Derived Data也删了 以后重新Build一下就太慢了。还有记得以前有小工具就是能够把正在运行的工程的主目录在find中显示，用来调试数据缓存的，这个库如果集成了这个功能就更好了。</p>
-<p>15.XcodeColors  控制台打印彩色log</p>
-<p><a href="https://github.com/robbiehanson/XcodeColors" target="_blank" rel="external">https://github.com/robbiehanson/XcodeColors</a></p>
-<p>有的人会说彩色log 可以用DDLog啊，这个插件和DDLog是可以共同作用的， 也可以只用这个插件。 至少我用这个插件还是觉得挺好用的。自定义一个宏就可以在适当的敌地方彩色答应了 比较轻量级。不足之处也有，就是如果你项目中写了很多这样的代码，但是如果用别人没有装这个插件的xcode来跑 那就没有效果了啊。不过也无妨顶多就是调试栏不显示颜色罢了。</p>
-<p>16.OMQuickHelp  option+点击会直接用dash打开</p>
-<p><a href="https://github.com/omz/Dash-Plugin-for-Xcode" target="_blank" rel="external">https://github.com/omz/Dash-Plugin-for-Xcode</a></p>
-<p>dash是一个非常强大的查看api和文档的工具，在这个里面能下载和看到各个平台的文档。 普通的option+点击会弹出一个小悬浮窗显示api相关信息，如果用了这个插件会直接在dash中打开相应的文档，前提是dash中已经下载过xcode对应的文档，再前提是你得安装了dash。 dash在苹果商店是卖几十块钱的，而且中国区域也搜不到dash。这里提供一个dash破解版的下载地址：<a href="http://share.weiyun.com/6fe485efbd9fc160dbc815639b65085b" target="_blank" rel="external">http://share.weiyun.com/6fe485efbd9fc160dbc815639b65085b</a> (密码：xzGP) (你要是问我为什么不用百度云？ 我想说百度云呵呵)</p>
-<p>17.DXXcodeConsoleUnicodePlugin  debug栏打印时自动把/ueo6转化成汉字</p>
-<p><a href="https://github.com/dhcdht/DXXcodeConsoleUnicodePlugin" target="_blank" rel="external">https://github.com/dhcdht/DXXcodeConsoleUnicodePlugin</a></p>
-<p>在我们前后端联调接口的时候，一般都是url贴到浏览器json数据到了chrome自动转化（前提是你安装了jsonformater插件）。但是有时候比如POST请求结果不能在浏览器中看到，只能在debug中打断点了打印了如果遇到 msg:/ue06/ud07/ug08 这种会很蛋疼。这个插件安装后就是能让你在debug的console里面把这些uinicode转化成汉字显示。 这里说到了console的优化 我也顺便提个小技巧就是让console里可以po出 id类型的信息（正常情况你po id类型的对象会显示error）在终端依次输入下面三行指令</p>
-<p>touch ~/.lldbinit<br>echo display @import UIKit &gt;&gt; ~/.lldbinit<br>echo target stop-hook add -o \”target stop-hook disable\” &gt;&gt; ~/.lldbinit</p>
-<p>18.XToDo  快捷键标记，和统一查看<br><a href="https://github.com/trawor/XToDo" target="_blank" rel="external">https://github.com/trawor/XToDo</a></p>
-<p>之前设置TODO 和标记某处??? 我都是手敲一个特定的符号，然后找的时候再去全文搜索。 有了这个插件，可以用快捷键添加TODO 和 FIXME （额这里如果用代码块也是可以相同实现的）。然后提供了TODOList 快速查看自己各处的标记。等于是省去了一个搜索的步骤。 但是不足就是，ToDoList的对话框是一个悬浮的而不是像上面的SCXcodeMiniMap或是GitDiff那样是嵌入在xcode里面的，这样在来回点的时候xcode的焦点和对话框的焦点会来回切换，虽然你是置顶的但还是比较影响体验。我用搜索的话就不用来回切焦点了。 但是这个插件本身还是很不错的。<br>19.XActivatePowerMode  敲代码时屏幕抖动火花迸溅效果<br><a href="https://github.com/qfish/XActivatePowerMode" target="_blank" rel="external">https://github.com/qfish/XActivatePowerMode</a></p>
-<p>这是装逼插件，模仿sublime的一款 敲代码火花迸溅效果的插件。也许有的人觉得只有火花不需要有抖动，当然这些效果都可以在菜单里打开和关闭。但是有问题就是，这个插件和上面的FuzzyAutocomplete共同作用时，会很卡，直接xcodecrash，所以慎入。</p>
-<p>20.ActivatePowerMode  敲代码时屏幕抖动火花迸溅效果</p>
-<p><a href="https://github.com/poboke/ActivatePowerMode" target="_blank" rel="external">https://github.com/poboke/ActivatePowerMode</a></p>
-<p>功能和上面的相似并且更狠，还带响声。但是让xcode变卡的问题同样存在。 而且这个插件比上面高端之处在于迸溅的火花的颜色和编辑位置的代码颜色相同，作者找到了配色方案返回颜色的私有api得到代码颜色。 迸溅效果更接近sublime上的效果。有人因为又用机械键盘 又带响导致手被剁了，所以这个也慎入。<br>其实还有一些插件也很火，比如codepilot3相当于xcode中的Aifred但是升级xcode7之后就不能使用了，也许是按键冲突还是什么，他们官网就是无脑CMD+Shift+x打开搜索框。但是如果按下无效呢？也没有个菜单让这个快捷键可以设置，看代码库也的确是很久没更新了； 还有插件能让你的xcode直接跳到github显示代码对比这些，感觉并没有必要啊，而且有时候github打开很慢，很没有连贯性啊； 还有插件能够你在.m写完方法的实现之后自动给你在.h文件生成方法声明，也是觉得画蛇添足 这些等等可能是我个人用起来不爽这里就都不提了。<br>还有插件不建议装的太多，觉得从上面挑些自己有用的装5~8个即可，多了xcode会很卡，而且会经常crash。如果真的遇到xcode经常crash的问题也没事不用担心，把那个插件目录下的插件全部清除，无需重装xcode也是可以恢复正常的。</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/11/07/iOS-20款插件的优缺点/" data-id="cipjt6tgl0008r5s611yyct8u" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/11/23/iOS-通讯录写法/" data-id="cipjtn9ke000nsis63ltqeovj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -978,7 +905,7 @@
 
 
   <nav id="page-nav">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">__('next') &raquo;</a>
   </nav>
 </section>
         
@@ -994,7 +921,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Arkiv</h3>
+    <h3 class="widget-title">Archives</h3>
     <div class="widget">
       <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
@@ -1004,7 +931,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Siste innlegg</h3>
+    <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
         
@@ -1017,15 +944,15 @@
           </li>
         
           <li>
+            <a href="/2016/04/03/MVC/">MVC</a>
+          </li>
+        
+          <li>
             <a href="/2016/03/21/UITableView的应用和其中js与oc交互/">UITableView的应用和其中js与oc交互</a>
           </li>
         
           <li>
             <a href="/2016/02/15/搞定iOS与js交互/">搞定iOS与js交互</a>
-          </li>
-        
-          <li>
-            <a href="/2016/01/28/移动直播开发技术介绍/">移动直播开发技术介绍</a>
           </li>
         
       </ul>
