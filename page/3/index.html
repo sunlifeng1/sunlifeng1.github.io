@@ -68,6 +68,58 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-iOS-关于判断VPN小结" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/02/17/iOS-关于判断VPN小结/" class="article-date">
+  <time datetime="2015-02-17T07:44:09.000Z" itemprop="datePublished">2015-02-17</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/02/17/iOS-关于判断VPN小结/">iOS_关于判断VPN小结</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>需要判断是否开启了VPN方法的代码</p>
+<p>头文件需要添加</p>
+<p>#include</p>
+<p>#include</p>
+<p>代码部分</p>
+<ul>
+<li>(BOOL)isVPNConnected<br>{<br>struct ifaddrs <em>interfaces = NULL;<br>struct ifaddrs </em>temp_addr = NULL;<br>int success = 0;</li>
+</ul>
+<p>// retrieve the current interfaces - returns 0 on success<br>success = getifaddrs(&amp;interfaces);<br>if (success == 0) {<br>// Loop through linked list of interfaces<br>temp_addr = interfaces;<br>while (temp_addr != NULL) {<br>NSString *string = [NSString stringWithFormat:@”%s” , temp_addr-&gt;ifa_name];<br>if ([string rangeOfString:@”tap”].location != NSNotFound ||<br>[string rangeOfString:@”tun”].location != NSNotFound ||<br>[string rangeOfString:@”ppp”].location != NSNotFound){<br>return YES;<br>}</p>
+<p>temp_addr = temp_addr-&gt;ifa_next;<br>}<br>}</p>
+<p>// Free memory<br>freeifaddrs(interfaces);<br>return NO;</p>
+<p>}</p>
+<p>直接调用即可<br>BOOL isSucceess =[self isVPNConnected];</p>
+<p>YES为开启了VPN，NO为关闭了VPN</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjtriml000itjs686ci01d6" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-iOS-JSON解析四种方法" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/01/07/iOS-JSON解析四种方法/" class="article-date">
@@ -103,7 +155,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjtn9jr000csis6gu7fikev" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjtrimc000etjs6b296au2i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -171,7 +223,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjtn9js000dsis61qoezfs8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjtrim9000ctjs6lc6y1g3v" class="article-share-link">Share</a>
       
       
     </footer>
@@ -280,7 +332,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/02/20/iOS-APP上线性能检测/" data-id="cipjtn9jp000bsis6nfc1eig7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/02/20/iOS-APP上线性能检测/" data-id="cipjtrimb000dtjs6tgta21ov" class="article-share-link">Share</a>
       
       
     </footer>
@@ -348,7 +400,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjtn9kp000ssis69fjqr5d7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjtrin1000ptjs6bdkoxpgj" class="article-share-link">Share</a>
       
       
     </footer>
@@ -387,7 +439,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjtn9kj000qsis67tu96wpx" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjtrina000stjs6iq87uu1i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -426,7 +478,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipjtn9ld000xsis65ga6jtp6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipjtrinj000xtjs6t8ofqdco" class="article-share-link">Share</a>
       
       
     </footer>
@@ -479,7 +531,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipjtn9lj000zsis6ixbsqqev" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipjtrino0010tjs62tlxjo44" class="article-share-link">Share</a>
       
       
     </footer>
@@ -518,7 +570,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipjtn9kl000rsis66yl81p7c" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipjtrinl000ytjs6fuyscl90" class="article-share-link">Share</a>
       
       
     </footer>
@@ -563,46 +615,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipjtn9jn000asis6s71natpg" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-培训出来的iOS学员怎么了？" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2013/12/06/培训出来的iOS学员怎么了？/" class="article-date">
-  <time datetime="2013-12-06T13:27:43.000Z" itemprop="datePublished">2013-12-06</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/12/06/培训出来的iOS学员怎么了？/">培训出来的iOS学员怎么了？</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>今天就想和大家聊聊这个沉重的话题。<br>诚信的恶性循环<br>首先我们说说简历造假吧。在我看来，简历造假还是时常遇到的。我认识礼物说的 CTO，我们 iOS 群里常常有朋友面试时遇到说自己在礼物说工作过的候选人，为什么呢？还不是网上有一堆高仿礼物说的 APP，自己下载下来看看，然后就可以假装是自己做的了。<br>为什么很多候选人选择造假呢？除了简历不够好之外，造假很多时候确实有用。对于很多小公司来说，面试官自己也不懂如何面试 iOS 开发，那么就特别容易被忽悠。<br>但是，一个公司里面有 iOS 开发者，然后再稍微懂一些面试技巧的话，简历造假是很容易发现的。关于怎么在面试中鉴别造假，我们在下一节聊。<br>我们先聊聊看造假会造成什么危机呢？对于面试公司来说，如果他发现面试的效率特别低，或者招进来的人干活不行时，他会怎么办呢？<br>我觉得他会很直接地开地图炮，把一类人直接刷掉，不再给面试机会。这类人是哪些人？简历雷同的、培训机构培训出来的人。<br>这样公平吗？对候选人肯定不公平，但是公司招人也需要讲效率的，面试候选人其实成本特别高。<br>所以造假这个行为，最终伤害的是候选人本人，以及培训机构的信誉。<br>如何在面试中鉴别造假<br>其实挺简单的，首先面试的时候不要设置固定问题，然后根据候选人的回答情况来深入问细节。<br>就比如说一个候选人说他做过礼物说，那就有很多可以深入问的，比如问他：<br>礼物说有几个 iOS 开发<br>大家是如何分工的<br>你负责的那块最主要的难点在哪里<br>团队整个协作的过程<br>在开发的时候有没有遇到需求变更<br>功能上线后大概的数据是什么样的<br>你觉得哪些地方还需要改进<br>你们主要的竞争对手是谁，他们在哪些技术方面比你们做得好<br>一个谎话要编容易，难的是每一个细节都编得面面俱到，所以深入细节问，很容易就会露馅。<br>我是培训机构学员怎么办<br>简单地说，公司招一个人最终级的目的还是把活干好。如果一个培训机构的学员，没有实际的工作能力，单凭几个月的培训就想一劳永逸地找一份好工作，这是不现实的。<br>互联网技术日新月异，iOS 开发每年技术都在更新，如果指望所有知识都是从培训机构那儿获得，那么早晚都会被淘汰。<br>所以，即使你当前是培训机构出来的学员，也必须培养自己实际解决问题的能力和自学能力。这样才能一点点地增强自己的实力。<br>另外说一个残酷的现实，公司一般不会给你大块的上班时间用来学习新知识的。所以大多数学习充电过程只能是在下班后或周末。<br>我们应该怎么看待培训机构学员<br>我自己就招过一个培训机构出来的学员，她还是一个女生，现在工作得挺棒的。她是非计算机专业毕业的，参加培训机构学了 3 个月就来我们公司面试。她能通过面试，很大程度上是因为她不止参加了培训班的课，而且自己在网上学习了计算机数据结构和算法的基础知识，而且是看的国外的课程。<br>当时面试时我完全没有考查她 iOS 知识，因为她承认只参加了 3 个月的培训。所以我考查了一下她自学数据结构和算法的情况。结果让我觉得她是一个自学能力还不错的女生，所以我就把她招了进来。<br>刚进来带她做 iOS 费了一些精力，但是很快她就可以上手自己做事情了。现在，我已经完全把小猿搜题的 iOS 端交给她来负责。我想她就是一个培训机构出来学员的成功案例。<br>我们并不鄙视培训机构的学生，但是我们不认同那些没有自学能力，认为参加 3 个月培训就可以拿高薪的「投机者」。这个行业虽然高薪，但是也很辛苦，如果没有兴趣和毅力，是没办法做好的。<br>搞 iOS 开发到底需要什么核心能力<br>大家看了我上次采访的 YYKit 作者的文章 后，或许就能明白，其实一个人核心的能力就是学习能力。有强大的学习能力，那么就可以像 YYKit 作者那样，才接触 iOS 开发一年多就可以开源出大量优秀的作品。<br>基本上，一个人在一个领域坚持投入大量的时间，很难做得不好。所以你是一个培训机构的学员，苦于找不到工作。与其简历造假拿到面试机会，倒不如再多花花精力，自己多专研一些代码，写一些 App，不要那么急功近利，我想结果都会好很多。<br>愿培训机构出来的 iOS 学员都能找一份好工作。</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipjtn9lg000ysis6z62umj78" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipjtrilm0006tjs68lutlm91" class="article-share-link">Share</a>
       
       
     </footer>
@@ -654,15 +667,15 @@
           </li>
         
           <li>
+            <a href="/2016/04/05/MVVM/">MVVM</a>
+          </li>
+        
+          <li>
             <a href="/2016/04/03/MVC/">MVC</a>
           </li>
         
           <li>
             <a href="/2016/03/21/UITableView的应用和其中js与oc交互/">UITableView的应用和其中js与oc交互</a>
-          </li>
-        
-          <li>
-            <a href="/2016/02/15/搞定iOS与js交互/">搞定iOS与js交互</a>
           </li>
         
       </ul>

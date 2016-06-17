@@ -68,6 +68,101 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-iOS-通讯录写法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/23/iOS-通讯录写法/" class="article-date">
+  <time datetime="2015-11-23T08:08:06.000Z" itemprop="datePublished">2015-11-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/23/iOS-通讯录写法/">iOS_通讯录写法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>苹果的通讯录功能在iOS7,iOS8,iOS9 都有着一定的不同，iOS7和8用的是 <addressbookui addressbookui.h=""> ，但是两个系统版本的代理方法有一些变化，有些代理方法都标注了 NS_DEPRECATED_IOS(2_0, 8_0) 并推荐了另一个代理方法与之对应。  而iOS8到iOS9则是直接弃用了<addressbookui addressbookui.h="">取而代之的是<contactsui contactsui.h="">，后者是OC调用，据说当时苹果宣布弃用AddressBookUI还引来了阵阵欢呼。这也就是在使用通讯录功能时得考虑版本各种判断，我也就是工作中遇到了这种坑，然后就顺手兼容封装了一下。希望能解决这个问题。</contactsui></addressbookui></addressbookui></p>
+<p>我觉得通讯录这里的类结构没必要像SDWebImage或是Core Location这样列出来详细去说。大家用到通讯录无外乎就三个功能：</p>
+<p>1.点击弹出通讯录页面，选择了一个联系人的电话后直接将信息填到页面输入框内。</p>
+<p>2.遍历所有的通讯录数据统一做批量操作，搭建新页面或直接上传。</p>
+<p>3.给通讯录写入一条信息。</p>
+<p>这里会先对比一下iOS789的写法，最后奉上demo（一个封装后的库，提供了非常便利的api）。不关心内部实现的朋友可以直接拉到demo部分。</p>
+<p>一、首先是获取通讯录的权限<br>iOS7和8保持一致</p>
+<p><span style="font-size: 13px; font-family: 宋体;">    ABAuthorizationStatus status = ABAddressBookGetAuthorizationStatus();<br>ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);<br>if (status == kABAuthorizationStatusNotDetermined) {<br>NSLog(@”还没问”);<br>ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error){<br>if(granted){<br>NSLog(@”点击同意”);<br>}else{<br>NSLog(@”点击拒绝”);<br>}<br>});<br>}else if (status == kABAuthorizationStatusAuthorized){<br>NSLog(@”已经授权”);<br>[self loadPerson];<br>}else {<br>NSLog(@”没有授权”);<br>// 弹窗提示去获取权限<br>}</span><br>iOS9及以后调用方法改成</p>
+<p><span style="font-size: 13px; font-family: 宋体;">     CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];<br>if (status == CNAuthorizationStatusNotDetermined) {<br>[[[CNContactStore alloc]init] requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {<br>NSLog(@”还没问”);<br>if(granted){<br>NSLog(@”点击了同意”);<br>[self loadPerson];<br>}else{<br>NSLog(@”点击了拒绝”);<br>}<br>}];<br>}else if (status == CNAuthorizationStatusAuthorized){<br>NSLog(@已经授权”);<br>}else {<br>NSLog(@”没有授权”);<br>}    </span></p>
+<p>二、弹出通讯录选择界面<br>iOS7的写法如下，代理方法的返回值大多是BOOL类型。</p>
+<p><span style="font-size: 13px; font-family: 宋体;">- (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person<br>{<br>return YES;<br>}</span></p>
+<ul>
+<li>(BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController <em>)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier<br>{<br>ABMultiValueRef phone = ABRecordCopyValue(person, kABPersonPhoneProperty);<br>long index = ABMultiValueGetIndexForIdentifier(phone,identifier);<br>NSString </em>phoneNO = (__bridge NSString *)ABMultiValueCopyValueAtIndex(phone, index);</li>
+</ul>
+<p>CFStringRef lastName = ABRecordCopyValue(person, kABPersonLastNameProperty);<br>CFStringRef firstName = ABRecordCopyValue(person, kABPersonFirstNameProperty);</p>
+<p>NSString <em>lastname = (__bridge_transfer NSString </em>)(lastName);<br>NSString <em>firstname = (__bridge_transfer NSString </em>)(firstName);</p>
+<p>if (phone) {<br>[peoplePicker dismissViewControllerAnimated:YES completion:nil];<br>return NO;<br>}<br>return YES;<br>}<br></p>
+<p>iOS8的代理方法换了，改成了下面两个，但是方法内部的取值基本相同</p>
+<p><span style="font-size: 13px; font-family: 宋体;">// 点击了通讯录名字就会退出</span></p>
+<ul>
+<li>(void)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker didSelectPerson:(ABRecordRef)person;</li>
+</ul>
+<p>// 点击了名字里面的电话或邮箱才会退出</p>
+<ul>
+<li>(void)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker didSelectPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier;<br><br>至于会调用哪一个方法，可以根据实际需要去选择，在弹出界面的方法中predicateForSelectionOfPerson 这个属性传false就是调用下面的。</li>
+</ul>
+<p><span style="font-size: 13px; font-family: 宋体;">    ABPeoplePickerNavigationController *pickervc = [[ABPeoplePickerNavigationController alloc] init];<br>pickervc.predicateForSelectionOfPerson = [NSPredicate predicateWithValue:false];<br>pickervc.peoplePickerDelegate = self;<br>[target presentViewController:pickervc animated:YES completion:nil];<br></span></p>
+<p>iOS9系统下的弹出选择器方法 和 代理方法如下</p>
+<p><span style="font-size: 13px; font-family: 宋体;"> // 弹出选择器 </span></p>
+<ul>
+<li>(void)presentPageOnTarget{<br>CNContactPickerViewController *contactVc = [[CNContactPickerViewController     alloc] init];<br>contactVc.delegate = self;<br>[target presentViewController:contactVc animated:YES completion:nil];<br>}</li>
+</ul>
+<p>// 代理方法</p>
+<ul>
+<li>(void)contactPicker:(CNContactPickerViewController <em>)picker didSelectContact:(CNContact </em>)contact<br>{<br>SXPersonInfoEntity <em>personEntity = [SXPersonInfoEntity new];<br>NSString </em>lastname = contact.familyName;<br>NSString *firstname = contact.givenName;<br>NSLog(@”%@ %@”, lastname, firstname);<br>personEntity.lastname = lastname;<br>personEntity.firstname = firstname;</li>
+</ul>
+<p>NSMutableString *fullname = [[NSString stringWithFormat:@”%@%@”,lastname,firstname] mutableCopy];<br>[fullname replaceOccurrencesOfString:@”(null)” withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, fullname.length)];<br>personEntity.fullname = fullname;</p>
+<p>NSString <em>fullPhoneStr = [NSString string];<br>NSArray </em>phoneNums = contact.phoneNumbers;<br>for (CNLabeledValue <em>labeledValue in phoneNums) {<br>NSString </em>phoneLabel = labeledValue.label;<br>CNPhoneNumber <em>phoneNumer = labeledValue.value;<br>NSString </em>phoneValue = phoneNumer.stringValue;<br>NSLog(@”%@ %@”, phoneLabel, phoneValue);<br>if (phoneValue.length &gt; 0) {<br>fullPhoneStr = [fullPhoneStr stringByAppendingString:phoneValue];<br>fullPhoneStr = [fullPhoneStr stringByAppendingString:@”,”];<br>}<br>}<br>if (fullPhoneStr.length &gt; 1) {<br>personEntity.phoneNumber = [fullPhoneStr substringToIndex:fullPhoneStr.length - 1];<br>}<br>self.chooseAction(personEntity);<br>}<br><br>这个是点击了名字就直接回调的方法，如果希望点击了属性再回调，则需要加上这一行</p>
+<p><span style="font-size: 13px; font-family: 宋体;">contactVc.predicateForSelectionOfContact = [NSPredicate predicateWithValue:false];</span></p>
+<p>// 代理方法调用</p>
+<ul>
+<li>(void)contactPicker:(CNContactPickerViewController <em>)picker didSelectContactProperty:(CNContactProperty </em>)contactProperty<br></li>
+</ul>
+<p>三、获取全部通讯录信息<br>关于批量获取所有通讯录信息的方法有点冗长，这里就不一一贴了，只贴下iOS9的写法，iOS7和8的代码demo里都有。</p>
+<p><span style="font-size: 13px; font-family: 宋体;">- (void)printAllPerson<br>{<br>// 获取<br>CNContactStore <em>contactStore = [[CNContactStore alloc] init];<br>NSArray </em>keys = @[CNContactGivenNameKey, CNContactFamilyNameKey, CNContactPhoneNumbersKey];<br>CNContactFetchRequest *request = [[CNContactFetchRequest alloc] initWithKeysToFetch:keys];</span></p>
+<p>// 遍历<br>[contactStore enumerateContactsWithFetchRequest:request error:nil usingBlock:^(CNContact <em> _Nonnull contact, BOOL </em> _Nonnull stop) {<br>NSString <em>lastname = contact.familyName;<br>NSString </em>firstname = contact.givenName;<br>NSLog(@”%@ %@”, lastname, firstname);<br>NSArray <em>phoneNums = contact.phoneNumbers;<br>for (CNLabeledValue </em>labeledValue in phoneNums) {<br>NSString <em>phoneLabel = labeledValue.label;<br>CNPhoneNumber </em>phoneNumer = labeledValue.value;<br>NSString *phoneValue = phoneNumer.stringValue;<br>NSLog(@”%@ %@”, phoneLabel, phoneValue);<br>}<br>}];<br>}<br></p>
+<p>四、写入通讯录<br>因为写入的话这个功能有点重量级，写入的时候要写入，名字、电话、email、地址等等，这就会使得api过于复杂。暂时我见到过的做法大多都是如果用户给了通讯录权限 那就给你插入一条名字+电话，我做了只有这两个入参的api，当然使用时也完全可以扩展成更多参数的。</p>
+<p>iOS7和8</p>
+<p><span style="font-size: 13px; font-family: 宋体;">- (void)creatItemWithName:(NSString <em>)name phone:(NSString </em>)phone<br>{<br>if((name.length &lt; 1)||(phone.length &lt; 1)){<br>NSLog(@”输入属性不能为空”);<br>return;<br>}<br>CFErrorRef error = NULL;</span></p>
+<p>ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, &amp;error);<br>ABRecordRef newRecord = ABPersonCreate();<br>ABRecordSetValue(newRecord, kABPersonFirstNameProperty, (__bridge CFTypeRef)name, &amp;error);</p>
+<p>ABMutableMultiValueRef multi = ABMultiValueCreateMutable(kABMultiStringPropertyType);<br>ABMultiValueAddValueAndLabel(multi, (__bridge CFTypeRef)name, kABPersonPhoneMobileLabel, NULL);</p>
+<p>ABRecordSetValue(newRecord, kABPersonPhoneProperty, multi, &amp;error);<br>CFRelease(multi);</p>
+<p>ABAddressBookAddRecord(addressBook, newRecord, &amp;error);</p>
+<p>ABAddressBookSave(addressBook, &amp;error);<br>CFRelease(newRecord);<br>CFRelease(addressBook);<br>}<br><br>iOS9下</p>
+<p><span style="font-size: 13px; font-family: 宋体;">- (void)creatItemWithName:(NSString <em>)name phone:(NSString </em>)phone<br>{<br>// 创建对象<br>// 这个里面可以添加多个电话，email，地址等等。 感觉使用率不高，只提供了最常用的属性：姓名+电话，需要时可以自行扩展。<br>CNMutableContact <em> contact = [[CNMutableContact alloc]init];<br>contact.givenName = name?:@”defaultname”;<br>CNLabeledValue </em>phoneNumber = [CNLabeledValue labeledValueWithLabel:CNLabelPhoneNumberMobile value:[CNPhoneNumber phoneNumberWithStringValue:phone?:@”10086”]];<br>contact.phoneNumbers = @[phoneNumber];</span></p>
+<p>// 把对象加到请求中<br>CNSaveRequest * saveRequest = [[CNSaveRequest alloc]init];<br>[saveRequest addContact:contact toContainerWithIdentifier:nil];</p>
+<p>// 执行请求<br>CNContactStore * store = [[CNContactStore alloc]init];<br>[store executeSaveRequest:saveRequest error:nil];<br>}<br></p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/11/23/iOS-通讯录写法/" data-id="cipjtrimv000mtjs66n2w2ao2" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-iOS-20款插件的优缺点" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2015/11/07/iOS-20款插件的优缺点/" class="article-date">
@@ -170,7 +265,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/11/07/iOS-20款插件的优缺点/" data-id="cipjtn9jl0009sis6o78kjevc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/11/07/iOS-20款插件的优缺点/" data-id="cipjtrin5000rtjs6v6s16wg6" class="article-share-link">Share</a>
       
       
     </footer>
@@ -232,7 +327,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/10/20/上传自己写的库到cocoaPods/" data-id="cipjtn9ku000usis6cka55z55" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/10/20/上传自己写的库到cocoaPods/" data-id="cipjtrinh000wtjs6o4dw4iib" class="article-share-link">Share</a>
       
       
     </footer>
@@ -327,7 +422,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/09/24/iOS-抽屉效果三方库/" data-id="cipjtn9ks000tsis64mjfyiwo" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/09/24/iOS-抽屉效果三方库/" data-id="cipjtrinf000vtjs67g5puhw0" class="article-share-link">Share</a>
       
       
     </footer>
@@ -409,7 +504,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/09/09/iOS-对UITableView三种计算动态行高的方法分析/" data-id="cipjtn9ka000ksis60azu1jou" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/09/09/iOS-对UITableView三种计算动态行高的方法分析/" data-id="cipjtrimq000jtjs61mya4ct3" class="article-share-link">Share</a>
       
       
     </footer>
@@ -451,7 +546,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/08/24/关于XMPP/" data-id="cipjtn9kx000wsis6z5g938fr" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/08/24/关于XMPP/" data-id="cipjtrioh0015tjs6xywl4gdk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -512,7 +607,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/07/03/iOS-多线程/" data-id="cipjtn9kc000msis6p8zwzk75" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/07/03/iOS-多线程/" data-id="cipjtrimu000ltjs6t4f6og8r" class="article-share-link">Share</a>
       
       
     </footer>
@@ -564,7 +659,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/05/27/iOS-几种常见的加密方法/" data-id="cipjtn9jx000gsis6ow1vzmpk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/05/27/iOS-几种常见的加密方法/" data-id="cipjtrimg000gtjs6hnd1yez8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -610,7 +705,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/16/iOS-在label中添加图片/" data-id="cipjtn9jz000hsis61c5o6gv6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/16/iOS-在label中添加图片/" data-id="cipjtrimf000ftjs6qw363ycm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -653,59 +748,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjtn9k2000isis6i0yo96h8" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-iOS-关于判断VPN小结" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2015/02/17/iOS-关于判断VPN小结/" class="article-date">
-  <time datetime="2015-02-17T07:44:09.000Z" itemprop="datePublished">2015-02-17</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2015/02/17/iOS-关于判断VPN小结/">iOS_关于判断VPN小结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>需要判断是否开启了VPN方法的代码</p>
-<p>头文件需要添加</p>
-<p>#include</p>
-<p>#include</p>
-<p>代码部分</p>
-<ul>
-<li>(BOOL)isVPNConnected<br>{<br>struct ifaddrs <em>interfaces = NULL;<br>struct ifaddrs </em>temp_addr = NULL;<br>int success = 0;</li>
-</ul>
-<p>// retrieve the current interfaces - returns 0 on success<br>success = getifaddrs(&amp;interfaces);<br>if (success == 0) {<br>// Loop through linked list of interfaces<br>temp_addr = interfaces;<br>while (temp_addr != NULL) {<br>NSString *string = [NSString stringWithFormat:@”%s” , temp_addr-&gt;ifa_name];<br>if ([string rangeOfString:@”tap”].location != NSNotFound ||<br>[string rangeOfString:@”tun”].location != NSNotFound ||<br>[string rangeOfString:@”ppp”].location != NSNotFound){<br>return YES;<br>}</p>
-<p>temp_addr = temp_addr-&gt;ifa_next;<br>}<br>}</p>
-<p>// Free memory<br>freeifaddrs(interfaces);<br>return NO;</p>
-<p>}</p>
-<p>直接调用即可<br>BOOL isSucceess =[self isVPNConnected];</p>
-<p>YES为开启了VPN，NO为关闭了VPN</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjtn9k9000jsis6lmhva9qp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjtrimh000htjs6p7qtmwev" class="article-share-link">Share</a>
       
       
     </footer>
@@ -757,15 +800,15 @@
           </li>
         
           <li>
+            <a href="/2016/04/05/MVVM/">MVVM</a>
+          </li>
+        
+          <li>
             <a href="/2016/04/03/MVC/">MVC</a>
           </li>
         
           <li>
             <a href="/2016/03/21/UITableView的应用和其中js与oc交互/">UITableView的应用和其中js与oc交互</a>
-          </li>
-        
-          <li>
-            <a href="/2016/02/15/搞定iOS与js交互/">搞定iOS与js交互</a>
           </li>
         
       </ul>
