@@ -51,9 +51,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -63,6 +63,139 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-IOS开发之多线程技术小结2" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/11/14/IOS开发之多线程技术小结2/" class="article-date">
+  <time datetime="2013-11-14T12:59:47.000Z" itemprop="datePublished">2013-11-14</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/11/14/IOS开发之多线程技术小结2/">IOS开发之多线程技术小结2</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>三、如何使用多线程技术<br>ios中多线程实现的多种技术方案：</p>
+<p>POSIX 表示可移植操作系统接口（Portable Operating System Interface )—–pthread</p>
+<p>1）pthread技术：<br>pthread 是 POSIX 多线程开发框架，由于是跨平台的 C 语言框架，在苹果的头文件中并没有详细的注释要查阅 pthread 有关资料，可以访问 <a href="http://baike.baidu.com" target="_blank" rel="external">http://baike.baidu.com</a></p>
+<p>// 创建线程，并且在线程中执行 demo 函数</p>
+<ul>
+<li>(void)pthreadDemo {</li>
+</ul>
+<p>/<em>*<br>参数：<br>1&gt; 指向线程标识符的指针，C 语言中类型的结尾通常 _t/Ref，而且不需要使用 </em><br>2&gt; 用来设置线程属性<br>3&gt; 新建立的线程执行代码的函数<br>4&gt; 运行函数的参数</p>
+<p>返回值：</p>
+<ul>
+<li>若线程创建成功，则返回0</li>
+<li>若线程创建失败，则返回出错编号</li>
+</ul>
+<p>在混合开发时，如果在 C 和 OC 之间传递数据，需要使用 __bridge 进行桥接，桥接的目的就是为了告诉编译器如何管理内存<br><em>/<br>pthread_t threadId = NULL;<br>NSString </em>str = @”Hello Pthread”;</p>
+<p>int result = pthread_create(&amp;threadId, NULL, demo, (__bridge void *)(str));</p>
+<p>result ? NSLog(@”为其他任何值时代表开辟子线程失败”) : NSLog(@”当result为0时表示开辟子线程成功”);<br>}</p>
+<p>// 后台线程调用函数<br>void <em>demo(void </em>params) {<br>NSString <em>str = (__bridge NSString </em>)(params);</p>
+<p>NSLog(@”%@ - %@”, [NSThread currentThread], str);</p>
+<p>return NULL;<br>}</p>
+<p>C语言中pthread.h里pthread实现多线程<br>2）NSThread技术：</p>
+<ul>
+<li>(void)viewDidLoad {<br>[super viewDidLoad];</li>
+</ul>
+<p>NSLog(@”主线程%@”, [NSThread currentThread]);<br>/<em>*<br>多个线程之间的执行顺序是随机的
+</em>/</p>
+<p>// 方式1：通过NSThread的对象方法<br>NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(demo:) object:@”方式1”];<br>[thread start];</p>
+<p>// 方式2：没有thread字眼，隐式创建并启动线程，所有 NSObject 都可以使用此方法，在其他线程执行方法<br>[self performSelectorInBackground:@selector(demo:) withObject:@”方式2”];</p>
+<p>// 方式3：detachNewThreadSelector 类方法不需要启动，会自动创建线程并执行 @selector 方法<br>[NSThread detachNewThreadSelector:@selector(demo:) toTarget:self withObject:@”方式3”];</p>
+<p>}</p>
+<ul>
+<li>(void)demo:(NSString *)str {<br>NSLog(@”%@, %@”, str, [NSThread currentThread]);<br>}</li>
+</ul>
+<p>通过NSThread创建线程的三种方式<br>2.1）线程属性</p>
+<ol>
+<li><p>name - 线程名称</p>
+</li>
+<li><p>threadPriority - 线程优先级</p>
+</li>
+</ol>
+<p>取值范围从 0~1.0</p>
+<p>1.0表示优先级最高</p>
+<p>0.0表示优先级最低</p>
+<p>默认优先级是0.5</p>
+<ol>
+<li><p>stackSize - 栈区大小</p>
+</li>
+<li><p>isMainThread - 是否主线程</p>
+</li>
+</ol>
+<p>2.2）资源共享(抢夺)<br>1块资源可能会被多个线程共享，也就是多个线程可能会访问同一块资源，比如多个线程访问同一个对象、同一个变量、同一个文件当多个线程访问同一块资源时，很容易引发数据错乱和数据安全问题。如购买火车票问题：</p>
+<p>解决方案:</p>
+<p>#pragma mark</p>
+<p>#pragma mark - 模拟卖票系统</p>
+<ul>
+<li>(void)sellTicket {</li>
+</ul>
+<p>_count = 50;</p>
+<p>NSThread *thread1 = [[NSThread alloc] initWithTarget:self selector:@selector(ticket) object:nil];<br>thread1.name = @”t1”;<br>[thread1 start];</p>
+<p>NSThread *thread2 = [[NSThread alloc] initWithTarget:self selector:@selector(ticket) object:nil];<br>thread2.name = @”t2”;<br>[thread2 start];<br>}</p>
+<ul>
+<li>(void)ticket {</li>
+</ul>
+<p>while (YES) {</p>
+<p>// 被加锁的对象<br>@synchronized(self) {<br>if (_count &gt; 0) {<br>_count = self.count - 1;<br>NSLog(@”剩余票数%ld ——%@”, _count, [NSThread currentThread]);<br>} else {<br>NSLog(@”票卖没了倒霉蛋”);<br>break;<br>}<br>}<br>}</p>
+<p>}</p>
+<p>卖票系统线程同步解决线程不安全问题<br>互斥锁 ：如果发现有其他线程正在执行锁定的代码，线程会 进入休眠状态 ，等待其他线程执行完毕，打开锁之后，线程会被 唤醒<br>自旋锁 ：如果发现有其他线程正在执行锁定的代码，线程会以 死循环 的方式，一直等待锁定代码执行完成<br>线程安全</p>
+<p>多个线程进行读写操作时，仍然能够得到正确结果，被称为线程安全，要实现线程安全，必须要用到锁、为了得到更佳的用户体验，UIKit 不是线程安全的，所以更新 UI 的操作都必须主线程上执行！因此，主线程又被称为UI 线程。</p>
+<p>3）GCD技术<br>为保证篇幅不过与杂糅，请见“IOS开发之多线程技术——GCD篇”</p>
+<p>4) NSOperation技术<br>为保证篇幅不过与杂糅，请见“IOS开发之多线程技术——NSOperation篇”</p>
+<p>四、线程的生命周期（线程状态）<br>新建</p>
+<p>实例化线程对象</p>
+<p>就绪</p>
+<ul>
+<li>(void)start;</li>
+</ul>
+<p>向线程对象发送 start 消息，线程对象被加入 可调度线程池 等待 CPU 调度</p>
+<p>detachNewThreadSelector 方法和 performSelectorInBackground 方法会直接实例化一个线程对象并加入 可调度线程池</p>
+<p>运行</p>
+<p>CPU 负责调度可调度线程池中线程的执行</p>
+<p>线程执行完成之前(死亡之前)，状态可能会在就绪和运行之间来回切换</p>
+<p>就绪和运行之间的状态变化由 CPU 负责，程序员不能干预</p>
+<p>阻塞</p>
+<p>当满足某个预定条件时，可以使用休眠或锁阻塞线程执行</p>
+<ul>
+<li><p>(void)sleepUntilDate:(NSDate *)date;</p>
+</li>
+<li><p>(void)sleepForTimeInterval:(NSTimeInterval)ti;</p>
+</li>
+</ul>
+<p>@synchronized(self)：互斥锁死亡:+ (void)exit</p>
+<p>正常死亡</p>
+<p>线程执行完毕</p>
+<p>非正常死亡</p>
+<p>当满足某个条件后，在线程内部自己中止执行(自杀),[NSThread exit];</p>
+<p>当满足某个条件后，在主线程给其它线程打个死亡标记(下圣旨),让子线程自行了断.(被逼着死亡)</p>
+<p>注意:在终止线程之前，应该注意释放之前分配的对象!<br></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipjphmdz0001wbs6e1fff0tk" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-IOS开发之多线程技术小结" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -120,7 +253,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipjj0cwb0001ojs640dgh42v" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipjphme20002wbs6z8guvm7w" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -200,7 +333,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipjj0czz0011ojs6byfy846l" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/28/集合的深复制与浅复制小结/" data-id="cipjphmi50011wbs6bvgcv2pw" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -256,7 +389,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipjj0cx60007ojs6tqh9ho0m" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipjphmec0006wbs6amn3hf9m" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -302,7 +435,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipjj0cwt0005ojs6rzjqvt58" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipjphmea0005wbs6j168yp30" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -380,7 +513,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipjj0cwq0004ojs62tuj00zy" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipjphme40003wbs64a6m1n8c" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -475,7 +608,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipjj0cwm0003ojs6ybtmk38w" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipjphme60004wbs606js2qg8" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -544,7 +677,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipjj0cz3000oojs64o96udev" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipjphmgc000lwbs6v4jfyxr1" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -591,7 +724,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipjj0czx0010ojs655rh6prq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipjphmi30010wbs60yceuayn" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -622,7 +755,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 
@@ -630,9 +763,13 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/04/17/openGL学习/">openGL学习</a>
+          </li>
         
           <li>
             <a href="/2016/03/21/UITableView的应用和其中js与oc交互/">UITableView的应用和其中js与oc交互</a>
@@ -650,10 +787,6 @@
             <a href="/2016/01/22/Bilibili开源的直播框架/">Bilibili开源的直播框架</a>
           </li>
         
-          <li>
-            <a href="/2016/01/14/iOS三种视屏录制方式/">iOS三种视屏录制方式</a>
-          </li>
-        
       </ul>
     </div>
   </div>
@@ -667,7 +800,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
