@@ -51,9 +51,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -63,6 +63,62 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-Objective-C内存管理教程和原理小结4" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2013/10/22/Objective-C内存管理教程和原理小结4/" class="article-date">
+  <time datetime="2013-10-22T12:48:29.000Z" itemprop="datePublished">2013-10-22</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2013/10/22/Objective-C内存管理教程和原理小结4/">Objective-C内存管理教程和原理小结4</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>原文出处： Vince Yuan的博客<br>系统自动创建新的autorelease pool</p>
+<p>在生成新的Run Loop的时候，系统会自动创建新的autorelease pool（非常感谢网友hhyytt和neogui的提醒）。注意，此处不同于xcode在新建项目时自动生成的代码中加入的autorelease pool，xcode生成的代码可以被删除，但系统自动创建的新的autorelease pool是无法删除的（对于无Garbage Collection的环境来说）。Objective-C没有给出实现代码，官方文档也没有说明，但我们可以通过小程序来证明。</p>
+<p>在这个小程序中，我们先生成了一个autorelease pool，然后生成一个autorelease的ClassA的实例，再在一个新的run loop中生成一个autorelease的ClassB的对象（注意，我们并没有手动在新run loop中生成autorelease pool）。精简的示例代码如下，详细代码请见附件中的memman-run-loop-with-pool.m。</p>
+<p>int main(int argc, char<em>*argv)<br>{<br>NSLog(@”create an autorelasePool\n”);<br>NSAutoreleasePool </em>pool = [[NSAutoreleasePool alloc] init];   </p>
+<p>NSLog(@”create an instance of ClassA and autorelease\n”);<br>ClassA <em>obj1 = [[[ClassA alloc] init] autorelease];<br>NSDate </em>now = [[NSDate alloc] init];<br>NSTimer <em>timer = [[NSTimer alloc] initWithFireDate:now<br>interval:0.0<br>target:obj1<br>selector:@selector(createClassB)<br>userInfo:nil<br>repeats:NO];<br>NSRunLoop </em>runLoop = [NSRunLoop currentRunLoop];<br>[runLoop addTimer:timer forMode:NSDefaultRunLoopMode];<br>[timer release];<br>[now release];<br>[runLoop run]; //在新loop中调用一函数，生成ClassB的autorelease实例</p>
+<p>NSLog(@”releasing autorelasePool\n”);<br>[pool release];<br>NSLog(@”autorelasePool is released\n”);<br>return 0;<br>}<br>输出如下：</p>
+<p>create an autorelasePool<br>create an instance of ClassA and autorelease<br>create an instance of ClassB and autorelease<br>ClassB destroyed<br>releasing autorelasePool<br>ClassA destroyed<br>autorelasePool is released<br>注意在我们销毁autorelease pool之前，ClassB的autorelease实例就已经被销毁了。</p>
+<p>有人可能会说，这并不能说明新的run loop自动生成了一个新的autorelease pool，说不定还只是用了老的autorelease pool，只不过后来drain了一次而已。我们可以在main函数中不生成autorelease pool。精简的示例代码如下，详细代码请见附件中的memman-run-loop-without-pool.m。</p>
+<p>int main(int argc, char**argv)<br>{<br>NSLog(@”No autorelasePool created\n”);</p>
+<p>NSLog(@”create an instance of ClassA\n”);<br>ClassA <em>obj1 = [[ClassA alloc] init];<br>NSDate </em>now = [[NSDate alloc] init];<br>NSTimer <em>timer = [[NSTimer alloc] initWithFireDate:now<br>interval:0.0<br>target:obj1<br>selector:@selector(createClassB)<br>userInfo:nil<br>repeats:NO];<br>NSRunLoop </em>runLoop = [NSRunLoop currentRunLoop];<br>[runLoop addTimer:timer forMode:NSDefaultRunLoopMode];<br>[timer release];<br>[now release];<br>[runLoop run]; //在新loop中调用一函数，生成ClassB的autorelease实例<br>NSLog(@”Manually release the instance of ClassA\n”);<br>[obj1 release];</p>
+<p>return 0;<br>}<br>输出如下：</p>
+<p>No autorelasePool created<br>create an instance of ClassA<br>create an instance of ClassB and autorelease<br>ClassB destroyed<br>Manually release the instance of ClassA<br>ClassA destroyed<br>我们可以看出来，我们并没有创建任何autorelease pool，可是ClassB的实例依然被自动销毁了，这说明新的run loop自动创建了一个autorelease pool，这个pool在新的run loop结束的时候会销毁自己（并自动release所包含的对象）。</p>
+<p>补充说明</p>
+<p>在研究retain count的时候，我不建议用NSString。因为在下面的语句中，</p>
+<p>NSString *str1 = @”constant string”;</p>
+<p>str1的retain count是个很大的数字。Objective-C对常量字符串做了特殊处理。</p>
+<p>当然，如果你这样创建NSString，得到的retain count依然为1</p>
+<p>NSString *str2 = [NSString stringWithFormat:@”123”];</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2013/10/22/Objective-C内存管理教程和原理小结4/" data-id="cipjglvjt0007a0s62fldpznd" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-Objective-C内存管理教程和原理小结3" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -100,7 +156,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipjfsss300025us6o1r3deig" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/14/Objective-C内存管理教程和原理小结3/" data-id="cipjglvjk0004a0s625esvgma" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -178,7 +234,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipjfsss600035us6qkshrh0l" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/07/Objective-C内存管理教程和原理小结2/" data-id="cipjglvjh0003a0s639hc95xt" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -273,7 +329,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipjfsssc00055us6j9jid0c3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/10/01/Objective-C内存管理教程和原理小结1/" data-id="cipjglvjp0005a0s60arjwiz7" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -342,7 +398,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipjfsssu000b5us6v2msdogs" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/20/iOS中GCD的使用小结/" data-id="cipjglvku000la0s6ba744bti" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -389,7 +445,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipjfsste000l5us62n8w1ya2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/09/14/程序员必须知道的10个算法/" data-id="cipjglvkv000ma0s6q3iuimqg" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -420,7 +476,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 
@@ -428,7 +484,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
@@ -449,7 +505,7 @@
           </li>
         
           <li>
-            <a href="/2015/03/07/iOS-关于蒲公英/">iOS_关于蒲公英</a>
+            <a href="/2015/11/23/iOS-通讯录写法/">iOS_通讯录写法</a>
           </li>
         
       </ul>
@@ -465,7 +521,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>

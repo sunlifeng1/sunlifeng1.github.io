@@ -51,9 +51,9 @@
       </nav>
       <nav id="sub-nav">
         
-          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -93,7 +93,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/02/15/搞定iOS与js交互/" data-id="cipjfsstc000k5us6k70pciww" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/02/15/搞定iOS与js交互/" data-id="cipjglvks000ka0s60tj7v6g6" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -249,7 +249,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/28/移动直播开发技术介绍/" data-id="cipjfssuh000o5us6tu0fm7ce" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/01/28/移动直播开发技术介绍/" data-id="cipjglvl4000pa0s6ezmdbg8f" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -308,7 +308,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/22/Bilibili开源的直播框架/" data-id="cipjfsss000015us6wi0p97mo" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/01/22/Bilibili开源的直播框架/" data-id="cipjglvj30000a0s6twp98ehk" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -475,7 +475,102 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/01/14/iOS三种视屏录制方式/" data-id="cipjfsssr000a5us6ob8zm9vt" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/01/14/iOS三种视屏录制方式/" data-id="cipjglvkb000da0s6pe22elka" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS-通讯录写法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/11/23/iOS-通讯录写法/" class="article-date">
+  <time datetime="2015-11-23T08:08:06.000Z" itemprop="datePublished">2015-11-23</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/11/23/iOS-通讯录写法/">iOS_通讯录写法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>苹果的通讯录功能在iOS7,iOS8,iOS9 都有着一定的不同，iOS7和8用的是 <addressbookui addressbookui.h=""> ，但是两个系统版本的代理方法有一些变化，有些代理方法都标注了 NS_DEPRECATED_IOS(2_0, 8_0) 并推荐了另一个代理方法与之对应。  而iOS8到iOS9则是直接弃用了<addressbookui addressbookui.h="">取而代之的是<contactsui contactsui.h="">，后者是OC调用，据说当时苹果宣布弃用AddressBookUI还引来了阵阵欢呼。这也就是在使用通讯录功能时得考虑版本各种判断，我也就是工作中遇到了这种坑，然后就顺手兼容封装了一下。希望能解决这个问题。</contactsui></addressbookui></addressbookui></p>
+<p>我觉得通讯录这里的类结构没必要像SDWebImage或是Core Location这样列出来详细去说。大家用到通讯录无外乎就三个功能：</p>
+<p>1.点击弹出通讯录页面，选择了一个联系人的电话后直接将信息填到页面输入框内。</p>
+<p>2.遍历所有的通讯录数据统一做批量操作，搭建新页面或直接上传。</p>
+<p>3.给通讯录写入一条信息。</p>
+<p>这里会先对比一下iOS789的写法，最后奉上demo（一个封装后的库，提供了非常便利的api）。不关心内部实现的朋友可以直接拉到demo部分。</p>
+<p>一、首先是获取通讯录的权限<br>iOS7和8保持一致</p>
+<p><span style="font-size: 13px; font-family: 宋体;">    ABAuthorizationStatus status = ABAddressBookGetAuthorizationStatus();<br>ABAddressBookRef addressBookRef = ABAddressBookCreateWithOptions(NULL, NULL);<br>if (status == kABAuthorizationStatusNotDetermined) {<br>NSLog(@”还没问”);<br>ABAddressBookRequestAccessWithCompletion(addressBookRef, ^(bool granted, CFErrorRef error){<br>if(granted){<br>NSLog(@”点击同意”);<br>}else{<br>NSLog(@”点击拒绝”);<br>}<br>});<br>}else if (status == kABAuthorizationStatusAuthorized){<br>NSLog(@”已经授权”);<br>[self loadPerson];<br>}else {<br>NSLog(@”没有授权”);<br>// 弹窗提示去获取权限<br>}</span><br>iOS9及以后调用方法改成</p>
+<p><span style="font-size: 13px; font-family: 宋体;">     CNAuthorizationStatus status = [CNContactStore authorizationStatusForEntityType:CNEntityTypeContacts];<br>if (status == CNAuthorizationStatusNotDetermined) {<br>[[[CNContactStore alloc]init] requestAccessForEntityType:CNEntityTypeContacts completionHandler:^(BOOL granted, NSError * _Nullable error) {<br>NSLog(@”还没问”);<br>if(granted){<br>NSLog(@”点击了同意”);<br>[self loadPerson];<br>}else{<br>NSLog(@”点击了拒绝”);<br>}<br>}];<br>}else if (status == CNAuthorizationStatusAuthorized){<br>NSLog(@已经授权”);<br>}else {<br>NSLog(@”没有授权”);<br>}    </span></p>
+<p>二、弹出通讯录选择界面<br>iOS7的写法如下，代理方法的返回值大多是BOOL类型。</p>
+<p><span style="font-size: 13px; font-family: 宋体;">- (BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person<br>{<br>return YES;<br>}</span></p>
+<ul>
+<li>(BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController <em>)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier<br>{<br>ABMultiValueRef phone = ABRecordCopyValue(person, kABPersonPhoneProperty);<br>long index = ABMultiValueGetIndexForIdentifier(phone,identifier);<br>NSString </em>phoneNO = (__bridge NSString *)ABMultiValueCopyValueAtIndex(phone, index);</li>
+</ul>
+<p>CFStringRef lastName = ABRecordCopyValue(person, kABPersonLastNameProperty);<br>CFStringRef firstName = ABRecordCopyValue(person, kABPersonFirstNameProperty);</p>
+<p>NSString <em>lastname = (__bridge_transfer NSString </em>)(lastName);<br>NSString <em>firstname = (__bridge_transfer NSString </em>)(firstName);</p>
+<p>if (phone) {<br>[peoplePicker dismissViewControllerAnimated:YES completion:nil];<br>return NO;<br>}<br>return YES;<br>}<br></p>
+<p>iOS8的代理方法换了，改成了下面两个，但是方法内部的取值基本相同</p>
+<p><span style="font-size: 13px; font-family: 宋体;">// 点击了通讯录名字就会退出</span></p>
+<ul>
+<li>(void)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker didSelectPerson:(ABRecordRef)person;</li>
+</ul>
+<p>// 点击了名字里面的电话或邮箱才会退出</p>
+<ul>
+<li>(void)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker didSelectPerson:(ABRecordRef)person property:(ABPropertyID)property identifier:(ABMultiValueIdentifier)identifier;<br><br>至于会调用哪一个方法，可以根据实际需要去选择，在弹出界面的方法中predicateForSelectionOfPerson 这个属性传false就是调用下面的。</li>
+</ul>
+<p><span style="font-size: 13px; font-family: 宋体;">    ABPeoplePickerNavigationController *pickervc = [[ABPeoplePickerNavigationController alloc] init];<br>pickervc.predicateForSelectionOfPerson = [NSPredicate predicateWithValue:false];<br>pickervc.peoplePickerDelegate = self;<br>[target presentViewController:pickervc animated:YES completion:nil];<br></span></p>
+<p>iOS9系统下的弹出选择器方法 和 代理方法如下</p>
+<p><span style="font-size: 13px; font-family: 宋体;"> // 弹出选择器 </span></p>
+<ul>
+<li>(void)presentPageOnTarget{<br>CNContactPickerViewController *contactVc = [[CNContactPickerViewController     alloc] init];<br>contactVc.delegate = self;<br>[target presentViewController:contactVc animated:YES completion:nil];<br>}</li>
+</ul>
+<p>// 代理方法</p>
+<ul>
+<li>(void)contactPicker:(CNContactPickerViewController <em>)picker didSelectContact:(CNContact </em>)contact<br>{<br>SXPersonInfoEntity <em>personEntity = [SXPersonInfoEntity new];<br>NSString </em>lastname = contact.familyName;<br>NSString *firstname = contact.givenName;<br>NSLog(@”%@ %@”, lastname, firstname);<br>personEntity.lastname = lastname;<br>personEntity.firstname = firstname;</li>
+</ul>
+<p>NSMutableString *fullname = [[NSString stringWithFormat:@”%@%@”,lastname,firstname] mutableCopy];<br>[fullname replaceOccurrencesOfString:@”(null)” withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, fullname.length)];<br>personEntity.fullname = fullname;</p>
+<p>NSString <em>fullPhoneStr = [NSString string];<br>NSArray </em>phoneNums = contact.phoneNumbers;<br>for (CNLabeledValue <em>labeledValue in phoneNums) {<br>NSString </em>phoneLabel = labeledValue.label;<br>CNPhoneNumber <em>phoneNumer = labeledValue.value;<br>NSString </em>phoneValue = phoneNumer.stringValue;<br>NSLog(@”%@ %@”, phoneLabel, phoneValue);<br>if (phoneValue.length &gt; 0) {<br>fullPhoneStr = [fullPhoneStr stringByAppendingString:phoneValue];<br>fullPhoneStr = [fullPhoneStr stringByAppendingString:@”,”];<br>}<br>}<br>if (fullPhoneStr.length &gt; 1) {<br>personEntity.phoneNumber = [fullPhoneStr substringToIndex:fullPhoneStr.length - 1];<br>}<br>self.chooseAction(personEntity);<br>}<br><br>这个是点击了名字就直接回调的方法，如果希望点击了属性再回调，则需要加上这一行</p>
+<p><span style="font-size: 13px; font-family: 宋体;">contactVc.predicateForSelectionOfContact = [NSPredicate predicateWithValue:false];</span></p>
+<p>// 代理方法调用</p>
+<ul>
+<li>(void)contactPicker:(CNContactPickerViewController <em>)picker didSelectContactProperty:(CNContactProperty </em>)contactProperty<br></li>
+</ul>
+<p>三、获取全部通讯录信息<br>关于批量获取所有通讯录信息的方法有点冗长，这里就不一一贴了，只贴下iOS9的写法，iOS7和8的代码demo里都有。</p>
+<p><span style="font-size: 13px; font-family: 宋体;">- (void)printAllPerson<br>{<br>// 获取<br>CNContactStore <em>contactStore = [[CNContactStore alloc] init];<br>NSArray </em>keys = @[CNContactGivenNameKey, CNContactFamilyNameKey, CNContactPhoneNumbersKey];<br>CNContactFetchRequest *request = [[CNContactFetchRequest alloc] initWithKeysToFetch:keys];</span></p>
+<p>// 遍历<br>[contactStore enumerateContactsWithFetchRequest:request error:nil usingBlock:^(CNContact <em> _Nonnull contact, BOOL </em> _Nonnull stop) {<br>NSString <em>lastname = contact.familyName;<br>NSString </em>firstname = contact.givenName;<br>NSLog(@”%@ %@”, lastname, firstname);<br>NSArray <em>phoneNums = contact.phoneNumbers;<br>for (CNLabeledValue </em>labeledValue in phoneNums) {<br>NSString <em>phoneLabel = labeledValue.label;<br>CNPhoneNumber </em>phoneNumer = labeledValue.value;<br>NSString *phoneValue = phoneNumer.stringValue;<br>NSLog(@”%@ %@”, phoneLabel, phoneValue);<br>}<br>}];<br>}<br></p>
+<p>四、写入通讯录<br>因为写入的话这个功能有点重量级，写入的时候要写入，名字、电话、email、地址等等，这就会使得api过于复杂。暂时我见到过的做法大多都是如果用户给了通讯录权限 那就给你插入一条名字+电话，我做了只有这两个入参的api，当然使用时也完全可以扩展成更多参数的。</p>
+<p>iOS7和8</p>
+<p><span style="font-size: 13px; font-family: 宋体;">- (void)creatItemWithName:(NSString <em>)name phone:(NSString </em>)phone<br>{<br>if((name.length &lt; 1)||(phone.length &lt; 1)){<br>NSLog(@”输入属性不能为空”);<br>return;<br>}<br>CFErrorRef error = NULL;</span></p>
+<p>ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, &amp;error);<br>ABRecordRef newRecord = ABPersonCreate();<br>ABRecordSetValue(newRecord, kABPersonFirstNameProperty, (__bridge CFTypeRef)name, &amp;error);</p>
+<p>ABMutableMultiValueRef multi = ABMultiValueCreateMutable(kABMultiStringPropertyType);<br>ABMultiValueAddValueAndLabel(multi, (__bridge CFTypeRef)name, kABPersonPhoneMobileLabel, NULL);</p>
+<p>ABRecordSetValue(newRecord, kABPersonPhoneProperty, multi, &amp;error);<br>CFRelease(multi);</p>
+<p>ABAddressBookAddRecord(addressBook, newRecord, &amp;error);</p>
+<p>ABAddressBookSave(addressBook, &amp;error);<br>CFRelease(newRecord);<br>CFRelease(addressBook);<br>}<br><br>iOS9下</p>
+<p><span style="font-size: 13px; font-family: 宋体;">- (void)creatItemWithName:(NSString <em>)name phone:(NSString </em>)phone<br>{<br>// 创建对象<br>// 这个里面可以添加多个电话，email，地址等等。 感觉使用率不高，只提供了最常用的属性：姓名+电话，需要时可以自行扩展。<br>CNMutableContact <em> contact = [[CNMutableContact alloc]init];<br>contact.givenName = name?:@”defaultname”;<br>CNLabeledValue </em>phoneNumber = [CNLabeledValue labeledValueWithLabel:CNLabelPhoneNumberMobile value:[CNPhoneNumber phoneNumberWithStringValue:phone?:@”10086”]];<br>contact.phoneNumbers = @[phoneNumber];</span></p>
+<p>// 把对象加到请求中<br>CNSaveRequest * saveRequest = [[CNSaveRequest alloc]init];<br>[saveRequest addContact:contact toContainerWithIdentifier:nil];</p>
+<p>// 执行请求<br>CNContactStore * store = [[CNContactStore alloc]init];<br>[store executeSaveRequest:saveRequest error:nil];<br>}<br></p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/11/23/iOS-通讯录写法/" data-id="cipjglvk5000aa0s66t5jm1az" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -518,7 +613,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjfsssw000c5us6g7p0fdxn" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjglvk7000ba0s6bug4rorw" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -570,7 +665,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjfsssx000d5us6eau9hiq4" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjglvk9000ca0s61aajzdxc" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -615,7 +710,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjfsssi00085us6fui6xkrs" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjglvjr0006a0s6fzgduj4t" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -683,7 +778,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjfsst1000f5us664wp7f2d" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjglvkq000ja0s6ouq3ffkd" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -722,46 +817,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjfsssz000e5us6nookl11n" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-从Facebook看iOS移动端的开发" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/01/01/从Facebook看iOS移动端的开发/" class="article-date">
-  <time datetime="2014-01-01T13:47:31.000Z" itemprop="datePublished">2014-01-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/01/01/从Facebook看iOS移动端的开发/">从Facebook看iOS移动端的开发</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>从 Facebook 谈起<br>Facebook 最近绝对是互联网界的新闻明星。它首先是进行了大手笔的收购：2014 年 2 月，Facebook 以 160 亿美元现金加股票，以及 30 亿美元受限制股票福利的方式 收购移动 IM 应用 WhatsApp，总收购成本 190 亿美元。然后是继续发布了新产品：2014 年 2 月，Facebook 发布了一个新的移动端新闻阅读应用 Paper。最后，Facebook 最近还将自己使用的大量工具开源，包括开源了 Paper 的加载效果 Shimmer，LLDB 的增强工具 chisel，以及 Key-Value Observing 工具 KVOController，如果说这些开源工具让程序员如获至宝的话，那么 Facebook 将 Paper 的交互设计工具 Origami 免费开放，则是对广大设计师的福音，极大地方便了移动交互设计工作的开展。<br>2014 年对于 Facebook 来说也是一个值得纪念的日子。因为从 2004 年 2 月 4 日 Facebook 产品上线到现在，Facebook 刚刚走过 10 个年头。10 年前，Facebook 的创始人扎克伯格才 19 岁，是哈佛大学的一名学生。转眼间 10 年后，Facebook 已经成长为全球最大的社交网络，月活跃用户达到 12 亿，市值约 1200 亿美元。<br>业界内大多讨论的话题都围绕在 Facebook 收购 WhatsApp 这件事情上，而作为一个移动开发者，我更加看重 Facebook 发布 Paper 这件事情。因为 Paper 并不是一个简单的应用，它有着非常优秀的交互效果，并且在产品设计和技术上都使用了许多前沿的技术，那就让我们看看，Paper 的开发到底有何不同之处？<br>交互设计<br>我们首先从产品设计上看 Paper 的不同之处。Paper 虽然只是一个新闻客户端，但从大家对 Paper 的评价上，我们发现优秀的交互再一次成为大家关注的焦点。回想那些成功的应用，大多都有着令人心动的交互效果，例如：Tweetie 的下拉刷新，现在基本上成为 iPhone 上内容刷新的标准。Path 跳出来的红心让人心动，很多朋友甚至会没事点那个红心，欣赏那流畅的按钮散开效果。还有 Mailbox，用流畅的手势操作，将邮件管理与任务管理完美结合起来。<br>国外成功的优秀应用也在影响着国内。交互设计不同于平面设计，不能简单地用 Photoshop 展现，而交互设计对于移动应用的成功又异常关键，所以需要花费不少时间来设计，因此产品经理很难兼顾地做交互设计。所以，在国内的一线互联网公司里，交互设计师这个职位慢慢成了移动应用的标配。但是在大部分的非一线互联网公司里面，移动开发的设计仍然停留在由产品经理简单潦草的完成阶段。所以，Facebook 这次 Paper 的成功发布，再一次给移动开发的从业者指出了交互设计的重要性。<br>回顾中国互联网产业的发展我们可以发现，产品经理（Product Manager）这个职位也是最近五、六年才成为互联网公司的标配的，想必在不远的将来，除着交互设计越来越重要，移动交互设计师也会成为每一个互联网公司重要的必备职位。<br>另一方面，由于工具的欠缺，大量的交互设计师的工作效率非常低下，他们为了做出一个新颖的效果常常需要花费大量精力。这次 Facebook 免费开放出基于苹果 Quartz Composer 的增强工具集 Origami，使得交互设计工作得到更好的辅助。而且在 Facebook 的带动下，jQC 1.0 也出现了。jQC 是一个与 Facebook 之前开源的 Origami 兼容的工具，提供了 15 个新的 Patch 来提高 Quartz Composer 的功能。<br>不过另一方面，该工具仍然需要设计师具备一定的基础编码能力，所以对于广大设计师来说，交互设计工具 Origami 对设计师带来的既是机会，同时也是挑战。<br>移动开发技术<br>随着 iOS 依赖管理工具 Cocoapods 和大量第三方开源库成熟起来，业界积累了大量的优秀开源项目。这次 Facebook 开发 Paper 使用了 将近 100 个第三方开源库，极大地减化了自己的应用开发任务。相信随着移动开发的发展，移动开发的生态圈会越来越成熟，基础的开源组件也将将越来越丰富，广大开发者都将从中受益。<br>另一方面，Facebook 的工程师在 Quora 上反馈 说 Paper 在 Xcode 下打开需要 40 多秒钟，编译一次需要 30 分钟。这反映出大量的开源库的使用也给 iOS 集成编译环境 Xcode 提出了新的挑战，相信苹果会花大力气解决 Xcode 的性能问题。<br>总结<br>Facebook 发布的 Paper 让我看到了移动开发领域的快速发展，大量新的工具和开源技术给了设计师和程序员机会和挑战，相信在移动互联网快速发展的浪潮中，会涌现出越来越多优秀的移动应用。谁会是未来移动互联网的霸主？让我们拭目以待。</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipjfsst9000j5us6oopzxz2u" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjglvkf000fa0s6lou85rbu" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -792,7 +848,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 
@@ -800,7 +856,7 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Articles récents</h3>
     <div class="widget">
       <ul>
         
@@ -821,7 +877,7 @@
           </li>
         
           <li>
-            <a href="/2015/03/07/iOS-关于蒲公英/">iOS_关于蒲公英</a>
+            <a href="/2015/11/23/iOS-通讯录写法/">iOS_通讯录写法</a>
           </li>
         
       </ul>
@@ -837,7 +893,7 @@
   <div class="outer">
     <div id="footer-info" class="inner">
       &copy; 2016 John Doe<br>
-      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
     </div>
   </div>
 </footer>
