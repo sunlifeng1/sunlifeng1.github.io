@@ -3,18 +3,42 @@
 <head>
   <meta charset="utf-8">
   
-  <title>搞定iOS与js交互 | 孙利峰</title>
+  <title>iOS_关于判断VPN小结 | 孙利峰</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="先看这篇文章： http://www.open-open.com/lib/view/open1419305655562.htmlhttp://blog.csdn.net/lizhongfu2013/article/details/9232129http://blog.csdn.net/lizhongfu2013/article/details/9236357干货好文章 http://www.ji">
+  <meta name="description" content="需要判断是否开启了VPN方法的代码
+头文件需要添加
+#include
+#include
+代码部分
+
+(BOOL)isVPNConnected{struct ifaddrs interfaces = NULL;struct ifaddrs temp_addr = NULL;int success = 0;
+
+// retrieve the current interfaces - returns">
 <meta property="og:type" content="article">
-<meta property="og:title" content="搞定iOS与js交互">
-<meta property="og:url" content="http://yoursite.com/2016/02/15/搞定iOS与js交互/index.html">
+<meta property="og:title" content="iOS_关于判断VPN小结">
+<meta property="og:url" content="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/index.html">
 <meta property="og:site_name" content="孙利峰">
-<meta property="og:description" content="先看这篇文章： http://www.open-open.com/lib/view/open1419305655562.htmlhttp://blog.csdn.net/lizhongfu2013/article/details/9232129http://blog.csdn.net/lizhongfu2013/article/details/9236357干货好文章 http://www.ji">
-<meta property="og:updated_time" content="2016-06-14T14:40:50.000Z">
+<meta property="og:description" content="需要判断是否开启了VPN方法的代码
+头文件需要添加
+#include
+#include
+代码部分
+
+(BOOL)isVPNConnected{struct ifaddrs interfaces = NULL;struct ifaddrs temp_addr = NULL;int success = 0;
+
+// retrieve the current interfaces - returns">
+<meta property="og:updated_time" content="2016-06-17T07:46:38.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="搞定iOS与js交互">
-<meta name="twitter:description" content="先看这篇文章： http://www.open-open.com/lib/view/open1419305655562.htmlhttp://blog.csdn.net/lizhongfu2013/article/details/9232129http://blog.csdn.net/lizhongfu2013/article/details/9236357干货好文章 http://www.ji">
+<meta name="twitter:title" content="iOS_关于判断VPN小结">
+<meta name="twitter:description" content="需要判断是否开启了VPN方法的代码
+头文件需要添加
+#include
+#include
+代码部分
+
+(BOOL)isVPNConnected{struct ifaddrs interfaces = NULL;struct ifaddrs temp_addr = NULL;int success = 0;
+
+// retrieve the current interfaces - returns">
   
     <link rel="alternate" href="/atom.xml" title="孙利峰" type="application/atom+xml">
   
@@ -63,10 +87,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-搞定iOS与js交互" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-iOS-关于判断VPN小结" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2016/02/15/搞定iOS与js交互/" class="article-date">
-  <time datetime="2016-02-15T14:38:11.000Z" itemprop="datePublished">2016-02-15</time>
+    <a href="/2015/02/17/iOS-关于判断VPN小结/" class="article-date">
+  <time datetime="2015-02-17T07:44:09.000Z" itemprop="datePublished">2015-02-17</time>
 </a>
     
   </div>
@@ -77,7 +101,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      搞定iOS与js交互
+      iOS_关于判断VPN小结
     </h1>
   
 
@@ -86,13 +110,26 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p><span></span></p>
-<p>先看这篇文章： <a href="http://www.open-open.com/lib/view/open1419305655562.html" target="_blank" rel="external">http://www.open-open.com/lib/view/open1419305655562.html</a><br><a href="http://blog.csdn.net/lizhongfu2013/article/details/9232129" target="_blank" rel="external">http://blog.csdn.net/lizhongfu2013/article/details/9232129</a><br><a href="http://blog.csdn.net/lizhongfu2013/article/details/9236357" target="_blank" rel="external">http://blog.csdn.net/lizhongfu2013/article/details/9236357</a><br>干货好文章 <a href="http://www.jianshu.com/p/a329cd4a67ee" target="_blank" rel="external">http://www.jianshu.com/p/a329cd4a67ee</a><br>干货好文章 <a href="http://ios.jobbole.com/84491/" target="_blank" rel="external">http://ios.jobbole.com/84491/</a><br>交互范例 ：<a href="http://www.open-open.com/lib/view/open1463553967635.html" target="_blank" rel="external">http://www.open-open.com/lib/view/open1463553967635.html</a><br><a href="http://www.open-open.com/lib/view/open1456311816823.html" target="_blank" rel="external">http://www.open-open.com/lib/view/open1456311816823.html</a></p>
+<p>需要判断是否开启了VPN方法的代码</p>
+<p>头文件需要添加</p>
+<p>#include</p>
+<p>#include</p>
+<p>代码部分</p>
+<ul>
+<li>(BOOL)isVPNConnected<br>{<br>struct ifaddrs <em>interfaces = NULL;<br>struct ifaddrs </em>temp_addr = NULL;<br>int success = 0;</li>
+</ul>
+<p>// retrieve the current interfaces - returns 0 on success<br>success = getifaddrs(&amp;interfaces);<br>if (success == 0) {<br>// Loop through linked list of interfaces<br>temp_addr = interfaces;<br>while (temp_addr != NULL) {<br>NSString *string = [NSString stringWithFormat:@”%s” , temp_addr-&gt;ifa_name];<br>if ([string rangeOfString:@”tap”].location != NSNotFound ||<br>[string rangeOfString:@”tun”].location != NSNotFound ||<br>[string rangeOfString:@”ppp”].location != NSNotFound){<br>return YES;<br>}</p>
+<p>temp_addr = temp_addr-&gt;ifa_next;<br>}<br>}</p>
+<p>// Free memory<br>freeifaddrs(interfaces);<br>return NO;</p>
+<p>}</p>
+<p>直接调用即可<br>BOOL isSucceess =[self isVPNConnected];</p>
+<p>YES为开启了VPN，NO为关闭了VPN</p>
 <p></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2016/02/15/搞定iOS与js交互/" data-id="cipjfmnra000i48s6w8hnpeo8" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjfmnrg000k48s65m13piq0" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -101,10 +138,19 @@
     
 <nav id="article-nav">
   
+    <a href="/2016/01/14/iOS三种视屏录制方式/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Récent</strong>
+      <div class="article-nav-title">
+        
+          iOS三种视屏录制方式
+        
+      </div>
+    </a>
   
-    <a href="/2016/01/28/移动直播开发技术介绍/" id="article-nav-older" class="article-nav-link-wrap">
+  
+    <a href="/2015/01/07/iOS-JSON解析四种方法/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Ancien</strong>
-      <div class="article-nav-title">移动直播开发技术介绍</div>
+      <div class="article-nav-title">iOS_JSON解析四种方法</div>
     </a>
   
 </nav>
