@@ -64,6 +64,74 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-iOS中使用ZXing库" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/01/20/iOS中使用ZXing库/" class="article-date">
+  <time datetime="2014-01-20T14:02:30.000Z" itemprop="datePublished">2014-01-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/01/20/iOS中使用ZXing库/">iOS中使用ZXing库</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>前言<br>ZXing(Github镜像地址)是一个开源的条码生成和扫描库（开源协议为Apache2.0)。它不但支持众多的条码格式，而且有各种语言的实现版本，它支持的语言包括：Java, C++, C#, Objective-C, ActionScript和Ruby。<br>我上周在iOS项目开发中使用了ZXing的扫描二维码功能。在此总结一下如何将ZXing集成到已有的iOS工程中，分享给大家。<br>集成步骤<br>首先去Google Code或Github将ZXing的代码下载下来，整个工程比较大，我们只需要其中涉及iOS的部分，所以最好做一些裁剪。简单来说，我们只需要保留cpp和iphone这2个文件夹，其余的全部删掉。如下图所示：</p>
+<p>接着我们继续裁剪，对于cpp这个目录，只保留cpp/core/src/zxing下面的内容，其余内容也可以删掉了。但是整个目录结构必须保持原样。裁剪完后，整个目录结构如下所示：</p>
+<p>接下来，我们把裁剪后的zxing目录整个移动到我们的iOS项目的目录下，并且把上图中可以看到的ZXingWidget.xcodeproj文件拖动到我们的iOS工程中。<br>下一步，我们需要设置ZXing项目和我们原本的iOS项目之间的依赖关系。在我们的iOS项目的设置中，点击build phases tab，然后增加 Target Dependencies 和 Link binary，并且增加这些framework依赖：<br>a. AVFoundation<br>b. AudioToolbox<br>c. CoreVideo<br>d. CoreMedia<br>e. libiconv<br>f. AddressBook<br>g. AddressBookUI</p>
+<p>最后一步，在设置中增加如下2个header search path:<br>./zxing/iphone/ZXingWidget/Classes<br>./zxing/cpp/core/src<br>需要注意的是，第一个path要设置成循环查找子目录，而第二个不循环查找，如下图所示：</p>
+<p>恭喜你，完成这步之后，你就已经完成ZXing库的集成了。下面谈谈如何使用ZXing库来做二维码识别。<br>二维码识别<br>ZXing的iOS版本提供2种方法来做二维码识别功能，第一种方法比较简单，第二种方法比较复杂。我在做Demo时使用了第一种方法，做真正项目开发的时候使用了第二种方法，所以都给大家介绍一下。<br>使用方法一<br>ZXing直接提供了一个扫描二维码的View Controller，即ZXingWidgetController。在需要使用的界面代码中，加入文件依赖：</p>
+<p>#import <zxingwidgetcontroller.h></zxingwidgetcontroller.h></p>
+<p>#import <qrcodereader.h><br><code>然后在需要扫描的时候，调用如下代码即可：</code> objc</qrcodereader.h></p>
+<ul>
+<li>(IBAction)scanPressed:(id)sender {<br>ZXingWidgetController <em>widController = [[ZXingWidgetController alloc] initWithDelegate:self showCancel:YES OneDMode:NO];<br>NSMutableSet </em>readers = [[NSMutableSet alloc ] init];<br>QRCodeReader* qrcodeReader = [[QRCodeReader alloc] init];<br>[readers addObject:qrcodeReader];<br>[qrcodeReader release];<br>widController.readers = readers;<br>[readers release];<br>[self presentModalViewController:widController animated:YES];<br>[widController release];<br>}<br>在ZXing扫描有结果时，会调用如下回调函数：</li>
+</ul>
+<p>@protocol ZXingDelegate</p>
+<ul>
+<li>(void)zxingController:(ZXingWidgetController<em>)controller didScanResult:(NSString </em>)result;</li>
+<li>(void)zxingControllerDidCancel:(ZXingWidgetController*)controller;<br>@end<br>使用方法二<br>方法二与方法一的区别就相当于AVFoundation和UIImagePickerController的区别一样。简单来说，就是使用方法二比方法一更加麻烦，但是获得的可定制性更高。<br>使用方法二时，你需要自己用AVFoundation获得Camera返回的实时图象，然后转成UIImage，最后传给ZXing的Decoder类完成二维码的识别。由于使用AVFoundation涉及的代码略多，我写的示意代码如下：</li>
+</ul>
+<p>#import “Decoder.h”</p>
+<p>#import “TwoDDecoderResult.h”</p>
+<p>#import “QRCodeReader.h”</p>
+<ul>
+<li>(void)viewDidLoad {<br>// setup QR reader<br>self.qrReader = [[NSMutableSet alloc ] init];<br>QRCodeReader* qrcodeReader = [[QRCodeReader alloc] init];<br>[self.qrReader addObject:qrcodeReader];<br>self.scanningQR = NO;<br>self.step = STEP_QR;<br>}</li>
+</ul>
+<p>// AVFoundation的回调函数</p>
+<ul>
+<li>(void)captureOutput:(AVCaptureOutput <em>)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection </em>)connection {<br>// 第一步，将sampleBuffer转成UIImage<br>UIImage <em>image= [self getCaptureImage:sampleBuffer];<br>// 第二步，用Decoder识别图象<br>Decoder </em>d = [[Decoder alloc] init];<br>d.readers = self.qrReader;<br>d.delegate = self;<br>self.scanningQR = [d decodeImage:image] == YES ? NO : YES;<br>}<br>ZXing的Decoder类提供了以下回调函数获得识别结果：<br>@protocol DecoderDelegate<nsobject><br>@optional</nsobject></li>
+<li>(void)decoder:(Decoder <em>)decoder willDecodeImage:(UIImage </em>)image usingSubset:(UIImage *)subset;</li>
+<li>(void)decoder:(Decoder <em>)decoder didDecodeImage:(UIImage </em>)image usingSubset:(UIImage <em>)subset withResult:(TwoDDecoderResult </em>)result {<br>NSLog(@”result = %@”, [result text]);<br>}</li>
+<li>(void)decoder:(Decoder <em>)decoder failedToDecodeImage:(UIImage </em>)image usingSubset:(UIImage <em>)subset reason:(NSString </em>)reason;</li>
+<li>(void)decoder:(Decoder *)decoder foundPossibleResultPoint:(CGPoint)point;</li>
+</ul>
+<p>@end<br>Trouble Shoot &amp; Tips<br>我在使用中遇到了一些问题，主要是编译的问题。<br>一个是找不到 头文件。解决方法：把用到ZXing的源文件扩展名由.m改成.mm。<br>报错：Undefined symbols for architecture armv7s，解决方法：把ZXingWidget的一个build target参数：”Build Active Architecture Only” 修改成 “NO”.<br>报错：No such file or directory，出现该错误可能是你的Header Search Path写错了，或者就是你的zxing库的目录结构不是我上面强调的，好好检查一下吧。<br>如果你需要生成二维码做测试，推荐一个不错的在线生成二维码的网站：<a href="http://cli.im/" target="_blank" rel="external">http://cli.im/</a><br>ZXing和OpenCV的兼容问题<br>ZXing 2.1 和OpenCV 2.4.3的iOS库有一些兼容问题，他们对C++标准库的版本和编译器版本都有一些需求，造成满足一方了，另一方就编译不通过了。Stackoverflow上有人终于找到了一个让它们和平共处的方法，但是只适用于iOS5.0以上版本。正好我们的App只支持iOS5.0+，所以就搞定了。所以如果你也正好遇到这个问题，可以参考这个贴子。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjj0cz4000pojs6h0j8o9l4" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-iOS应用内支付小结" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/01/14/iOS应用内支付小结/" class="article-date">
@@ -93,7 +161,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjitzsz000onos6vwl75b2o" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjj0cz8000rojs6tzpg0vem" class="article-share-link">Share</a>
       
       
     </footer>
@@ -132,7 +200,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipjitzt6000rnos6nic5be0k" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipjj0czj000uojs6t6dlssvp" class="article-share-link">Share</a>
       
       
     </footer>
@@ -185,7 +253,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipjitztk000xnos6a3nvbr91" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipjj0czv000yojs6o8qgonet" class="article-share-link">Share</a>
       
       
     </footer>
@@ -224,7 +292,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipjitzt3000pnos6ewx9ppl2" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipjj0cze000sojs642x6ucrz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -269,7 +337,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipjitzrz0009nos6i2167fmp" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipjj0cx20006ojs6cqzwoncr" class="article-share-link">Share</a>
       
       
     </footer>
@@ -308,7 +376,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipjitzth000wnos6ng9tsnx7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipjj0czo000wojs60w211oxw" class="article-share-link">Share</a>
       
       
     </footer>
@@ -449,7 +517,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipjitzs7000dnos6h6z396fl" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipjj0cy4000cojs673obskhx" class="article-share-link">Share</a>
       
       
     </footer>
@@ -530,7 +598,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipjitzst000mnos6pakeqql1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipjj0cz5000qojs6dlplvr8w" class="article-share-link">Share</a>
       
       
     </footer>
@@ -663,73 +731,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipjitzrb0002nos6g6agv15f" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-IOS开发之多线程技术小结" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2013/11/07/IOS开发之多线程技术小结/" class="article-date">
-  <time datetime="2013-11-07T12:55:56.000Z" itemprop="datePublished">2013-11-07</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/11/07/IOS开发之多线程技术小结/">IOS开发之多线程技术小结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>一、什么是多线程<br>多线程（英语：multithreading），是指从软件或者硬件上实现多个线程并发执行的技术。具有多线程能力的计算机因有硬件支持而能够在同一时间执行多于一个线程，进而提升整体处理性能。具有这种能力的系统包括对称多处理机、多核心处理器以及芯片级多处理（Chip-level multithreading）或同时多线程（Simultaneous multithreading）处理器。在一个程序中，这些独立运行的程序片段叫作“线程”（Thread），利用它编程的概念就叫作“多线程处理（Multithreading）”。具有多线程能力的计算机因有硬件支持而能够在同一时间执行多于一个线程（台湾译作“执行绪”），进而提升整体处理性能。</p>
-<p>1) 多线程执行原理</p>
-<p>a. （单核CPU）同一时间，cpu只能处理1个线程，只有1个线程在执行</p>
-<p>b. 多线程同时执行：是CPU快速的在多个线程之间的切换</p>
-<p>c. cpu调度线程的时间足够快，就造成了多线程的”同时”执行</p>
-<p>d. 如果线程数非常多，cpu会在n个线程之间切换，消耗大量的cpu资源</p>
-<p>i. 每个线程被调度的次数会降低，线程的执行效率降低</p>
-<p>2）线程与进程<br>每个正在系统上运行的程序都是一个进程。每个进程包含一到多个线程。进程也可能是整个程序或者是部分程序的动态执行。线程是一组执行的集合，或者是程序的特殊段，它可以在程序里独立执行。也可以把它理解为代码运行的上下文。所以线程基本上是轻量级的进程，它负责在单个程序里执行多任务。通常由操作系统负责多个线程的调度和执行。</p>
-<p>线程是程序中一个单一的顺序控制流程，在单个程序中同时运行多个线程完成不同的工作，称为多线程。</p>
-<p>线程和进程的区别在于，子进程和父进程有不同的代码和数据空间，而多个线程则共享数据空间，每个线程有自己的执行堆栈和程序计数器为其执行上下文，多线程主要是为了节约CPU时间，发挥利用，根据具体情况而定。线程的运行中需要使用计算机的内存资源和CPU。</p>
-<p>3）多线程的优缺点<br>优点：</p>
-<p>1、使用线程可以把占据时间长的程序中的任务放到后台去处理。</p>
-<p>2、用户界面可以更加吸引人，这样比如用户点击了一个按钮去触发某些事件的处理，可以弹出一个进度条来显示处理的进度。</p>
-<p>3、程序的运行速度可能加快。</p>
-<p>4、在一些等待的任务实现上如用户输入、文件读写和网络收发数据等，线程就比较有用了。在这种情况下可以释放一些珍贵的资源如内存占用等等。</p>
-<p>5、线程上的任务执行完成后，线程会自动销毁。</p>
-<p>缺点：</p>
-<p>1、线程越多，cpu在调用线程上的开销就越大，如果有大量的线程，会影响性能，因为操作系统需要在它们之间切换。</p>
-<p>2、开启线程需要占用一定的内存空间（默认情况下，每一个线程都占512KB），如果开启大量的线程，会占用大量的内存空间，降低程序的性能，更多的线程需要更多的内存空间。</p>
-<p>3、程序设计更加复杂，比如线程间的通信、多线程的数据共享，可能会给程序带来更多的BUG，因此要小心使用。</p>
-<p>4、线程的中止需要考虑其对程序运行的影响。</p>
-<p>5、通常块模型数据是在多个线程间共享的，需要一个合适的锁系统替换掉数据共享。</p>
-<p>注意：iOS 8.0后主线程的默认堆栈大小也是 512K，官方文档标注错误。</p>
-<p>二、我们为什么要用多线程编程技术<br>在大多数研究领域内是要求线程调度程序要能够快速选择其中一个已就绪线程去运行，而不是一个一个运行而降低效率。所以要让调度程序去分辨线程的优先级是很重要的。在移动开发过程中，一切均已用户体验作为首要任务，这时多线程的重要性不言而喻。</p>
-<p>一个程序运行后，默认会开启1个线程，称为“主线程”或“UI线程”，主线程一般用来刷新UI界面，处理UI事件（比如：点击、滚动、拖拽等事件）</p>
-<p>主线程使用注意</p>
-<p>别将耗时的操作放到主线程中</p>
-<p>耗时操作会卡住主线程，严重影响UI的流畅度，给用户一种卡的坏体验</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/07/IOS开发之多线程技术小结/" data-id="cipjitzr80001nos6d6hx9gtj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/14/IOS开发之多线程技术小结2/" data-id="cipjj0cwh0002ojs6puzi1g6b" class="article-share-link">Share</a>
       
       
     </footer>
@@ -760,7 +762,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 

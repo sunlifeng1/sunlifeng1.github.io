@@ -136,7 +136,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/09/09/iOS-对UITableView三种计算动态行高的方法分析/" data-id="cipjitzsd000hnos688eyy8ya" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/09/09/iOS-对UITableView三种计算动态行高的方法分析/" data-id="cipjj0cyy000lojs6f5n85upq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -178,7 +178,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/08/24/关于XMPP/" data-id="cipjitzta000snos65q2hsmv8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/08/24/关于XMPP/" data-id="cipjj0czm000vojs63px4azud" class="article-share-link">Share</a>
       
       
     </footer>
@@ -239,7 +239,59 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/07/03/iOS-多线程/" data-id="cipjitzsm000jnos67c1e7j76" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/07/03/iOS-多线程/" data-id="cipjj0cyo000iojs6ukovvr0y" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS-几种常见的加密方法" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/05/27/iOS-几种常见的加密方法/" class="article-date">
+  <time datetime="2015-05-27T09:18:49.000Z" itemprop="datePublished">2015-05-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/05/27/iOS-几种常见的加密方法/">iOS_几种常见的加密方法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>一.MD5</p>
+<p>MD5编码是最常用的编码方法之一，是从一段字符串中通过相应特征生成一段32位的数字字母混合码。</p>
+<p>MD5主要特点是 不可逆，相同数据的MD5值肯定一样，不同数据的MD5值不一样（也不是绝对的，但基本是不能一样的）。<br>MD5算法还具有以下性质：<br>1、压缩性：任意长度的数据，算出的MD5值长度都是固定的。<br>2、容易计算：从原数据计算出MD5值很容易。<br>3、抗修改性：对原数据进行任何改动，哪怕只修改1个字节，所得到的MD5值都有很大区别。<br>4、弱抗碰撞：已知原数据和其MD5值，想找到一个具有相同MD5值的数据（即伪造数据）是非常困难的。<br>5、强抗碰撞：想找到两个不同的数据，使它们具有相同的MD5值，是非常困难的。</p>
+<p>MD5虽然说是不可逆的 但是由于有网站<a href="http://www.cmd5.com的存在，专门用来查询MD5码" target="_blank" rel="external">http://www.cmd5.com的存在，专门用来查询MD5码</a> 所以有的简单的MD5码是可以在这里搜到源码的。<br>为了让MD5码更加安全 涌现了很多其他方法 如加盐。 盐要足够长足够乱 得到的MD5码就很难查到。</p>
+<p>终端代码：<br>$ md5 -s “abc”      给字符串abc加密<br>$ echo -n abc|openssl md5        给字符串abc加密  </p>
+<p>二.HMAC加密</p>
+<p>此加密方法需要先生成密钥，然后再对密码进行MD5和HMAC加密，数据库中需要存放当时使用的密钥和密码加密后的密文<br>在用户登陆时 再次对填入的密码用密钥进行加密 并且还要加上当前时间（精确到分钟） 再次HMAC加密，服务器里也会拿出以前存放的密文加上时间再次加密。所以就算黑客在中途截取了密码的密文 也在能在1分钟只能破译才能有效，大大加强了安全性。服务器为了考虑到网络的延迟一般会多算一种答案，如23分过来的密码 他会把23分和22分的都算一下和用户匹配只要对上一个就允许登陆。<br>三.base64编码<br>在MIME格式的电子邮件中，base64可以用来将binary的字节序列数据编码成ASCII字符序列构成的文本。使用时，在传输编码方式中指定base64。使用的字符包括大小写字母各26个，加上10个数字，和加号“+”，斜杠“/”，一共64个字符，等号“=”用来作为后缀用途。</p>
+<p>完整的base64定义可见RFC 1421和RFC 2045。编码后的数据比原始数据略长，为原来的4/3。<br>终端指令<br>先cd 找到当前目录<br>加密： $ base64 abc.png -o abc.txt<br>解密： $ base64 abc.txt -o 123.png -D</p>
+<p>四.对称加密算法<br>优点：算法公开、计算量小、加密速度快、加密效率高、可逆<br>缺点：双方使用相同钥匙，安全性得不到保证<br>现状：对称加密的速度比公钥加密快很多，在很多场合都需要对称加密，<br>相较于DES和3DES算法而言，AES算法有着更高的速度和资源使用效率，安全级别也较之更高了，被称为下一代加密标准</p>
+<p>nECB ：电子代码本，就是说每个块都是独立加密的<br>nCBC ：密码块链，使用一个密钥和一个初始化向量 (IV)对数据执行加密转换</p>
+<p>ECB和CBC区别：CBC更加复杂更加安全，里面加入了8位的向量（8个0的话结果等于ECB）。在明文里面改一个字母，ECB密文对应的那一行会改变，CBC密文从那一行往后都会改变。</p>
+<p>ECB终端命令：<br>$ openssl enc -des-ecb -K 616263 -nosalt -in msg1.txt -out msg1.bin<br>CBC终端命令：<br>$ openssl enc -des-cbc -K 616263 -iv 0000000000000000 -nosalt -in msg1.txt -out msg2.bin</p>
+<p>五.RSA加密<br>RSA非对称加密算法<br>非对称加密算法需要两个密钥：公开密钥（publickey）和私有密钥（privatekey）<br>公开密钥与私有密钥是一对，如果用公开密钥对数据进行加密，只有用对应的私有密钥才能解密；如果用私有密钥对数据进行加密，那么只有用对应的公开密钥才能解密<br>特点：<br>非对称密码体制的特点：算法强度复杂、安全性依赖于算法与密钥但是由于其算法复杂，而使得加密解密速度没有对称加密解密的速度快<br>对称密码体制中只有一种密钥，并且是非公开的，如果要解密就得让对方知道密钥。所以保证其安全性就是保证密钥的安全，而非对称密钥体制有两种密钥，其中一个是公开的，这样就可以不需要像对称密码那样传输对方的密钥了<br>基本加密原理：<br>(1)找出两个“很大”的质数：P &amp; Q<br>(2)N = P <em> Q<br>(3)M = (P – 1) </em> (Q – 1)<br>(4)找出整数E，E与M互质，即除了1之外，没有其他公约数<br>(5)找出整数D，使得E<em>D除以M余1，即 (E </em> D) % M = 1<br>经过上述准备工作之后，可以得到：<br>E是公钥，负责加密<br>D是私钥，负责解密<br>N负责公钥和私钥之间的联系<br>加密算法，假定对X进行加密<br>(X ^ E) % N = Y<br>n根据费尔马小定义，根据以下公式可以完成解密操作<br>(Y ^ D) % N = X</p>
+<p>但是RSA加密算法效率较差，对大型数据加密时间很长，一般用于小数据。<br>常用场景：<br>分部要给总部发一段报文，先对报文整个进行MD5得到一个报文摘要，再对这个报文摘要用公钥加密。然后把报文和这个RSA密文一起发过去。<br>总部接收到报文之后要先确定报文是否在中途被人篡改，就先把这个密文用私钥解密得到报文摘要，再和整个报文MD5一下得到的报文摘要进行对比 如果一样就是没被改过。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/05/27/iOS-几种常见的加密方法/" data-id="cipjj0cyg000gojs6z2jbenwg" class="article-share-link">Share</a>
       
       
     </footer>
@@ -285,7 +337,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/16/iOS-在label中添加图片/" data-id="cipjitzs8000enos61l58vopj" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/16/iOS-在label中添加图片/" data-id="cipjj0cyk000hojs67ouwqhbz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -328,7 +380,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjitzsa000fnos6iy9kqqxh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjj0cyb000fojs651zdndng" class="article-share-link">Share</a>
       
       
     </footer>
@@ -380,7 +432,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjitzsc000gnos6d74dv5pn" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjj0cy8000eojs6t8wo4840" class="article-share-link">Share</a>
       
       
     </footer>
@@ -425,7 +477,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjitzs5000cnos6itv1gdta" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjj0cxq000bojs658x1cclk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -493,7 +545,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjitzs3000bnos6cdjb3xak" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjj0cy5000dojs6k6ilfflz" class="article-share-link">Share</a>
       
       
     </footer>
@@ -602,75 +654,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/02/20/iOS-APP上线性能检测/" data-id="cipjitzs1000anos6a5yo2st6" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-iOS中使用ZXing库" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/01/20/iOS中使用ZXing库/" class="article-date">
-  <time datetime="2014-01-20T14:02:30.000Z" itemprop="datePublished">2014-01-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/01/20/iOS中使用ZXing库/">iOS中使用ZXing库</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>前言<br>ZXing(Github镜像地址)是一个开源的条码生成和扫描库（开源协议为Apache2.0)。它不但支持众多的条码格式，而且有各种语言的实现版本，它支持的语言包括：Java, C++, C#, Objective-C, ActionScript和Ruby。<br>我上周在iOS项目开发中使用了ZXing的扫描二维码功能。在此总结一下如何将ZXing集成到已有的iOS工程中，分享给大家。<br>集成步骤<br>首先去Google Code或Github将ZXing的代码下载下来，整个工程比较大，我们只需要其中涉及iOS的部分，所以最好做一些裁剪。简单来说，我们只需要保留cpp和iphone这2个文件夹，其余的全部删掉。如下图所示：</p>
-<p>接着我们继续裁剪，对于cpp这个目录，只保留cpp/core/src/zxing下面的内容，其余内容也可以删掉了。但是整个目录结构必须保持原样。裁剪完后，整个目录结构如下所示：</p>
-<p>接下来，我们把裁剪后的zxing目录整个移动到我们的iOS项目的目录下，并且把上图中可以看到的ZXingWidget.xcodeproj文件拖动到我们的iOS工程中。<br>下一步，我们需要设置ZXing项目和我们原本的iOS项目之间的依赖关系。在我们的iOS项目的设置中，点击build phases tab，然后增加 Target Dependencies 和 Link binary，并且增加这些framework依赖：<br>a. AVFoundation<br>b. AudioToolbox<br>c. CoreVideo<br>d. CoreMedia<br>e. libiconv<br>f. AddressBook<br>g. AddressBookUI</p>
-<p>最后一步，在设置中增加如下2个header search path:<br>./zxing/iphone/ZXingWidget/Classes<br>./zxing/cpp/core/src<br>需要注意的是，第一个path要设置成循环查找子目录，而第二个不循环查找，如下图所示：</p>
-<p>恭喜你，完成这步之后，你就已经完成ZXing库的集成了。下面谈谈如何使用ZXing库来做二维码识别。<br>二维码识别<br>ZXing的iOS版本提供2种方法来做二维码识别功能，第一种方法比较简单，第二种方法比较复杂。我在做Demo时使用了第一种方法，做真正项目开发的时候使用了第二种方法，所以都给大家介绍一下。<br>使用方法一<br>ZXing直接提供了一个扫描二维码的View Controller，即ZXingWidgetController。在需要使用的界面代码中，加入文件依赖：</p>
-<p>#import <zxingwidgetcontroller.h></zxingwidgetcontroller.h></p>
-<p>#import <qrcodereader.h><br><code>然后在需要扫描的时候，调用如下代码即可：</code> objc</qrcodereader.h></p>
-<ul>
-<li>(IBAction)scanPressed:(id)sender {<br>ZXingWidgetController <em>widController = [[ZXingWidgetController alloc] initWithDelegate:self showCancel:YES OneDMode:NO];<br>NSMutableSet </em>readers = [[NSMutableSet alloc ] init];<br>QRCodeReader* qrcodeReader = [[QRCodeReader alloc] init];<br>[readers addObject:qrcodeReader];<br>[qrcodeReader release];<br>widController.readers = readers;<br>[readers release];<br>[self presentModalViewController:widController animated:YES];<br>[widController release];<br>}<br>在ZXing扫描有结果时，会调用如下回调函数：</li>
-</ul>
-<p>@protocol ZXingDelegate</p>
-<ul>
-<li>(void)zxingController:(ZXingWidgetController<em>)controller didScanResult:(NSString </em>)result;</li>
-<li>(void)zxingControllerDidCancel:(ZXingWidgetController*)controller;<br>@end<br>使用方法二<br>方法二与方法一的区别就相当于AVFoundation和UIImagePickerController的区别一样。简单来说，就是使用方法二比方法一更加麻烦，但是获得的可定制性更高。<br>使用方法二时，你需要自己用AVFoundation获得Camera返回的实时图象，然后转成UIImage，最后传给ZXing的Decoder类完成二维码的识别。由于使用AVFoundation涉及的代码略多，我写的示意代码如下：</li>
-</ul>
-<p>#import “Decoder.h”</p>
-<p>#import “TwoDDecoderResult.h”</p>
-<p>#import “QRCodeReader.h”</p>
-<ul>
-<li>(void)viewDidLoad {<br>// setup QR reader<br>self.qrReader = [[NSMutableSet alloc ] init];<br>QRCodeReader* qrcodeReader = [[QRCodeReader alloc] init];<br>[self.qrReader addObject:qrcodeReader];<br>self.scanningQR = NO;<br>self.step = STEP_QR;<br>}</li>
-</ul>
-<p>// AVFoundation的回调函数</p>
-<ul>
-<li>(void)captureOutput:(AVCaptureOutput <em>)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection </em>)connection {<br>// 第一步，将sampleBuffer转成UIImage<br>UIImage <em>image= [self getCaptureImage:sampleBuffer];<br>// 第二步，用Decoder识别图象<br>Decoder </em>d = [[Decoder alloc] init];<br>d.readers = self.qrReader;<br>d.delegate = self;<br>self.scanningQR = [d decodeImage:image] == YES ? NO : YES;<br>}<br>ZXing的Decoder类提供了以下回调函数获得识别结果：<br>@protocol DecoderDelegate<nsobject><br>@optional</nsobject></li>
-<li>(void)decoder:(Decoder <em>)decoder willDecodeImage:(UIImage </em>)image usingSubset:(UIImage *)subset;</li>
-<li>(void)decoder:(Decoder <em>)decoder didDecodeImage:(UIImage </em>)image usingSubset:(UIImage <em>)subset withResult:(TwoDDecoderResult </em>)result {<br>NSLog(@”result = %@”, [result text]);<br>}</li>
-<li>(void)decoder:(Decoder <em>)decoder failedToDecodeImage:(UIImage </em>)image usingSubset:(UIImage <em>)subset reason:(NSString </em>)reason;</li>
-<li>(void)decoder:(Decoder *)decoder foundPossibleResultPoint:(CGPoint)point;</li>
-</ul>
-<p>@end<br>Trouble Shoot &amp; Tips<br>我在使用中遇到了一些问题，主要是编译的问题。<br>一个是找不到 头文件。解决方法：把用到ZXing的源文件扩展名由.m改成.mm。<br>报错：Undefined symbols for architecture armv7s，解决方法：把ZXingWidget的一个build target参数：”Build Active Architecture Only” 修改成 “NO”.<br>报错：No such file or directory，出现该错误可能是你的Header Search Path写错了，或者就是你的zxing库的目录结构不是我上面强调的，好好检查一下吧。<br>如果你需要生成二维码做测试，推荐一个不错的在线生成二维码的网站：<a href="http://cli.im/" target="_blank" rel="external">http://cli.im/</a><br>ZXing和OpenCV的兼容问题<br>ZXing 2.1 和OpenCV 2.4.3的iOS库有一些兼容问题，他们对C++标准库的版本和编译器版本都有一些需求，造成满足一方了，另一方就编译不通过了。Stackoverflow上有人终于找到了一个让它们和平共处的方法，但是只适用于iOS5.0以上版本。正好我们的App只支持iOS5.0+，所以就搞定了。所以如果你也正好遇到这个问题，可以参考这个贴子。</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjitzt4000qnos6n3m9nc44" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/02/20/iOS-APP上线性能检测/" data-id="cipjj0cxn000aojs694rfkyrk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -701,7 +685,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 
