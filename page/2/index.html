@@ -57,7 +57,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Søk"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -67,6 +67,68 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-上传自己写的库到cocoaPods" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/10/20/上传自己写的库到cocoaPods/" class="article-date">
+  <time datetime="2015-10-20T08:42:45.000Z" itemprop="datePublished">2015-10-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/10/20/上传自己写的库到cocoaPods/">上传自己写的库到cocoaPods</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>1.首先你需要有一个自我感觉写的差不多的库。</p>
+<p>2.注册trunk</p>
+<p>$sudo gem install cocoapods<br>pod trunk register dantesx2012@gmail.com ‘dsxniubility’  –verbose<br>第一个指令是更新一下cocoapods不管你现在是什么版本，这个指令也都没有坏处，他会升级到目前最高的正式版。</p>
+<p>第二个指令建议邮箱名和用户名与自己的github同步，之后去自己的邮箱中找到该邮件点击验证的链接完成注册。</p>
+<p>如果你不是在董铂然博客园看到本文，请点击查看原文。</p>
+<p>完成之后再次进入终端查看自己注册信息</p>
+<p>pod trunk me<br>如果成功的话可以看到如下图所示<br>3.配置自己的podspec文件</p>
+<p>这是最重要的一步，配置里面的信息必须按照要求填写，否则会各种让你不通过。</p>
+<p>这里有两种方案，一是自动生成,二是找一个现成的podspec文件改改。</p>
+<p>这里建议第二种，因为第一种自动生成的东西里面会有很多用不到。第二种可以去github上找一些优秀代码把podspec打开看看再修改，这里我直接把我的贴出来了，免得去找了。建议使用sublime打开或vim修改，因为用普通的txt打开的话会出现诸如中英文单引号等一些列问题十分蛋疼。<br>Pod::Spec.new do |s|<br>s.name = ‘SXWaveAnimate’<br>s.version = ‘1.3.6’<br>s.license = ‘MIT’<br>s.summary = ‘An Animate Water view on iOS.’<br>s.homepage = ‘<a href="https://github.com/dsxNiubility/SXWaveAnimate" target="_blank" rel="external">https://github.com/dsxNiubility/SXWaveAnimate</a>‘<br>s.authors = { ‘董尚先’ =&gt; ‘dantesx2012@gmail.com’ }<br>s.source = { :git =&gt; ‘<a href="https://github.com/dsxNiubility/SXWaveAnimate.git" target="_blank" rel="external">https://github.com/dsxNiubility/SXWaveAnimate.git</a>‘, :tag =&gt; s.version.to_s }<br>s.requires_arc = true<br>s.ios.deployment_target = ‘8.0’<br>s.source_files = ‘SXWaveAnimate/<em>.{h,m}’<br>s.resources = ‘SXWaveAnimate/images/</em>.{png,xib}’<br>end<br>这里的每一行感觉都是顾名思义很容易理解，需要注意的是最下方的source_files 和 resources 一定要分清，需要编译器编译的放在前者，资源文件放在后者。我之前坑了一次，把xib放在前者了，后面的步骤一路畅通，但是到最后pod install自己代码下来就会遇到编译不通过的问题。</p>
+<p>如果你需要直接把自己demo程序中Images.xcassets里的图片取出来当资源文件可以这么写</p>
+<p>s.resources = [‘SXWaveAnimate/<em>.xib’, ‘SXWaveAnimateDemo/</em>.xcassets’]<br>4.上传代码<br>把自己的项目提一次commit到github上。</p>
+<p>再打一下tag<br>git tag ‘1.0.0’<br>git push –tags<br>tag和commit是两个不同的机制，就算commit全被reset了通过tag也可以找回代码。</p>
+<p>5.提交自己的podspec文件</p>
+<p>找到podspec的根目录下，再执行下面的指令</p>
+<p>pod trunk push SXWaveAnimate.podspec<br>这一行代码做了很多之前步骤中的工作。包括检测podspec是否合法，转成json格式传输，上传到trunk服务器，再转到github的cocoapods库。<br>失败的原因基本都是podspec文件里面的格式错误或者路径写错了，这里不要急慢慢来，没人限制你说只给你一次机会。</p>
+<p>出现上面成功的情况就是交给cocoapods团队审核了，这个过程是很快的，从几小时到一个两个工作日不等。建议今天成功了明天下午再来看看，用不着一直刷新。</p>
+<p>6.随便看看</p>
+<p>执行搜索操作就能看到自己写的库摆在那里了<br>如果隔了很久还搜是不到自己的库，建议把仓库更新一下，再搜。</p>
+<p>如果感觉自己的pod速度太慢，可以更换淘宝的ruby源，具体操作可见唐巧大神的一片博客：<a href="http://www.devtang.com/blog/2014/05/25/use-cocoapod-to-manage-ios-lib-dependency/。" target="_blank" rel="external">http://www.devtang.com/blog/2014/05/25/use-cocoapod-to-manage-ios-lib-dependency/。</a></p>
+<p>只要你为cocoapods提供了代码就能在你github的右边有个cocoaPods/Specs<br>并且你回头看你的代码，代码所使用的语言占比也会出现Ruby<br>我传的库是一个关于灌水动画的，有兴许的可以去看看或者pod install一下。<a href="https://github.com/dsxNiubility/SXWaveAnimate" target="_blank" rel="external">https://github.com/dsxNiubility/SXWaveAnimate</a></p>
+<p>SXWaveAnimate<br>7.更新库</p>
+<p>更新基本没有什么特殊操作，重复第4，5两步，记得把podspec和tag 都加1点，如果tag不变也是不允许的。</p>
+<p>更新库的话速度很快，我记得当时好像10分钟就能刷出来了，如果你发现你pod search 时自己是1.3.6版本 但是pod install后仍是1.3.5版本，并且在podfile文件中你也并没有指定固定的版本号，那就把podfile.lock删除就好了。</p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/10/20/上传自己写的库到cocoaPods/" data-id="cipjt6tj4000vr5s6ik91r55u" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-iOS-抽屉效果三方库" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -153,7 +215,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/09/24/iOS-抽屉效果三方库/" data-id="cipjqxxjh000qf4s6nu9o5fa8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/09/24/iOS-抽屉效果三方库/" data-id="cipjt6tj2000tr5s6ny76sm3i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -235,7 +297,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/09/09/iOS-对UITableView三种计算动态行高的方法分析/" data-id="cipjqxxiv000if4s61kp3uipt" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/09/09/iOS-对UITableView三种计算动态行高的方法分析/" data-id="cipjt6tia000jr5s6975bx5u2" class="article-share-link">Share</a>
       
       
     </footer>
@@ -277,7 +339,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/08/24/关于XMPP/" data-id="cipjqxxk1000xf4s66arqtp4f" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/08/24/关于XMPP/" data-id="cipjt6tk10013r5s60pcdlpdb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -338,7 +400,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/07/03/iOS-多线程/" data-id="cipjqxxj5000kf4s6wy4ugwvx" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/07/03/iOS-多线程/" data-id="cipjt6tig000lr5s6qkas340i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -390,7 +452,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/05/27/iOS-几种常见的加密方法/" data-id="cipjqxxik000df4s65ozfoep6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/05/27/iOS-几种常见的加密方法/" data-id="cipjt6thx000fr5s6d5tp0583" class="article-share-link">Share</a>
       
       
     </footer>
@@ -436,7 +498,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/16/iOS-在label中添加图片/" data-id="cipjqxxip000ff4s6xu4iui2f" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/16/iOS-在label中添加图片/" data-id="cipjt6ti5000ir5s6zws0dnau" class="article-share-link">Share</a>
       
       
     </footer>
@@ -479,7 +541,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjqxxiq000gf4s6ciok4ja3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjt6thz000gr5s6qbn2k3h7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -531,7 +593,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjqxxis000hf4s6gb82btbf" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjt6ti1000hr5s61km8t6jb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -576,75 +638,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjqxxin000ef4s69rk9x8b3" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-iOS-三种途径实现一方法有多个返回值" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/03/24/iOS-三种途径实现一方法有多个返回值/" class="article-date">
-  <time datetime="2014-03-24T08:24:39.000Z" itemprop="datePublished">2014-03-24</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/03/24/iOS-三种途径实现一方法有多个返回值/">iOS_三种途径实现一方法有多个返回值</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>以前觉得这种标题有点偏向于理论，实际开发中怎么会有这种诡异的需求，但是真正遇到了这种硬需求时觉得还是有那么点价值的，理论付诸了实践在此也就做了个整理。</p>
-<p>以我私下开发中的一处代码为例，本意是希望有这么一个方法：能够传入一个开始标记（NSString<em>）一个结束标记（NSString</em>）一段文字（NSString*）  然后内部在文字中扫描并返回标记包裹内容的范围（NSRange这个范围是忽视标记的）这个范围可能会有多个所以返回的应该是一个装着range的数组。并且顺便把原来字符串中的开始和结束标记全过滤掉，把过滤后的字符串也返回出来。</p>
-<p>举个例子就是：传入开始标记“&lt;” 结束标记“&gt;” 一段文字 “会议需要叫上&lt;彼得&gt;和&lt;罗宾&gt;”   然后希望返回一个数组 [{location:6,length:2},{location:9,length:2}] ，和返回处理后的字符串“会议需要叫上彼得和罗宾”。</p>
-<p>代码希望能够写成这样，但是是不可能的。</p>
-<p>1</p>
-<ul>
-<li>(NSArray <em>,NSMutableString </em>)scanBeginStr:(NSString <em>)beginstr endStr:(NSString </em>)endstr inText:(NSMutableString *)text</li>
-</ul>
-<p>好下面提供三种途径完成此需求。　　</p>
-<p>1.使用字典</p>
-<p>这种方法是最low但是最容易理解的，就是如果你需要返回多个对象，直接将多个对象塞在一个字典里面自己设置合理的key并返回字典，字典里面可以放任意数量的“返回值”。</p>
-<ul>
-<li>(NSDictionary <em>)scanBeginStr:(NSString </em>)beginstr endStr:(NSString <em>)endstr inText:(NSMutableString </em>)text{<br>NSRange range1,range2;<br>NSUInteger location =0,length=0;<br>range1.location = 0;<br>NSMutableArray *rangeArray = [NSMutableArray array];<br>while (range1.location != NSNotFound) {<br>range1 = [text rangeOfString:beginstr];<br>range2 = [text rangeOfString:endstr];<br>if (range1.location != NSNotFound) {<br>location = range1.location;<br>length = range2.location - range1.location - 1;<br>if (length &gt; 5000)break;<br>[text replaceOccurrencesOfString:beginstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range1.location + range1.length)];<br>[text replaceOccurrencesOfString:endstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range2.location + range2.length - 1)];<br>}<br>[rangeArray addObject:@{@”location”:@(location),@”length”:@(length)}];<br>}<br>return @{@”rangeArray”:rangeArray,@”text”:text};<br>}<br>这个方法在调用时也就是这样了，非常朴实的代码。</li>
-</ul>
-<p>NSDictionary<em> result = [self scanBegin2Str:@”&lt;” endStr:@”&gt;” inText:mutableText];<br>NSArray </em>rangeArray = result[@”rangeArray”];<br>NSMutableString *text = [result[@”text”] mutableCopy];<br>如果觉得字典不舒服也完全可以用模型，自定义一个对象然后给这个对象的各个属性赋值然后再把这个自定义对象返回回去，虽然代码看上去更科学一点但是需要写一些额外的代码并且不能实现任意可配置（每一种属性都必须要提前设定好），这个和上面算是一个相同的思路就不单独再列一条说了。 </p>
-<p>2.使用指针的指针</p>
-<p>这种方法是我实际使用的方法，就是把需要修改的text的指针的指针传进去，然后在方法的内部对这个实参取一下值得到text的指针。然后通过这个指针修改外部的变量的值。代码实现如下</p>
-<ul>
-<li>(NSArray <em>)scanBeginStr:(NSString </em>)beginstr endStr:(NSString <em>)endstr inText:(NSMutableString </em> <em>)textPointer{<br>NSRange range1,range2;<br>NSUInteger location =0,length=0;<br>range1.location = 0;<br>NSMutableString </em>text = <em>textPointer;<br>NSMutableArray </em>rangeArray = [NSMutableArray array];<br>while (range1.location != NSNotFound) {<br>range1 = [text rangeOfString:beginstr];<br>range2 = [text rangeOfString:endstr];<br>if (range1.location != NSNotFound) {<br>location = range1.location;<br>length = range2.location - range1.location - 1;<br>if (length &gt; 5000)break;<br>[text replaceOccurrencesOfString:beginstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range1.location + range1.length)];<br>[text replaceOccurrencesOfString:endstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range2.location + range2.length - 1)];<br>}<br>[rangeArray addObject:@{@”location”:@(location),@”length”:@(length)}];<br>}<br>return rangeArray;<br>}<br>这个方法在调用时就这么写了，因为mutabletext的修改是无声无息的。</li>
-</ul>
-<p>NSArray *rangeArray = [self scanBegin3Str:@”&lt;” endStr:@”&gt;” inText:&amp;mutableText];<br>// 董铂然博客园
-　　</p>
-<p>3.使用block回调</p>
-<p>这种方法实际上严格意义来说不能算返回值，但是能够实现返回值的效果。</p>
-<ul>
-<li>(void)scanBeginStr:(NSString <em>)beginstr endStr:(NSString </em>)endstr inText:(NSMutableString <em>)text result:(void(^)(NSArray </em>rangeArray,NSMutableString <em>text))result{<br>NSRange range1,range2;<br>NSUInteger location =0,length=0;<br>range1.location = 0;<br>NSMutableArray </em>rangeArray = [NSMutableArray array];<br>while (range1.location != NSNotFound) {<br>range1 = [text rangeOfString:beginstr];<br>range2 = [text rangeOfString:endstr];<br>if (range1.location != NSNotFound) {<br>location = range1.location;<br>length = range2.location - range1.location - 1;<br>if (length &gt; 5000)break;<br>[text replaceOccurrencesOfString:beginstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range1.location + range1.length)];<br>[text replaceOccurrencesOfString:endstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range2.location + range2.length - 1)];<br>}<br>[rangeArray addObject:@{@”location”:@(location),@”length”:@(length)}];<br>}<br>result(rangeArray,text);<br>}<br>这个block在使用时可能比较特殊就这么写了</li>
-</ul>
-<p>[self scanBeginStr:@”&lt;” endStr:@”&gt;” inText:mutabletext result:^(NSArray <em>rangeArray, NSMutableString </em>text) {<br>NSLog(@”%@,%@”,rangeArray,text);<br>}];<br>如果把block的返回值写成一个字典或是模型也可以，但是那就多此一举了。 返回值不能尝试结构体类型，结构体内不能用OC对象只能用基本数据类型。</p>
-<p>其实感觉还有别的方法，比如设置N个成员变量在方法内部计算后重新set也完全可以，但是可能大家也知道成员变量多了比较恶心。最近比较火的函数式编程一直在倡导“方法内不能产生副作用”“实现引用透明” ，如果这么看那后两种方法就不符合FP的规则了，但是用着也有自己的特色。</p>
-<p>原文链接：<a href="http://www.cnblogs.com/dsxniubility/p/5122146.html" target="_blank" rel="external">http://www.cnblogs.com/dsxniubility/p/5122146.html</a></p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjqxxih000cf4s6iq6nd7sk" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjt6thu000dr5s6b44mow1c" class="article-share-link">Share</a>
       
       
     </footer>
@@ -673,9 +667,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Arkiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 
@@ -683,9 +677,13 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Siste innlegg</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/06/14/WWDC——2016/">WWDC——2016</a>
+          </li>
         
           <li>
             <a href="/2016/04/17/openGL学习/">openGL学习</a>
@@ -701,10 +699,6 @@
         
           <li>
             <a href="/2016/01/28/移动直播开发技术介绍/">移动直播开发技术介绍</a>
-          </li>
-        
-          <li>
-            <a href="/2016/01/22/Bilibili开源的直播框架/">Bilibili开源的直播框架</a>
           </li>
         
       </ul>

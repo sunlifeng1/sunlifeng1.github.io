@@ -57,7 +57,7 @@
         
           <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
         
-        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+        <a id="nav-search-btn" class="nav-icon" title="Søk"></a>
       </nav>
       <div id="search-form-wrap">
         <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
@@ -67,6 +67,74 @@
 </header>
       <div class="outer">
         <section id="main">
+  
+    <article id="post-iOS-三种途径实现一方法有多个返回值" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/03/24/iOS-三种途径实现一方法有多个返回值/" class="article-date">
+  <time datetime="2014-03-24T08:24:39.000Z" itemprop="datePublished">2014-03-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/03/24/iOS-三种途径实现一方法有多个返回值/">iOS_三种途径实现一方法有多个返回值</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>以前觉得这种标题有点偏向于理论，实际开发中怎么会有这种诡异的需求，但是真正遇到了这种硬需求时觉得还是有那么点价值的，理论付诸了实践在此也就做了个整理。</p>
+<p>以我私下开发中的一处代码为例，本意是希望有这么一个方法：能够传入一个开始标记（NSString<em>）一个结束标记（NSString</em>）一段文字（NSString*）  然后内部在文字中扫描并返回标记包裹内容的范围（NSRange这个范围是忽视标记的）这个范围可能会有多个所以返回的应该是一个装着range的数组。并且顺便把原来字符串中的开始和结束标记全过滤掉，把过滤后的字符串也返回出来。</p>
+<p>举个例子就是：传入开始标记“&lt;” 结束标记“&gt;” 一段文字 “会议需要叫上&lt;彼得&gt;和&lt;罗宾&gt;”   然后希望返回一个数组 [{location:6,length:2},{location:9,length:2}] ，和返回处理后的字符串“会议需要叫上彼得和罗宾”。</p>
+<p>代码希望能够写成这样，但是是不可能的。</p>
+<p>1</p>
+<ul>
+<li>(NSArray <em>,NSMutableString </em>)scanBeginStr:(NSString <em>)beginstr endStr:(NSString </em>)endstr inText:(NSMutableString *)text</li>
+</ul>
+<p>好下面提供三种途径完成此需求。　　</p>
+<p>1.使用字典</p>
+<p>这种方法是最low但是最容易理解的，就是如果你需要返回多个对象，直接将多个对象塞在一个字典里面自己设置合理的key并返回字典，字典里面可以放任意数量的“返回值”。</p>
+<ul>
+<li>(NSDictionary <em>)scanBeginStr:(NSString </em>)beginstr endStr:(NSString <em>)endstr inText:(NSMutableString </em>)text{<br>NSRange range1,range2;<br>NSUInteger location =0,length=0;<br>range1.location = 0;<br>NSMutableArray *rangeArray = [NSMutableArray array];<br>while (range1.location != NSNotFound) {<br>range1 = [text rangeOfString:beginstr];<br>range2 = [text rangeOfString:endstr];<br>if (range1.location != NSNotFound) {<br>location = range1.location;<br>length = range2.location - range1.location - 1;<br>if (length &gt; 5000)break;<br>[text replaceOccurrencesOfString:beginstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range1.location + range1.length)];<br>[text replaceOccurrencesOfString:endstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range2.location + range2.length - 1)];<br>}<br>[rangeArray addObject:@{@”location”:@(location),@”length”:@(length)}];<br>}<br>return @{@”rangeArray”:rangeArray,@”text”:text};<br>}<br>这个方法在调用时也就是这样了，非常朴实的代码。</li>
+</ul>
+<p>NSDictionary<em> result = [self scanBegin2Str:@”&lt;” endStr:@”&gt;” inText:mutableText];<br>NSArray </em>rangeArray = result[@”rangeArray”];<br>NSMutableString *text = [result[@”text”] mutableCopy];<br>如果觉得字典不舒服也完全可以用模型，自定义一个对象然后给这个对象的各个属性赋值然后再把这个自定义对象返回回去，虽然代码看上去更科学一点但是需要写一些额外的代码并且不能实现任意可配置（每一种属性都必须要提前设定好），这个和上面算是一个相同的思路就不单独再列一条说了。 </p>
+<p>2.使用指针的指针</p>
+<p>这种方法是我实际使用的方法，就是把需要修改的text的指针的指针传进去，然后在方法的内部对这个实参取一下值得到text的指针。然后通过这个指针修改外部的变量的值。代码实现如下</p>
+<ul>
+<li>(NSArray <em>)scanBeginStr:(NSString </em>)beginstr endStr:(NSString <em>)endstr inText:(NSMutableString </em> <em>)textPointer{<br>NSRange range1,range2;<br>NSUInteger location =0,length=0;<br>range1.location = 0;<br>NSMutableString </em>text = <em>textPointer;<br>NSMutableArray </em>rangeArray = [NSMutableArray array];<br>while (range1.location != NSNotFound) {<br>range1 = [text rangeOfString:beginstr];<br>range2 = [text rangeOfString:endstr];<br>if (range1.location != NSNotFound) {<br>location = range1.location;<br>length = range2.location - range1.location - 1;<br>if (length &gt; 5000)break;<br>[text replaceOccurrencesOfString:beginstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range1.location + range1.length)];<br>[text replaceOccurrencesOfString:endstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range2.location + range2.length - 1)];<br>}<br>[rangeArray addObject:@{@”location”:@(location),@”length”:@(length)}];<br>}<br>return rangeArray;<br>}<br>这个方法在调用时就这么写了，因为mutabletext的修改是无声无息的。</li>
+</ul>
+<p>NSArray *rangeArray = [self scanBegin3Str:@”&lt;” endStr:@”&gt;” inText:&amp;mutableText];<br>// 董铂然博客园
+　　</p>
+<p>3.使用block回调</p>
+<p>这种方法实际上严格意义来说不能算返回值，但是能够实现返回值的效果。</p>
+<ul>
+<li>(void)scanBeginStr:(NSString <em>)beginstr endStr:(NSString </em>)endstr inText:(NSMutableString <em>)text result:(void(^)(NSArray </em>rangeArray,NSMutableString <em>text))result{<br>NSRange range1,range2;<br>NSUInteger location =0,length=0;<br>range1.location = 0;<br>NSMutableArray </em>rangeArray = [NSMutableArray array];<br>while (range1.location != NSNotFound) {<br>range1 = [text rangeOfString:beginstr];<br>range2 = [text rangeOfString:endstr];<br>if (range1.location != NSNotFound) {<br>location = range1.location;<br>length = range2.location - range1.location - 1;<br>if (length &gt; 5000)break;<br>[text replaceOccurrencesOfString:beginstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range1.location + range1.length)];<br>[text replaceOccurrencesOfString:endstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range2.location + range2.length - 1)];<br>}<br>[rangeArray addObject:@{@”location”:@(location),@”length”:@(length)}];<br>}<br>result(rangeArray,text);<br>}<br>这个block在使用时可能比较特殊就这么写了</li>
+</ul>
+<p>[self scanBeginStr:@”&lt;” endStr:@”&gt;” inText:mutabletext result:^(NSArray <em>rangeArray, NSMutableString </em>text) {<br>NSLog(@”%@,%@”,rangeArray,text);<br>}];<br>如果把block的返回值写成一个字典或是模型也可以，但是那就多此一举了。 返回值不能尝试结构体类型，结构体内不能用OC对象只能用基本数据类型。</p>
+<p>其实感觉还有别的方法，比如设置N个成员变量在方法内部计算后重新set也完全可以，但是可能大家也知道成员变量多了比较恶心。最近比较火的函数式编程一直在倡导“方法内不能产生副作用”“实现引用透明” ，如果这么看那后两种方法就不符合FP的规则了，但是用着也有自己的特色。</p>
+<p>原文链接：<a href="http://www.cnblogs.com/dsxniubility/p/5122146.html" target="_blank" rel="external">http://www.cnblogs.com/dsxniubility/p/5122146.html</a></p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjt6tht000cr5s63701zc0l" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
   
     <article id="post-iOS-APP上线性能检测" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
@@ -167,7 +235,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/02/20/iOS-APP上线性能检测/" data-id="cipjqxxhw0009f4s6lril9x2s" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/02/20/iOS-APP上线性能检测/" data-id="cipjt6thp000br5s6aqj4nu1k" class="article-share-link">Share</a>
       
       
     </footer>
@@ -235,7 +303,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjqxxjf000pf4s64kmzfelt" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjt6tj0000sr5s6o4tl1syh" class="article-share-link">Share</a>
       
       
     </footer>
@@ -274,7 +342,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjqxxjs000uf4s6a1ak688r" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjt6tio000qr5s6wknjxs2u" class="article-share-link">Share</a>
       
       
     </footer>
@@ -313,7 +381,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipjqxxjv000vf4s6m760184c" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipjt6tj6000wr5s6g3gnnlig" class="article-share-link">Share</a>
       
       
     </footer>
@@ -366,7 +434,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipjqxxk90011f4s67gp08fxq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/30/用CocoaPods管理iOS程序/" data-id="cipjt6tjd000yr5s6j6f794cc" class="article-share-link">Share</a>
       
       
     </footer>
@@ -405,7 +473,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipjqxxjo000sf4s68u1xq4ii" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/24/iOS开发如何提高/" data-id="cipjt6tis000rr5s68abqdrqb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -450,7 +518,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipjqxxhh0005f4s6qaqzc8k1" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/14/SDK注意问题小结/" data-id="cipjt6thm000ar5s6sraqw3x7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -489,7 +557,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipjqxxjx000wf4s6ybkj96fn" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/12/06/培训出来的iOS学员怎么了？/" data-id="cipjt6tjf000zr5s6wagl7m71" class="article-share-link">Share</a>
       
       
     </footer>
@@ -630,88 +698,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipjqxxi0000bf4s6xq32ev0v" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-iOS多线程编程基础小结" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2013/11/20/iOS多线程编程基础小结/" class="article-date">
-  <time datetime="2013-11-20T13:06:30.000Z" itemprop="datePublished">2013-11-20</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2013/11/20/iOS多线程编程基础小结/">iOS多线程编程基础小结</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>一、基本概念<br>计算机操作系统都有的基本概念，以下概念简单方式来描述。</p>
-<p>进程： 一个具有一定独立功能的程序关于某个数据集合的一次运行活动。可以理解成一个运行中的应用程序。</p>
-<p>线程： 程序执行流的最小单元，线程是进程中的一个实体。</p>
-<p>同步： 只能在当前线程按先后顺序依次执行，不开启新线程。</p>
-<p>异步： 可以在当前线程开启多个新线程执行，可不按顺序执行。</p>
-<p>队列： 装载线程任务的队形结构。</p>
-<p>并发： 线程执行可以同时一起进行执行。</p>
-<p>串行： 线程执行只能依次逐一先后有序的执行。</p>
-<p>注意:</p>
-<p>一个进程可有多个线程。</p>
-<p>一个进程可有多个队列。</p>
-<p>队列可分并发队列和串行队列。</p>
-<p>二、iOS多线程对比</p>
-<ol>
-<li>NSThread</li>
-</ol>
-<p>每个NSThread对象对应一个线程，真正最原始的线程。</p>
-<p>1）优点：NSThread 轻量级最低，相对简单。</p>
-<p>2）缺点：手动管理所有的线程活动，如生命周期、线程同步、睡眠等。</p>
-<ol>
-<li>NSOperation</li>
-</ol>
-<p>自带线程管理的抽象类。</p>
-<p>1）优点：自带线程周期管理，操作上可更注重自己逻辑。</p>
-<p>2）缺点：面向对象的抽象类，只能实现它或者使用它定义好的两个子类：NSInvocationOperation 和 NSBlockOperation。</p>
-<ol>
-<li>GCD</li>
-</ol>
-<p>Grand Central Dispatch (GCD)是Apple开发的一个多核编程的解决方法。</p>
-<p>1）优点：最高效，避开并发陷阱。</p>
-<p>2）缺点：基于C实现。</p>
-<ol>
-<li>选择小结</li>
-</ol>
-<p>1）简单而安全的选择NSOperation实现多线程即可。</p>
-<p>2）处理大量并发数据，又追求性能效率的选择GCD。</p>
-<p>3）NSThread本人选择基本上是在做些小测试上使用，当然也可以基于此造个轮子。</p>
-<p>三、场景选择<br>图片异步加载。这种常见的场景是最常见也是必不可少的。异步加载图片有分成两种来说明一下。</p>
-<p>第一种，在UI主线程开启新线程按顺序加载图片，加载完成刷新UI。</p>
-<p>第二种，依然是在主线程开启新线程，顺序不定地加载图片，加载完成个字刷新UI。</p>
-<p>创作工具上的异步。 这个跟上边任务调度道理，只是为了丰富描述，有助于“举一反三”效果。如下描述的是app创作小说。</p>
-<p>场景一，app本地创作10个章节内容未成同步服务器，同时发表这10个章节产生的一系列动作，其中上传内容，获取分配章节Id，如何后台没有做处理最好方式做异步按顺序执行。</p>
-<p>场景二，app本地创作列表中有3本小说为发表，同时发表创作列表中的3本小说，自然考虑并行队列执行发表。</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2013/11/20/iOS多线程编程基础小结/" data-id="cipjqxxja000nf4s6iyy96547" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2013/11/27/iOS-Runtime全方位装逼小结/" data-id="cipjt6thw000er5s6l7uoti4i" class="article-share-link">Share</a>
       
       
     </footer>
@@ -740,9 +727,9 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
+    <h3 class="widget-title">Arkiv</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/06/">June 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/04/">April 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/03/">March 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/05/">May 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 
@@ -750,9 +737,13 @@
   
     
   <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
+    <h3 class="widget-title">Siste innlegg</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2016/06/14/WWDC——2016/">WWDC——2016</a>
+          </li>
         
           <li>
             <a href="/2016/04/17/openGL学习/">openGL学习</a>
@@ -768,10 +759,6 @@
         
           <li>
             <a href="/2016/01/28/移动直播开发技术介绍/">移动直播开发技术介绍</a>
-          </li>
-        
-          <li>
-            <a href="/2016/01/22/Bilibili开源的直播框架/">Bilibili开源的直播框架</a>
           </li>
         
       </ul>
