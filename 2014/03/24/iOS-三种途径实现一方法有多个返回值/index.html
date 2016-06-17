@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>iOS_三种途径实现一方法有多个返回值 | 孙利峰</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="以前觉得这种标题有点偏向于理论，实际开发中怎么会有这种诡异的需求，但是真正遇到了这种硬需求时觉得还是有那么点价值的，理论付诸了实践在此也就做了个整理。
+以我私下开发中的一处代码为例，本意是希望有这么一个方法：能够传入一个开始标记（NSString）一个结束标记（NSString）一段文字（NSString*）  然后内部在文字中扫描并返回标记包裹内容的范围（NSRange这个范围是忽视标记的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS_三种途径实现一方法有多个返回值">
+<meta property="og:url" content="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/index.html">
+<meta property="og:site_name" content="孙利峰">
+<meta property="og:description" content="以前觉得这种标题有点偏向于理论，实际开发中怎么会有这种诡异的需求，但是真正遇到了这种硬需求时觉得还是有那么点价值的，理论付诸了实践在此也就做了个整理。
+以我私下开发中的一处代码为例，本意是希望有这么一个方法：能够传入一个开始标记（NSString）一个结束标记（NSString）一段文字（NSString*）  然后内部在文字中扫描并返回标记包裹内容的范围（NSRange这个范围是忽视标记的">
+<meta property="og:updated_time" content="2016-06-17T08:27:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="iOS_三种途径实现一方法有多个返回值">
+<meta name="twitter:description" content="以前觉得这种标题有点偏向于理论，实际开发中怎么会有这种诡异的需求，但是真正遇到了这种硬需求时觉得还是有那么点价值的，理论付诸了实践在此也就做了个整理。
+以我私下开发中的一处代码为例，本意是希望有这么一个方法：能够传入一个开始标记（NSString）一个结束标记（NSString）一段文字（NSString*）  然后内部在文字中扫描并返回标记包裹内容的范围（NSRange这个范围是忽视标记的">
+  
+    <link rel="alternate" href="/atom.xml" title="孙利峰" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+  
+
+</head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">孙利峰</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="Flux RSS"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Rechercher"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" results="0" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-iOS-三种途径实现一方法有多个返回值" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/03/24/iOS-三种途径实现一方法有多个返回值/" class="article-date">
+  <time datetime="2014-03-24T08:24:39.000Z" itemprop="datePublished">2014-03-24</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      iOS_三种途径实现一方法有多个返回值
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>以前觉得这种标题有点偏向于理论，实际开发中怎么会有这种诡异的需求，但是真正遇到了这种硬需求时觉得还是有那么点价值的，理论付诸了实践在此也就做了个整理。</p>
+<p>以我私下开发中的一处代码为例，本意是希望有这么一个方法：能够传入一个开始标记（NSString<em>）一个结束标记（NSString</em>）一段文字（NSString*）  然后内部在文字中扫描并返回标记包裹内容的范围（NSRange这个范围是忽视标记的）这个范围可能会有多个所以返回的应该是一个装着range的数组。并且顺便把原来字符串中的开始和结束标记全过滤掉，把过滤后的字符串也返回出来。</p>
+<p>举个例子就是：传入开始标记“&lt;” 结束标记“&gt;” 一段文字 “会议需要叫上&lt;彼得&gt;和&lt;罗宾&gt;”   然后希望返回一个数组 [{location:6,length:2},{location:9,length:2}] ，和返回处理后的字符串“会议需要叫上彼得和罗宾”。</p>
+<p>代码希望能够写成这样，但是是不可能的。</p>
+<p>1</p>
+<ul>
+<li>(NSArray <em>,NSMutableString </em>)scanBeginStr:(NSString <em>)beginstr endStr:(NSString </em>)endstr inText:(NSMutableString *)text</li>
+</ul>
+<p>好下面提供三种途径完成此需求。　　</p>
+<p>1.使用字典</p>
+<p>这种方法是最low但是最容易理解的，就是如果你需要返回多个对象，直接将多个对象塞在一个字典里面自己设置合理的key并返回字典，字典里面可以放任意数量的“返回值”。</p>
+<ul>
+<li>(NSDictionary <em>)scanBeginStr:(NSString </em>)beginstr endStr:(NSString <em>)endstr inText:(NSMutableString </em>)text{<br>NSRange range1,range2;<br>NSUInteger location =0,length=0;<br>range1.location = 0;<br>NSMutableArray *rangeArray = [NSMutableArray array];<br>while (range1.location != NSNotFound) {<br>range1 = [text rangeOfString:beginstr];<br>range2 = [text rangeOfString:endstr];<br>if (range1.location != NSNotFound) {<br>location = range1.location;<br>length = range2.location - range1.location - 1;<br>if (length &gt; 5000)break;<br>[text replaceOccurrencesOfString:beginstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range1.location + range1.length)];<br>[text replaceOccurrencesOfString:endstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range2.location + range2.length - 1)];<br>}<br>[rangeArray addObject:@{@”location”:@(location),@”length”:@(length)}];<br>}<br>return @{@”rangeArray”:rangeArray,@”text”:text};<br>}<br>这个方法在调用时也就是这样了，非常朴实的代码。</li>
+</ul>
+<p>NSDictionary<em> result = [self scanBegin2Str:@”&lt;” endStr:@”&gt;” inText:mutableText];<br>NSArray </em>rangeArray = result[@”rangeArray”];<br>NSMutableString *text = [result[@”text”] mutableCopy];<br>如果觉得字典不舒服也完全可以用模型，自定义一个对象然后给这个对象的各个属性赋值然后再把这个自定义对象返回回去，虽然代码看上去更科学一点但是需要写一些额外的代码并且不能实现任意可配置（每一种属性都必须要提前设定好），这个和上面算是一个相同的思路就不单独再列一条说了。 </p>
+<p>2.使用指针的指针</p>
+<p>这种方法是我实际使用的方法，就是把需要修改的text的指针的指针传进去，然后在方法的内部对这个实参取一下值得到text的指针。然后通过这个指针修改外部的变量的值。代码实现如下</p>
+<ul>
+<li>(NSArray <em>)scanBeginStr:(NSString </em>)beginstr endStr:(NSString <em>)endstr inText:(NSMutableString </em> <em>)textPointer{<br>NSRange range1,range2;<br>NSUInteger location =0,length=0;<br>range1.location = 0;<br>NSMutableString </em>text = <em>textPointer;<br>NSMutableArray </em>rangeArray = [NSMutableArray array];<br>while (range1.location != NSNotFound) {<br>range1 = [text rangeOfString:beginstr];<br>range2 = [text rangeOfString:endstr];<br>if (range1.location != NSNotFound) {<br>location = range1.location;<br>length = range2.location - range1.location - 1;<br>if (length &gt; 5000)break;<br>[text replaceOccurrencesOfString:beginstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range1.location + range1.length)];<br>[text replaceOccurrencesOfString:endstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range2.location + range2.length - 1)];<br>}<br>[rangeArray addObject:@{@”location”:@(location),@”length”:@(length)}];<br>}<br>return rangeArray;<br>}<br>这个方法在调用时就这么写了，因为mutabletext的修改是无声无息的。</li>
+</ul>
+<p>NSArray *rangeArray = [self scanBegin3Str:@”&lt;” endStr:@”&gt;” inText:&amp;mutableText];<br>// 董铂然博客园
+　　</p>
+<p>3.使用block回调</p>
+<p>这种方法实际上严格意义来说不能算返回值，但是能够实现返回值的效果。</p>
+<ul>
+<li>(void)scanBeginStr:(NSString <em>)beginstr endStr:(NSString </em>)endstr inText:(NSMutableString <em>)text result:(void(^)(NSArray </em>rangeArray,NSMutableString <em>text))result{<br>NSRange range1,range2;<br>NSUInteger location =0,length=0;<br>range1.location = 0;<br>NSMutableArray </em>rangeArray = [NSMutableArray array];<br>while (range1.location != NSNotFound) {<br>range1 = [text rangeOfString:beginstr];<br>range2 = [text rangeOfString:endstr];<br>if (range1.location != NSNotFound) {<br>location = range1.location;<br>length = range2.location - range1.location - 1;<br>if (length &gt; 5000)break;<br>[text replaceOccurrencesOfString:beginstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range1.location + range1.length)];<br>[text replaceOccurrencesOfString:endstr withString:@”” options:NSCaseInsensitiveSearch range:NSMakeRange(0, range2.location + range2.length - 1)];<br>}<br>[rangeArray addObject:@{@”location”:@(location),@”length”:@(length)}];<br>}<br>result(rangeArray,text);<br>}<br>这个block在使用时可能比较特殊就这么写了</li>
+</ul>
+<p>[self scanBeginStr:@”&lt;” endStr:@”&gt;” inText:mutabletext result:^(NSArray <em>rangeArray, NSMutableString </em>text) {<br>NSLog(@”%@,%@”,rangeArray,text);<br>}];<br>如果把block的返回值写成一个字典或是模型也可以，但是那就多此一举了。 返回值不能尝试结构体类型，结构体内不能用OC对象只能用基本数据类型。</p>
+<p>其实感觉还有别的方法，比如设置N个成员变量在方法内部计算后重新set也完全可以，但是可能大家也知道成员变量多了比较恶心。最近比较火的函数式编程一直在倡导“方法内不能产生副作用”“实现引用透明” ，如果这么看那后两种方法就不符合FP的规则了，但是用着也有自己的特色。</p>
+<p>原文链接：<a href="http://www.cnblogs.com/dsxniubility/p/5122146.html" target="_blank" rel="external">http://www.cnblogs.com/dsxniubility/p/5122146.html</a></p>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjh2n7o0008dhs6fip7lda1" class="article-share-link">Partager</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/01/07/iOS-JSON解析四种方法/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Récent</strong>
+      <div class="article-nav-title">
+        
+          iOS_JSON解析四种方法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/02/20/iOS-APP上线性能检测/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Ancien</strong>
+      <div class="article-nav-title">iOS_APP上线性能检测</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Articles récents</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2016/02/15/搞定iOS与js交互/">搞定iOS与js交互</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/28/移动直播开发技术介绍/">移动直播开发技术介绍</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/22/Bilibili开源的直播框架/">Bilibili开源的直播框架</a>
+          </li>
+        
+          <li>
+            <a href="/2016/01/14/iOS三种视屏录制方式/">iOS三种视屏录制方式</a>
+          </li>
+        
+          <li>
+            <a href="/2015/11/23/iOS-通讯录写法/">iOS_通讯录写法</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2016 John Doe<br>
+      Propulsé by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+  </div>
+</body>
+</html>
