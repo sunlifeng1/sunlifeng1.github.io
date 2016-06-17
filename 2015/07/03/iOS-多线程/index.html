@@ -3,17 +3,33 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Archives: 2015/3 | 孙利峰</title>
+  <title>iOS_多线程 | 孙利峰</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
-<meta property="og:type" content="website">
-<meta property="og:title" content="孙利峰">
-<meta property="og:url" content="http://yoursite.com/archives/2015/03/index.html">
+  <meta name="description" content="本文是对以往学习的多线程中知识点的一个整理。
+多线程中的队列有：串行队列，并发队列，全局队列，主队列。
+执行的方法有：同步执行和异步执行。那么两两一组合会有哪些注意事项呢？
+如果不是在董铂然博客园看到这边文章请 点击查看原文
+提到多线程，也就是四种，pthread，NSthread，GCD，NSOperation  
+其中phtread是跨平台的。GCD和NSOperation都是常用的，后者是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS_多线程">
+<meta property="og:url" content="http://yoursite.com/2015/07/03/iOS-多线程/index.html">
 <meta property="og:site_name" content="孙利峰">
-<meta property="og:description">
+<meta property="og:description" content="本文是对以往学习的多线程中知识点的一个整理。
+多线程中的队列有：串行队列，并发队列，全局队列，主队列。
+执行的方法有：同步执行和异步执行。那么两两一组合会有哪些注意事项呢？
+如果不是在董铂然博客园看到这边文章请 点击查看原文
+提到多线程，也就是四种，pthread，NSthread，GCD，NSOperation  
+其中phtread是跨平台的。GCD和NSOperation都是常用的，后者是">
+<meta property="og:updated_time" content="2016-06-17T09:07:32.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="孙利峰">
-<meta name="twitter:description">
+<meta name="twitter:title" content="iOS_多线程">
+<meta name="twitter:description" content="本文是对以往学习的多线程中知识点的一个整理。
+多线程中的队列有：串行队列，并发队列，全局队列，主队列。
+执行的方法有：同步执行和异步执行。那么两两一组合会有哪些注意事项呢？
+如果不是在董铂然博客园看到这边文章请 点击查看原文
+提到多线程，也就是四种，pthread，NSthread，GCD，NSOperation  
+其中phtread是跨平台的。GCD和NSOperation都是常用的，后者是">
   
     <link rel="alternate" href="/atom.xml" title="孙利峰" type="application/atom+xml">
   
@@ -62,58 +78,85 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2015" class="archive-year">2015</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2015/03/16/iOS-在label中添加图片/" class="archive-article-date">
-  <time datetime="2015-03-16T09:01:48.000Z" itemprop="datePublished">Mar 16</time>
+        <section id="main"><article id="post-iOS-多线程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/07/03/iOS-多线程/" class="article-date">
+  <time datetime="2015-07-03T09:04:49.000Z" itemprop="datePublished">2015-07-03</time>
 </a>
-      
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2015/03/16/iOS-在label中添加图片/">iOS_在label中添加图片</a>
+    <h1 class="article-title" itemprop="name">
+      iOS_多线程
     </h1>
   
 
-    </header>
-  </div>
-</article>
-  
+      </header>
     
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/2015/03/07/iOS-关于蒲公英/" class="archive-article-date">
-  <time datetime="2015-03-07T07:50:33.000Z" itemprop="datePublished">Mar 7</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2015/03/07/iOS-关于蒲公英/">iOS_关于蒲公英</a>
-    </h1>
-  
+        <p><span></span></p>
+<p>本文是对以往学习的多线程中知识点的一个整理。</p>
+<p>多线程中的队列有：串行队列，并发队列，全局队列，主队列。</p>
+<p>执行的方法有：同步执行和异步执行。那么两两一组合会有哪些注意事项呢？</p>
+<p>如果不是在董铂然博客园看到这边文章请 点击查看原文</p>
+<p>提到多线程，也就是四种，pthread，NSthread，GCD，NSOperation  </p>
+<p>其中phtread是跨平台的。GCD和NSOperation都是常用的，后者是基于前者的。</p>
+<p>但是两者区别：GCD的核心概念是将一个任务添加到队列，指定任务执行的方法，然后执行。 NSOperation则是直接将一个操作添加到队列中。</p>
+<ol>
+<li><p>开不开线程，取决于执行任务的函数，同步不开，异步开。</p>
+</li>
+<li><p>开几条线程，取决于队列，串行开一条，并发开多条(异步)</p>
+</li>
+<li><p>主队列：  专门用来在主线程上调度任务的”队列”，主队列不能在其他线程中调度任务！</p>
+</li>
+<li><p>如果主线程上当前正在有执行的任务，主队列暂时不会调度任务的执行！主队列同步任务，会造成死锁。原因是循环等待</p>
+</li>
+<li><p>同步任务可以队列调度多个异步任务前，指定一个同步任务，让所有的异步任务，等待同步任务执行完成，这是依赖关系。</p>
+</li>
+<li><p>全局队列：并发，能够调度多个线程，执行效率高，但是相对费电。 串行队列效率较低，省电省流量，或者是任务之间需要依赖也可以使用串行队列。</p>
+</li>
+<li><p>也可以通过判断当前用户的网络环境来决定开的线程数。WIFI下6条，3G/4G下2～3条。</p>
+</li>
+</ol>
+<p></p>
 
-    </header>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/07/03/iOS-多线程/" data-id="cipjiimd7000imps6v4tftz9d" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2015/08/24/关于XMPP/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          关于XMPP
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2015/03/16/iOS-在label中添加图片/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">iOS_在label中添加图片</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
 
 </section>
         

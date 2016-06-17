@@ -96,7 +96,68 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/08/24/关于XMPP/" data-id="cipjickcw000plds6mtln8bzh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/08/24/关于XMPP/" data-id="cipjiimdy000umps616kh7xlp" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-iOS-多线程" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2015/07/03/iOS-多线程/" class="article-date">
+  <time datetime="2015-07-03T09:04:49.000Z" itemprop="datePublished">2015-07-03</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2015/07/03/iOS-多线程/">iOS_多线程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><span></span></p>
+<p>本文是对以往学习的多线程中知识点的一个整理。</p>
+<p>多线程中的队列有：串行队列，并发队列，全局队列，主队列。</p>
+<p>执行的方法有：同步执行和异步执行。那么两两一组合会有哪些注意事项呢？</p>
+<p>如果不是在董铂然博客园看到这边文章请 点击查看原文</p>
+<p>提到多线程，也就是四种，pthread，NSthread，GCD，NSOperation  </p>
+<p>其中phtread是跨平台的。GCD和NSOperation都是常用的，后者是基于前者的。</p>
+<p>但是两者区别：GCD的核心概念是将一个任务添加到队列，指定任务执行的方法，然后执行。 NSOperation则是直接将一个操作添加到队列中。</p>
+<ol>
+<li><p>开不开线程，取决于执行任务的函数，同步不开，异步开。</p>
+</li>
+<li><p>开几条线程，取决于队列，串行开一条，并发开多条(异步)</p>
+</li>
+<li><p>主队列：  专门用来在主线程上调度任务的”队列”，主队列不能在其他线程中调度任务！</p>
+</li>
+<li><p>如果主线程上当前正在有执行的任务，主队列暂时不会调度任务的执行！主队列同步任务，会造成死锁。原因是循环等待</p>
+</li>
+<li><p>同步任务可以队列调度多个异步任务前，指定一个同步任务，让所有的异步任务，等待同步任务执行完成，这是依赖关系。</p>
+</li>
+<li><p>全局队列：并发，能够调度多个线程，执行效率高，但是相对费电。 串行队列效率较低，省电省流量，或者是任务之间需要依赖也可以使用串行队列。</p>
+</li>
+<li><p>也可以通过判断当前用户的网络环境来决定开的线程数。WIFI下6条，3G/4G下2～3条。</p>
+</li>
+</ol>
+<p></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2015/07/03/iOS-多线程/" data-id="cipjiimd7000imps6v4tftz9d" class="article-share-link">Share</a>
       
       
     </footer>
@@ -142,7 +203,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/16/iOS-在label中添加图片/" data-id="cipjickc5000flds6gb42zqe6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/16/iOS-在label中添加图片/" data-id="cipjiimcx000cmps6keguxhnq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -185,7 +246,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjickc2000elds68lwd9roe" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/03/07/iOS-关于蒲公英/" data-id="cipjiimcy000dmps65frwmn1s" class="article-share-link">Share</a>
       
       
     </footer>
@@ -237,7 +298,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjickby000dlds69r43qppg" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/02/17/iOS-关于判断VPN小结/" data-id="cipjiimd2000fmps6vfiksdzm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -282,7 +343,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjickbg000alds6259q44pf" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2015/01/07/iOS-JSON解析四种方法/" data-id="cipjiimcv000bmps6uwbeg4qs" class="article-share-link">Share</a>
       
       
     </footer>
@@ -350,7 +411,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjickbn000clds6ikv27liv" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/03/24/iOS-三种途径实现一方法有多个返回值/" data-id="cipjiimcq000amps6g8m701kk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -459,7 +520,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/02/20/iOS-APP上线性能检测/" data-id="cipjickbb0009lds6t3fguysn" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/02/20/iOS-APP上线性能检测/" data-id="cipjiimcj0008mps6p8tqqkyn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -527,7 +588,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjickct000nlds6nyoptsm3" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/20/iOS中使用ZXing库/" data-id="cipjiimdx000tmps6eyu9mcmq" class="article-share-link">Share</a>
       
       
     </footer>
@@ -566,46 +627,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjickdi000ylds641cz47z4" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-从Facebook看iOS移动端的开发" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/01/01/从Facebook看iOS移动端的开发/" class="article-date">
-  <time datetime="2014-01-01T13:47:31.000Z" itemprop="datePublished">2014-01-01</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/01/01/从Facebook看iOS移动端的开发/">从Facebook看iOS移动端的开发</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><span></span></p>
-<p>从 Facebook 谈起<br>Facebook 最近绝对是互联网界的新闻明星。它首先是进行了大手笔的收购：2014 年 2 月，Facebook 以 160 亿美元现金加股票，以及 30 亿美元受限制股票福利的方式 收购移动 IM 应用 WhatsApp，总收购成本 190 亿美元。然后是继续发布了新产品：2014 年 2 月，Facebook 发布了一个新的移动端新闻阅读应用 Paper。最后，Facebook 最近还将自己使用的大量工具开源，包括开源了 Paper 的加载效果 Shimmer，LLDB 的增强工具 chisel，以及 Key-Value Observing 工具 KVOController，如果说这些开源工具让程序员如获至宝的话，那么 Facebook 将 Paper 的交互设计工具 Origami 免费开放，则是对广大设计师的福音，极大地方便了移动交互设计工作的开展。<br>2014 年对于 Facebook 来说也是一个值得纪念的日子。因为从 2004 年 2 月 4 日 Facebook 产品上线到现在，Facebook 刚刚走过 10 个年头。10 年前，Facebook 的创始人扎克伯格才 19 岁，是哈佛大学的一名学生。转眼间 10 年后，Facebook 已经成长为全球最大的社交网络，月活跃用户达到 12 亿，市值约 1200 亿美元。<br>业界内大多讨论的话题都围绕在 Facebook 收购 WhatsApp 这件事情上，而作为一个移动开发者，我更加看重 Facebook 发布 Paper 这件事情。因为 Paper 并不是一个简单的应用，它有着非常优秀的交互效果，并且在产品设计和技术上都使用了许多前沿的技术，那就让我们看看，Paper 的开发到底有何不同之处？<br>交互设计<br>我们首先从产品设计上看 Paper 的不同之处。Paper 虽然只是一个新闻客户端，但从大家对 Paper 的评价上，我们发现优秀的交互再一次成为大家关注的焦点。回想那些成功的应用，大多都有着令人心动的交互效果，例如：Tweetie 的下拉刷新，现在基本上成为 iPhone 上内容刷新的标准。Path 跳出来的红心让人心动，很多朋友甚至会没事点那个红心，欣赏那流畅的按钮散开效果。还有 Mailbox，用流畅的手势操作，将邮件管理与任务管理完美结合起来。<br>国外成功的优秀应用也在影响着国内。交互设计不同于平面设计，不能简单地用 Photoshop 展现，而交互设计对于移动应用的成功又异常关键，所以需要花费不少时间来设计，因此产品经理很难兼顾地做交互设计。所以，在国内的一线互联网公司里，交互设计师这个职位慢慢成了移动应用的标配。但是在大部分的非一线互联网公司里面，移动开发的设计仍然停留在由产品经理简单潦草的完成阶段。所以，Facebook 这次 Paper 的成功发布，再一次给移动开发的从业者指出了交互设计的重要性。<br>回顾中国互联网产业的发展我们可以发现，产品经理（Product Manager）这个职位也是最近五、六年才成为互联网公司的标配的，想必在不远的将来，除着交互设计越来越重要，移动交互设计师也会成为每一个互联网公司重要的必备职位。<br>另一方面，由于工具的欠缺，大量的交互设计师的工作效率非常低下，他们为了做出一个新颖的效果常常需要花费大量精力。这次 Facebook 免费开放出基于苹果 Quartz Composer 的增强工具集 Origami，使得交互设计工作得到更好的辅助。而且在 Facebook 的带动下，jQC 1.0 也出现了。jQC 是一个与 Facebook 之前开源的 Origami 兼容的工具，提供了 15 个新的 Patch 来提高 Quartz Composer 的功能。<br>不过另一方面，该工具仍然需要设计师具备一定的基础编码能力，所以对于广大设计师来说，交互设计工具 Origami 对设计师带来的既是机会，同时也是挑战。<br>移动开发技术<br>随着 iOS 依赖管理工具 Cocoapods 和大量第三方开源库成熟起来，业界积累了大量的优秀开源项目。这次 Facebook 开发 Paper 使用了 将近 100 个第三方开源库，极大地减化了自己的应用开发任务。相信随着移动开发的发展，移动开发的生态圈会越来越成熟，基础的开源组件也将将越来越丰富，广大开发者都将从中受益。<br>另一方面，Facebook 的工程师在 Quora 上反馈 说 Paper 在 Xcode 下打开需要 40 多秒钟，编译一次需要 30 分钟。这反映出大量的开源库的使用也给 iOS 集成编译环境 Xcode 提出了新的挑战，相信苹果会花大力气解决 Xcode 的性能问题。<br>总结<br>Facebook 发布的 Paper 让我看到了移动开发领域的快速发展，大量新的工具和开源技术给了设计师和程序员机会和挑战，相信在移动互联网快速发展的浪潮中，会涌现出越来越多优秀的移动应用。谁会是未来移动互联网的霸主？让我们拭目以待。</p>
-<p></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/01/01/从Facebook看iOS移动端的开发/" data-id="cipjickcv000olds674olyhcc" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2014/01/14/iOS应用内支付小结/" data-id="cipjiimdl000nmps6zb9y2l05" class="article-share-link">Share</a>
       
       
     </footer>
@@ -636,7 +658,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/02/">February 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/01/">January 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/12/">December 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/11/">November 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/10/">October 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/09/">September 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/08/">August 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/07/">July 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/03/">March 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/02/">February 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2015/01/">January 2015</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/03/">March 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/02/">February 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/01/">January 2014</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/12/">December 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/11/">November 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/10/">October 2013</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2013/09/">September 2013</a></li></ul>
     </div>
   </div>
 
