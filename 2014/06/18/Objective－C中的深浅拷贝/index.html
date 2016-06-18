@@ -3,33 +3,30 @@
 <head>
   <meta charset="utf-8">
   
-  <title>iOS_多线程 | 孙利峰的技术博客</title>
+  <title>Objective－C中的深浅拷贝 | 孙利峰的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="本文是对以往学习的多线程中知识点的一个整理。
-多线程中的队列有：串行队列，并发队列，全局队列，主队列。
-执行的方法有：同步执行和异步执行。那么两两一组合会有哪些注意事项呢？
-如果不是在董铂然博客园看到这边文章请 点击查看原文
-提到多线程，也就是四种，pthread，NSthread，GCD，NSOperation  
-其中phtread是跨平台的。GCD和NSOperation都是常用的，后者是">
+  <meta name="description" content="浅拷贝
+浅拷贝就是对内存地址的复制，让目标对象指针和源对象指向同一片内存空间。如：
+char str = (char)malloc(100);char* str2 = str;浅拷贝只是对对象的简单拷贝，让几个对象共用一片内存，当内存销毁的时候，指向这片内存的几个指针需要重新定义才可以使用，要不然会成为野指针。
+iOS 里面的浅拷贝：
+在 iOS 里面， 使用retain 关键字进行引用计数，就">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS_多线程">
-<meta property="og:url" content="http://yoursite.com/2015/07/03/iOS-多线程/index.html">
+<meta property="og:title" content="Objective－C中的深浅拷贝">
+<meta property="og:url" content="http://yoursite.com/2014/06/18/Objective－C中的深浅拷贝/index.html">
 <meta property="og:site_name" content="孙利峰的技术博客">
-<meta property="og:description" content="本文是对以往学习的多线程中知识点的一个整理。
-多线程中的队列有：串行队列，并发队列，全局队列，主队列。
-执行的方法有：同步执行和异步执行。那么两两一组合会有哪些注意事项呢？
-如果不是在董铂然博客园看到这边文章请 点击查看原文
-提到多线程，也就是四种，pthread，NSthread，GCD，NSOperation  
-其中phtread是跨平台的。GCD和NSOperation都是常用的，后者是">
-<meta property="og:updated_time" content="2016-06-17T09:07:32.000Z">
+<meta property="og:description" content="浅拷贝
+浅拷贝就是对内存地址的复制，让目标对象指针和源对象指向同一片内存空间。如：
+char str = (char)malloc(100);char* str2 = str;浅拷贝只是对对象的简单拷贝，让几个对象共用一片内存，当内存销毁的时候，指向这片内存的几个指针需要重新定义才可以使用，要不然会成为野指针。
+iOS 里面的浅拷贝：
+在 iOS 里面， 使用retain 关键字进行引用计数，就">
+<meta property="og:updated_time" content="2016-06-18T03:46:48.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="iOS_多线程">
-<meta name="twitter:description" content="本文是对以往学习的多线程中知识点的一个整理。
-多线程中的队列有：串行队列，并发队列，全局队列，主队列。
-执行的方法有：同步执行和异步执行。那么两两一组合会有哪些注意事项呢？
-如果不是在董铂然博客园看到这边文章请 点击查看原文
-提到多线程，也就是四种，pthread，NSthread，GCD，NSOperation  
-其中phtread是跨平台的。GCD和NSOperation都是常用的，后者是">
+<meta name="twitter:title" content="Objective－C中的深浅拷贝">
+<meta name="twitter:description" content="浅拷贝
+浅拷贝就是对内存地址的复制，让目标对象指针和源对象指向同一片内存空间。如：
+char str = (char)malloc(100);char* str2 = str;浅拷贝只是对对象的简单拷贝，让几个对象共用一片内存，当内存销毁的时候，指向这片内存的几个指针需要重新定义才可以使用，要不然会成为野指针。
+iOS 里面的浅拷贝：
+在 iOS 里面， 使用retain 关键字进行引用计数，就">
   
     <link rel="alternate" href="/atom.xml" title="孙利峰的技术博客" type="application/atom+xml">
   
@@ -82,10 +79,10 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-iOS-多线程" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-Objective－C中的深浅拷贝" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2015/07/03/iOS-多线程/" class="article-date">
-  <time datetime="2015-07-03T09:04:49.000Z" itemprop="datePublished">2015-07-03</time>
+    <a href="/2014/06/18/Objective－C中的深浅拷贝/" class="article-date">
+  <time datetime="2014-06-18T03:44:01.000Z" itemprop="datePublished">2014-06-18</time>
 </a>
     
   </div>
@@ -96,7 +93,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      iOS_多线程
+      Objective－C中的深浅拷贝
     </h1>
   
 
@@ -105,35 +102,35 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p><span></span></p>
-<p>本文是对以往学习的多线程中知识点的一个整理。</p>
-<p>多线程中的队列有：串行队列，并发队列，全局队列，主队列。</p>
-<p>执行的方法有：同步执行和异步执行。那么两两一组合会有哪些注意事项呢？</p>
-<p>如果不是在董铂然博客园看到这边文章请 点击查看原文</p>
-<p>提到多线程，也就是四种，pthread，NSthread，GCD，NSOperation  </p>
-<p>其中phtread是跨平台的。GCD和NSOperation都是常用的，后者是基于前者的。</p>
-<p>但是两者区别：GCD的核心概念是将一个任务添加到队列，指定任务执行的方法，然后执行。 NSOperation则是直接将一个操作添加到队列中。</p>
-<ol>
-<li><p>开不开线程，取决于执行任务的函数，同步不开，异步开。</p>
+<p>浅拷贝</p>
+<p>浅拷贝就是对内存地址的复制，让目标对象指针和源对象指向同一片内存空间。如：</p>
+<p>char<em> str = (char</em>)malloc(100);<br>char* str2 = str;<br>浅拷贝只是对对象的简单拷贝，让几个对象共用一片内存，当内存销毁的时候，指向这片内存的几个指针需要重新定义才可以使用，要不然会成为野指针。</p>
+<p>iOS 里面的浅拷贝：</p>
+<p>在 iOS 里面， 使用retain 关键字进行引用计数，就是一种更加保险的浅拷贝。他既让几个指针共用同一片内存空间，又可以在release 由于计数的存在，不会轻易的销毁内存，达到更加简单使用的目的。</p>
+<p>深拷贝：</p>
+<p>深拷贝是指拷贝对象的具体内容，而内存地址是自主分配的，拷贝结束之后，两个对象虽然存的值是相同的，但是内存地址不一样，两个对象也互不影响，互不干涉。</p>
+<p>copy 与 retain 的区别：</p>
+<p>copy 是创建一个新对象，retain 是创建一个指针，引用对象计数加一。 copy属性标识两个对象内容相同，新的对象retain count为1, 与旧有对象引用计数无关，旧有对象没有变化。copy减少对象对上下文的依赖。</p>
+<p>iOS里的深拷贝：</p>
+<p>iOS提供了copy和mutableCopy方法，顾名思义，copy就是复制了一个imutable的对象，而mutableCopy就是复制了一个mutable的对象。以下将举几个例子来说明。<br>这里指的是NSString, NSNumber等等一类的对象。</p>
+<p>NSString <em>string = @”dddd”;<br>NSString </em>stringCopy = [string copy];<br>NSMutableString *stringDCopy = [string mutableCopy];<br>[stringMCopy appendString:@”!!”];<br>查看内存可以发现，string和stringCopy指向的是同一块内存区域(weak reference),引用计数没有发生改变。而stringMCopy则是我们所说的真正意义上的复制，系统为其分配了新内存，是两个独立的字符串内容是一样的。</p>
+<p>拷贝构造：</p>
+<p>当然在 ios 中并不是所有的对象都支持copy，mutableCopy，遵守NSCopying协议的类可以发送copy消息，遵守NSMutableCopying协议的类才可以发送mutableCopy消息。</p>
+<p>假如发送了一个没有遵守上诉两协议而发送copy或者 mutableCopy,那么就会发生异常。但是默认的ios类并没有遵守这两个协议。如果想自定义一下copy 那么就必须遵守NSCopying,并且实现 copyWithZone: 方法，如果想自定义一下mutableCopy 那么就必须遵守NSMutableCopying,并且实现 mutableCopyWithZone: 方法。</p>
+<p>如果是我们定义的对象，那么我们自己要实现NSCopying , NSMutableCopying这样就能调用copy和mutablecopy了。举个例子：</p>
+<p>@interface MyObj : NSObject<nscopying, nsmutablecopying="">{<br>NSMutableString <em>_name;<br>NSString </em> _imutableStr ;<br>int _age;<br>}<br>@property (nonatomic, retain) NSMutableString <em>name;<br>@property (nonatomic, retain) NSString </em>imutableStr;<br>@property (nonatomic) int age;<br>copy拷贝构造：</nscopying,></p>
+<ul>
+<li><p>(id)copyWithZone:(NSZone <em>)zone{<br>MyObj </em>copy = [[[self class] allocWithZone :zone] init];<br>copy-&gt;name = [_name copy];<br>copy-&gt;imutableStr = [_imutableStr copy];<br>copy-&gt;age = age;<br>return copy;<br>}<br>mutableCopy拷贝构造：</p>
 </li>
-<li><p>开几条线程，取决于队列，串行开一条，并发开多条(异步)</p>
+<li><p>(id)mutableCopyWithZone:(NSZone <em>)zone{<br>MyObj </em>copy = NSCopyObject(self, 0, zone);<br>copy-&gt;name = [_name mutableCopy];<br>copy-&gt;age = age;<br>return copy;<br>}</p>
 </li>
-<li><p>主队列：  专门用来在主线程上调度任务的”队列”，主队列不能在其他线程中调度任务！</p>
-</li>
-<li><p>如果主线程上当前正在有执行的任务，主队列暂时不会调度任务的执行！主队列同步任务，会造成死锁。原因是循环等待</p>
-</li>
-<li><p>同步任务可以队列调度多个异步任务前，指定一个同步任务，让所有的异步任务，等待同步任务执行完成，这是依赖关系。</p>
-</li>
-<li><p>全局队列：并发，能够调度多个线程，执行效率高，但是相对费电。 串行队列效率较低，省电省流量，或者是任务之间需要依赖也可以使用串行队列。</p>
-</li>
-<li><p>也可以通过判断当前用户的网络环境来决定开的线程数。WIFI下6条，3G/4G下2～3条。</p>
-</li>
-</ol>
+</ul>
 <p></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2015/07/03/iOS-多线程/" data-id="cipkmhz21000q9os6eta3yng3" class="article-share-link">Partager</a>
+      <a data-url="http://yoursite.com/2014/06/18/Objective－C中的深浅拷贝/" data-id="cipkmhyyh00089os6rz1fw5v2" class="article-share-link">Partager</a>
       
       
     </footer>
@@ -142,19 +139,19 @@
     
 <nav id="article-nav">
   
-    <a href="/2015/08/24/关于XMPP/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2015/01/07/iOS-JSON解析四种方法/" id="article-nav-newer" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Récent</strong>
       <div class="article-nav-title">
         
-          关于XMPP
+          iOS_JSON解析四种方法
         
       </div>
     </a>
   
   
-    <a href="/2015/05/27/iOS-几种常见的加密方法/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2014/03/24/iOS-三种途径实现一方法有多个返回值/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Ancien</strong>
-      <div class="article-nav-title">iOS_几种常见的加密方法</div>
+      <div class="article-nav-title">iOS_三种途径实现一方法有多个返回值</div>
     </a>
   
 </nav>
