@@ -3,30 +3,27 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Objective－C中的深浅拷贝 | 孙利峰的技术博客</title>
+  <title>七牛上传视屏调用视屏播放器推介 | 孙利峰的技术博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="浅拷贝
-浅拷贝就是对内存地址的复制，让目标对象指针和源对象指向同一片内存空间。如：
-char str = (char)malloc(100);char* str2 = str;浅拷贝只是对对象的简单拷贝，让几个对象共用一片内存，当内存销毁的时候，指向这片内存的几个指针需要重新定义才可以使用，要不然会成为野指针。
-iOS 里面的浅拷贝：
-在 iOS 里面， 使用retain 关键字进行引用计数，就">
+  <meta name="description" content="详细原文链接：http://www.cnblogs.com/huangcong/p/5179449.html
+可供选择的播放器很多，但能够很好地支持各种功能常用的有：ckplayer： http://www.ckplayer.comGrindPlayer： http://osmfhls.kutu.ru/docs/grind/
+案例
+假设有一个视频文件： sintel_trailer.mp4，以H">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Objective－C中的深浅拷贝">
-<meta property="og:url" content="http://yoursite.com/2014/06/18/Objective－C中的深浅拷贝/index.html">
+<meta property="og:title" content="七牛上传视屏调用视屏播放器推介">
+<meta property="og:url" content="http://yoursite.com/2016/06/21/七牛上传视屏调用视屏播放器推介/index.html">
 <meta property="og:site_name" content="孙利峰的技术博客">
-<meta property="og:description" content="浅拷贝
-浅拷贝就是对内存地址的复制，让目标对象指针和源对象指向同一片内存空间。如：
-char str = (char)malloc(100);char* str2 = str;浅拷贝只是对对象的简单拷贝，让几个对象共用一片内存，当内存销毁的时候，指向这片内存的几个指针需要重新定义才可以使用，要不然会成为野指针。
-iOS 里面的浅拷贝：
-在 iOS 里面， 使用retain 关键字进行引用计数，就">
-<meta property="og:updated_time" content="2016-06-18T03:46:48.000Z">
+<meta property="og:description" content="详细原文链接：http://www.cnblogs.com/huangcong/p/5179449.html
+可供选择的播放器很多，但能够很好地支持各种功能常用的有：ckplayer： http://www.ckplayer.comGrindPlayer： http://osmfhls.kutu.ru/docs/grind/
+案例
+假设有一个视频文件： sintel_trailer.mp4，以H">
+<meta property="og:updated_time" content="2016-06-21T14:46:58.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Objective－C中的深浅拷贝">
-<meta name="twitter:description" content="浅拷贝
-浅拷贝就是对内存地址的复制，让目标对象指针和源对象指向同一片内存空间。如：
-char str = (char)malloc(100);char* str2 = str;浅拷贝只是对对象的简单拷贝，让几个对象共用一片内存，当内存销毁的时候，指向这片内存的几个指针需要重新定义才可以使用，要不然会成为野指针。
-iOS 里面的浅拷贝：
-在 iOS 里面， 使用retain 关键字进行引用计数，就">
+<meta name="twitter:title" content="七牛上传视屏调用视屏播放器推介">
+<meta name="twitter:description" content="详细原文链接：http://www.cnblogs.com/huangcong/p/5179449.html
+可供选择的播放器很多，但能够很好地支持各种功能常用的有：ckplayer： http://www.ckplayer.comGrindPlayer： http://osmfhls.kutu.ru/docs/grind/
+案例
+假设有一个视频文件： sintel_trailer.mp4，以H">
   
     <link rel="alternate" href="/atom.xml" title="孙利峰的技术博客" type="application/atom+xml">
   
@@ -79,10 +76,10 @@ iOS 里面的浅拷贝：
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-Objective－C中的深浅拷贝" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-七牛上传视屏调用视屏播放器推介" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/06/18/Objective－C中的深浅拷贝/" class="article-date">
-  <time datetime="2014-06-18T03:44:01.000Z" itemprop="datePublished">2014-06-18</time>
+    <a href="/2016/06/21/七牛上传视屏调用视屏播放器推介/" class="article-date">
+  <time datetime="2016-06-21T14:40:30.000Z" itemprop="datePublished">2016-06-21</time>
 </a>
     
   </div>
@@ -93,7 +90,7 @@ iOS 里面的浅拷贝：
         
   
     <h1 class="article-title" itemprop="name">
-      Objective－C中的深浅拷贝
+      七牛上传视屏调用视屏播放器推介
     </h1>
   
 
@@ -102,35 +99,24 @@ iOS 里面的浅拷贝：
     <div class="article-entry" itemprop="articleBody">
       
         <p><span></span></p>
-<p>浅拷贝</p>
-<p>浅拷贝就是对内存地址的复制，让目标对象指针和源对象指向同一片内存空间。如：</p>
-<p>char<em> str = (char</em>)malloc(100);<br>char* str2 = str;<br>浅拷贝只是对对象的简单拷贝，让几个对象共用一片内存，当内存销毁的时候，指向这片内存的几个指针需要重新定义才可以使用，要不然会成为野指针。</p>
-<p>iOS 里面的浅拷贝：</p>
-<p>在 iOS 里面， 使用retain 关键字进行引用计数，就是一种更加保险的浅拷贝。他既让几个指针共用同一片内存空间，又可以在release 由于计数的存在，不会轻易的销毁内存，达到更加简单使用的目的。</p>
-<p>深拷贝：</p>
-<p>深拷贝是指拷贝对象的具体内容，而内存地址是自主分配的，拷贝结束之后，两个对象虽然存的值是相同的，但是内存地址不一样，两个对象也互不影响，互不干涉。</p>
-<p>copy 与 retain 的区别：</p>
-<p>copy 是创建一个新对象，retain 是创建一个指针，引用对象计数加一。 copy属性标识两个对象内容相同，新的对象retain count为1, 与旧有对象引用计数无关，旧有对象没有变化。copy减少对象对上下文的依赖。</p>
-<p>iOS里的深拷贝：</p>
-<p>iOS提供了copy和mutableCopy方法，顾名思义，copy就是复制了一个imutable的对象，而mutableCopy就是复制了一个mutable的对象。以下将举几个例子来说明。<br>这里指的是NSString, NSNumber等等一类的对象。</p>
-<p>NSString <em>string = @”dddd”;<br>NSString </em>stringCopy = [string copy];<br>NSMutableString *stringDCopy = [string mutableCopy];<br>[stringMCopy appendString:@”!!”];<br>查看内存可以发现，string和stringCopy指向的是同一块内存区域(weak reference),引用计数没有发生改变。而stringMCopy则是我们所说的真正意义上的复制，系统为其分配了新内存，是两个独立的字符串内容是一样的。</p>
-<p>拷贝构造：</p>
-<p>当然在 ios 中并不是所有的对象都支持copy，mutableCopy，遵守NSCopying协议的类可以发送copy消息，遵守NSMutableCopying协议的类才可以发送mutableCopy消息。</p>
-<p>假如发送了一个没有遵守上诉两协议而发送copy或者 mutableCopy,那么就会发生异常。但是默认的ios类并没有遵守这两个协议。如果想自定义一下copy 那么就必须遵守NSCopying,并且实现 copyWithZone: 方法，如果想自定义一下mutableCopy 那么就必须遵守NSMutableCopying,并且实现 mutableCopyWithZone: 方法。</p>
-<p>如果是我们定义的对象，那么我们自己要实现NSCopying , NSMutableCopying这样就能调用copy和mutablecopy了。举个例子：</p>
-<p>@interface MyObj : NSObject<nscopying, nsmutablecopying="">{<br>NSMutableString <em>_name;<br>NSString </em> _imutableStr ;<br>int _age;<br>}<br>@property (nonatomic, retain) NSMutableString <em>name;<br>@property (nonatomic, retain) NSString </em>imutableStr;<br>@property (nonatomic) int age;<br>copy拷贝构造：</nscopying,></p>
-<ul>
-<li><p>(id)copyWithZone:(NSZone <em>)zone{<br>MyObj </em>copy = [[[self class] allocWithZone :zone] init];<br>copy-&gt;name = [_name copy];<br>copy-&gt;imutableStr = [_imutableStr copy];<br>copy-&gt;age = age;<br>return copy;<br>}<br>mutableCopy拷贝构造：</p>
-</li>
-<li><p>(id)mutableCopyWithZone:(NSZone <em>)zone{<br>MyObj </em>copy = NSCopyObject(self, 0, zone);<br>copy-&gt;name = [_name mutableCopy];<br>copy-&gt;age = age;<br>return copy;<br>}</p>
-</li>
-</ul>
+<p>详细原文链接：<a href="http://www.cnblogs.com/huangcong/p/5179449.html" target="_blank" rel="external">http://www.cnblogs.com/huangcong/p/5179449.html</a></p>
+<p>可供选择的播放器很多，但能够很好地支持各种功能常用的有：<br>ckplayer： <a href="http://www.ckplayer.com" target="_blank" rel="external">http://www.ckplayer.com</a><br>GrindPlayer： <a href="http://osmfhls.kutu.ru/docs/grind/" target="_blank" rel="external">http://osmfhls.kutu.ru/docs/grind/</a></p>
+<p>案例</p>
+<p>假设有一个视频文件： sintel_trailer.mp4，以HLS播放。需要做三件事情：</p>
+<p>将文件上传至七牛云存储。具体上传方法参考上传操作。<br>使用avthumb/m3u8功能将其转换成HLS媒体文件。这个转换可以在上传时使用数据预处理功能执行转换；或者在上传完成后，对其进行持久化FOP。但是，无论哪种方式，都需要使用saveas功能转码结果保存为指定的名称（需要.m3u8文件名后缀）。<br>将转码后的结果构造成下载URL： <a href="http://ztest.qiniudn.com/sintel.m3u8" target="_blank" rel="external">http://ztest.qiniudn.com/sintel.m3u8</a> ，然后放入播放器，或者播放页面的参数中。</p>
+<p>最主要给大家推荐一款免费播放插件</p>
+<p>插件地址：<a href="https://github.com/jackzhang1204/sewise-player" target="_blank" rel="external">https://github.com/jackzhang1204/sewise-player</a><br>demao :<a href="http://jackzhang1204.github.io/sewise/sewise_player/demos/index.html" target="_blank" rel="external">http://jackzhang1204.github.io/sewise/sewise_player/demos/index.html</a></p>
+<p>下面的播放页面演示了几种播放器播放样例视频：</p>
+<p>HLS：</p>
+<p>seweizhi：<a href="http://seweizhi.qiniudn.com/demao.html" target="_blank" rel="external">http://seweizhi.qiniudn.com/demao.html</a><br>GrindPlayer：<a href="http://www.flashls.org/latest/examples/osmf/GrindPlayer.html" target="_blank" rel="external">http://www.flashls.org/latest/examples/osmf/GrindPlayer.html</a><br>seweizhi：<a href="http://jackzhang1204.github.io/sewise/sewise_player/demos/index.html" target="_blank" rel="external">http://jackzhang1204.github.io/sewise/sewise_player/demos/index.html</a></p>
+<p>MP4：<br>seweizhi：<a href="https://github.com/jackzhang1204/sewise-player" target="_blank" rel="external">https://github.com/jackzhang1204/sewise-player</a></p>
+<p>FLV：<br>seweizhi：<a href="http://jackzhang1204.github.io/sewise/sewise_player/demos/index.html" target="_blank" rel="external">http://jackzhang1204.github.io/sewise/sewise_player/demos/index.html</a> </p>
 <p></p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2014/06/18/Objective－C中的深浅拷贝/" data-id="cippkeojk000b0ds6tmd06avh" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2016/06/21/七牛上传视屏调用视屏播放器推介/" data-id="cippkeolj000w0ds6j6b2j86g" class="article-share-link">Share</a>
       
       
     </footer>
@@ -139,19 +125,10 @@ iOS 里面的浅拷贝：
     
 <nav id="article-nav">
   
-    <a href="/2015/01/07/iOS-JSON解析四种方法/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          iOS_JSON解析四种方法
-        
-      </div>
-    </a>
   
-  
-    <a href="/2014/03/24/iOS-三种途径实现一方法有多个返回值/" id="article-nav-older" class="article-nav-link-wrap">
+    <a href="/2016/06/14/WWDC——2016/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">iOS_三种途径实现一方法有多个返回值</div>
+      <div class="article-nav-title">WWDC——2016</div>
     </a>
   
 </nav>
